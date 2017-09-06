@@ -1,0 +1,27 @@
+[submodule "deps/assimp"]
+	path = deps/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "deps/bullet"]
+	path = deps/bullet
+	url = https://github.com/bulletphysics/bullet3.git
+[submodule "deps/glad"]
+	path = deps/glad
+	url = https://github.com/Dav1dde/glad.git
+[submodule "deps/glfw"]
+	path = deps/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "deps/glm"]
+	path = deps/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "lodepng"]
+	path = lodepng
+	url = https://github.com/lvandeve/lodepng.git
+[submodule "oglwrap"]
+	path = oglwrap
+	url = https://github.com/Tomius/oglwrap.git
+[submodule "deps/oglwrap"]
+	path = deps/oglwrap
+	url = https://github.com/Tomius/oglwrap.git
+[submodule "deps/lodepng"]
+	path = deps/lodepng
+	url = https://github.com/lvandeve/lodepng.git
