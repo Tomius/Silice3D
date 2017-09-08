@@ -23,18 +23,12 @@ set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 # Add subdirectories
 #--------------------------------------------------------------------
 add_subdirectory(deps/glfw)
-include_directories(SYSTEM deps/glfw/include)
-
 add_subdirectory(deps/glm)
-include_directories(SYSTEM deps/glm)
-
 add_subdirectory(deps/glad)
-include_directories(SYSTEM ${GLAD_INCLUDE_DIRS})
 
 set (ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 set (ASSIMP_BUILD_TESTS OFF)
 add_subdirectory(deps/assimp)
-include_directories(SYSTEM deps/assimp/include)
 
 set (BUILD_EXTRAS OFF)
 set (BUILD_CPU_DEMOS OFF)
@@ -43,15 +37,23 @@ set (BUILD_OPENGL3_DEMOS OFF)
 set (BUILD_UNIT_TESTS OFF)
 set (BUILD_BULLET3 OFF)
 add_subdirectory(deps/bullet)
-include_directories(SYSTEM deps/bullet/src)
 
-include_directories(SYSTEM deps)
+# Include dirs
+set (SILICE3D_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/deps ;\
+${PROJECT_SOURCE_DIR}/deps/glfw/include	;\
+${PROJECT_SOURCE_DIR}/deps/glm ;\
+${GLAD_INCLUDE_DIRS} ;\
+${PROJECT_SOURCE_DIR}/deps/assimp/include ;\
+${PROJECT_SOURCE_DIR}/deps/bullet/src ;\
+${PROJECT_SOURCE_DIR}/src")
 
 if (NOT USE_IMAGEMAGICK)
-  include_directories(SYSTEM deps/lodepng)
+  set(SILICE3D_INCLUDE_DIRS "${SILICE3D_INCLUDE_DIRS};${PROJECT_SOURCE_DIR}/deps/lodepng")
 endif()
 
+set(SILICE3D_INCLUDE_DIRS ${SILICE3D_INCLUDE_DIRS} PARENT_SCOPE)
+include_directories(SYSTEM ${SILICE3D_INCLUDE_DIRS})
+
 # This should be the last subdir / include
-include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/src)
 add_subdirectory(src)
 

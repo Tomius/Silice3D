@@ -6,7 +6,7 @@ namespace Silice3D {
 
 BulletFreeFlyCamera::BulletFreeFlyCamera(GameObject* parent, float fov, float z_near,
                                          float z_far, const glm::vec3& pos,
-                                         const glm::vec3& target /*= glm::vec3()*/,
+                                         const glm::vec3& target /*= glm::vec3{0.0}*/,
                                          float speed_per_sec /*= 5.0f*/,
                                          float mouse_sensitivity /*= 1.0f*/)
     : FreeFlyCamera(parent, fov, z_near, z_far, pos, target,
@@ -65,7 +65,7 @@ void BulletFreeFlyCamera::Update() {
   }
 
   // Calculate the offset
-  glm::vec3 offset;
+  glm::vec3 offset = {0.0, 0.0, 0.0};
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
     offset += transform().forward();
   }

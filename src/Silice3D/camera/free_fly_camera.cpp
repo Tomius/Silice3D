@@ -7,7 +7,7 @@ namespace Silice3D {
 
 FreeFlyCamera::FreeFlyCamera(GameObject* parent, float fov, float z_near,
                              float z_far, const glm::vec3& pos,
-                             const glm::vec3& target /*= glm::vec3()*/,
+                             const glm::vec3& target /*= glm::vec3{0.0}*/,
                              float speed_per_sec /*= 5.0f*/,
                              float mouse_sensitivity /*= 5.0f*/)
     : PerspectiveCamera(parent, fov, z_near, z_far)

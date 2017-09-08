@@ -18,7 +18,7 @@ namespace debug {
 template <typename Shape_t>
 class DebugShape : public GameObject {
  public:
-  DebugShape(GameObject* parent, const glm::vec3& color = glm::vec3());
+  DebugShape(GameObject* parent, const glm::vec3& color = glm::vec3{0.0});
 
   glm::vec3 color() { return color_; }
   void set_color(const glm::vec3& color) { color_ = color; }

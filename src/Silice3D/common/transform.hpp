@@ -28,7 +28,9 @@ class Transformation {
  public:
   Transformation(Transformation* parent = nullptr)
       : parent_(parent)
-      , scale_(1, 1, 1) { }
+      , pos_(0, 0, 0)
+      , scale_(1, 1, 1)
+      , rot_(glm::quat_identity<T, glm::defaultp>()) { }
 
   virtual ~Transformation() {}
 
@@ -124,7 +126,7 @@ class Transformation {
       // We need the angle in radians
       T angle = std::acos(cosangle);
       // Rotate with the calced values
-      set_rot(glm::quat_cast(glm::rotate(mat4(), angle, axis)));
+      set_rot(glm::quat_cast(glm::rotate(angle, axis)));
     } else {
       // If they are parallel, we only have to care about the case
       // when they go the opposite direction
@@ -133,14 +135,14 @@ class Transformation {
         if (fabs(glm::dot(local, vec3(1, 0, 0))) > Math::kEpsilon) {
           // If not, we can use it, to generate the axis to rotate around
           vec3 axis = glm::cross(vec3(1, 0, 0), local);
-          set_rot(glm::quat_cast(glm::rotate(mat4(), T(M_PI), axis)));
+          set_rot(glm::quat_cast(glm::rotate(T(M_PI), axis)));
         } else {
           // Else we can use the Y axis for the same purpose
           vec3 axis = glm::cross(vec3(0, 1, 0), local);
-          set_rot(glm::quat_cast(glm::rotate(mat4(), T(M_PI), axis)));
+          set_rot(glm::quat_cast(glm::rotate(T(M_PI), axis)));
         }
       } else {
-        set_rot(quat{});
+        set_rot(glm::quat_identity<T, glm::defaultp>());
       }
     }
   }

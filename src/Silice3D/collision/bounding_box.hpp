@@ -9,8 +9,8 @@
 namespace Silice3D {
 
 class BoundingBox {
-  glm::vec3 mins_;
-  glm::vec3 maxes_;
+  glm::vec3 mins_ = {0.0, 0.0, 0.0};
+  glm::vec3 maxes_= {0.0, 0.0, 0.0};
  public:
   BoundingBox() = default;
 

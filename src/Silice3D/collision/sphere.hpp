@@ -19,7 +19,7 @@ class Sphere {
   virtual bool CollidesWithFrustum(const Frustum& frustum) const;
 
  private:
-  glm::vec3 center_;
+  glm::vec3 center_ = {0.0, 0.0, 0.0};
   float radius_ = 0.0;
 };
 

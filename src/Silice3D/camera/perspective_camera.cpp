@@ -7,27 +7,26 @@ namespace Silice3D {
 
 class CameraTransform : public Transform {
  public:
-  CameraTransform() : up_(vec3{0, 1, 0}) {}
-
-  // We shouldn't inherit the parent's rotation, like how a normal Transform does
+  // CameraTransform shouldn't inherit the parent's rotation,
+  // like how a normal Transform does
   virtual const quat rot() const override { return rot_; }
   virtual void set_rot(const quat& new_rot) override { rot_ = new_rot; }
 
-  // We have custom up and right vectors
+  // CameraTransform has custom up and right vectors
   virtual vec3 up() const override { return up_; }
   virtual void set_up(const vec3& new_up) override {
     up_ = glm::normalize(new_up);
   }
+
   virtual vec3 right() const override {
     return glm::normalize(glm::cross(forward(), up()));
   }
-
   virtual void set_right(const vec3& new_right) override {
     set_forward(glm::cross(up(), new_right));
   }
 
  private:
-  vec3 up_;
+  vec3 up_ = {0.0, 1.0, 0.0};
 };
 
 PerspectiveCamera::PerspectiveCamera(GameObject* parent, float fovy, float z_near, float z_far)

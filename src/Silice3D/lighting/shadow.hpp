@@ -39,7 +39,6 @@ class Shadow : public ICamera {
   size_t w_, h_, size_;
   glm::vec3 light_source_pos_;
   glm::vec4 target_bounding_sphere_;
-  glm::mat4 cp_matrix_;
 
   virtual void ScreenResized(size_t width, size_t height) override;
 };

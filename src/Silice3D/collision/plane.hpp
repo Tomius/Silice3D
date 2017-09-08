@@ -8,7 +8,7 @@
 #include <Silice3D/common/math.hpp>
 
 struct Plane {
-  glm::vec3 normal;
+  glm::vec3 normal = {0.0, 0.0, 0.0};
   float dist = 0.0;
 
   Plane() = default;
@@ -21,7 +21,7 @@ struct Plane {
     double l = glm::length(normal);
     assert(l > Math::kEpsilon);
     if (l <= Math::kEpsilon) {
-      normal = glm::dvec3{};
+      normal = glm::dvec3{0.0, 0.0, 0.0};
       dist = 0.0;
     } else {
       normal /= l;
