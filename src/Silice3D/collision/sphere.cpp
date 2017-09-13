@@ -2,6 +2,8 @@
 
 #include <Silice3D/collision/sphere.hpp>
 
+namespace Silice3D {
+
 bool Sphere::CollidesWithSphere(const Sphere& sphere) const {
   float dist = glm::length(center_ - sphere.center_);
   return dist < radius_ + sphere.radius_;
@@ -27,4 +29,6 @@ bool Sphere::CollidesWithFrustum(const Frustum& frustum) const {
 
   // otherwise we are fully in view
   return true;
+}
+
 }

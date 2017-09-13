@@ -2,16 +2,17 @@
 
 #include <string>
 #include <glad/glad.h>
-#include <oglwrap/oglwrap.h>
 #include <GLFW/glfw3.h>
+#include <oglwrap/oglwrap.h>
 
 #include <Silice3D/core/game_engine.hpp>
+#include <Silice3D/gui/label.hpp>
 
 #ifdef USE_DEBUG_CONTEXT
 void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
                             GLsizei length, const GLchar *message, const void *userParam) {
   if (severity != GL_DEBUG_SEVERITY_NOTIFICATION) {
-    std::cout << message << std::endl;
+    std::cout << "OpenGL DebugCallback: " << message << std::endl;
   }
 }
 #endif
@@ -85,6 +86,12 @@ GameEngine::GameEngine() {
   glDebugMessageCallback(&DebugCallback, nullptr);
 #endif
 
+  success = Label::InitializeTextRendering();
+  if (!success) {
+    std::cerr << "Label::InitializeTextRendering failed" << std::endl;
+    std::terminate();
+  }
+
   gl::Enable(gl::kDepthTest);
 
   glfwSetWindowUserPointer(window_, this);
@@ -104,6 +111,7 @@ GameEngine::~GameEngine() {
     glfwDestroyWindow(window_);
     window_ = nullptr;
   }
+  Label::TerminateTextRendering();
   glfwTerminate();
 }
 

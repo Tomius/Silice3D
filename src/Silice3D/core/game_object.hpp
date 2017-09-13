@@ -16,6 +16,7 @@
 
 namespace Silice3D {
 
+// TODO: better place for these
 constexpr int kShadowTextureSlot = 0;
 constexpr int kDiffuseTextureSlot = 1;
 

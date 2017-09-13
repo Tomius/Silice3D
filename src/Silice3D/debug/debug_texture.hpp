@@ -1,45 +1,26 @@
 // Copyright (c) Tamas Csala
 
-#ifndef DEBUG_TEXTURE_HPP_
-#define DEBUG_TEXTURE_HPP_
+#ifndef SILICE3D_DEBUG_DEBUG_TEXTURE_HPP_
+#define SILICE3D_DEBUG_DEBUG_TEXTURE_HPP_
 
-#include <oglwrap/shader.h>
-#include <oglwrap/uniform.h>
+#include <glad/glad.h>
+#include <oglwrap/oglwrap.h>
 #include <oglwrap/shapes/rectangle_shape.h>
-#include <oglwrap/textures/texture_2D.h>
-#include <oglwrap/smart_enums.h>
 
-#include <Silice3D/shader_manager.hpp>
+#include <Silice3D/shaders/shader_manager.hpp>
+
+namespace Silice3D {
 
 class DebugTexture {
   gl::RectangleShape rect_;
   ShaderProgram prog_;
 
 public:
-  DebugTexture(ShaderManager* shader_manager)
-      : rect_({gl::RectangleShape::kPosition, gl::RectangleShape::kTexCoord})
-      , prog_(shader_manager->get("debug_texture.vert"),
-              shader_manager->get("debug_texture.frag")) {
+  DebugTexture(ShaderManager* shader_manager);
 
-    gl::Use(prog_);
-    gl::UniformSampler(prog_, "uTex") = kDiffuseTextureSlot;
-    (prog_ | "aPosition").bindLocation(rect_.kPosition);
-    (prog_ | "aTexCoord").bindLocation(rect_.kTexCoord);
-    prog_.validate();
-    gl::Unuse(prog_);
-  }
-
-  void Render(const gl::Texture2D& tex) {
-    gl::Use(prog_);
-    gl::BindToTexUnit(tex, kDiffuseTextureSlot);
-
-    gl::TemporarySet capabilies{{{gl::kCullFace, false},
-                                 {gl::kDepthTest, false}}};
-
-    rect_.render();
-    gl::Unbind(tex);
-    gl::Unuse(prog_);
-  }
+  void Render(const gl::Texture2D& tex);
 };
+
+} // namespace Silice3D
 
 #endif  // DEBUG_TEXTURE_HPP_

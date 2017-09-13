@@ -5,8 +5,12 @@
 
 #include <Silice3D/collision/plane.hpp>
 
+namespace Silice3D {
+
 struct Frustum {
   Plane planes[6]; // left, right, top, down, near, far
 };
+
+} // namespace Silice3D
 
 #endif

@@ -8,12 +8,11 @@
 #include <oglwrap/shapes/cube_shape.h>
 #include <oglwrap/shapes/sphere_shape.h>
 
-#include <Silice3D/scene.hpp>
-#include <Silice3D/game_object.hpp>
-#include <Silice3D/shader_manager.hpp>
+#include <Silice3D/core/scene.hpp>
+#include <Silice3D/core/game_object.hpp>
+#include <Silice3D/shaders/shader_manager.hpp>
 
 namespace Silice3D {
-namespace debug {
 
 template <typename Shape_t>
 class DebugShape : public GameObject {
@@ -37,9 +36,8 @@ class DebugShape : public GameObject {
 using DebugCube = DebugShape<gl::CubeShape>;
 using DebugSphere = DebugShape<gl::SphereShape>;
 
-}  // namespcae debug
 }  // namespace Silice3D
 
-#include "./debug_shape-inl.hpp"
+#include <Silice3D/debug/debug_shape-inl.hpp>
 
 #endif

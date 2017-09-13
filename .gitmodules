@@ -25,3 +25,6 @@
 [submodule "deps/lodepng"]
 	path = deps/lodepng
 	url = https://github.com/lvandeve/lodepng.git
+[submodule "deps/glText"]
+	path = deps/glText
+	url = https://github.com/MrVallentin/glText.git

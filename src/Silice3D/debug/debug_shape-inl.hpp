@@ -3,10 +3,9 @@
 #ifndef SILICE3D_DEBUG_DEBUG_SHAPE_INL_HPP_
 #define SILICE3D_DEBUG_DEBUG_SHAPE_INL_HPP_
 
-#include "./debug_shape.hpp"
+#include <Silice3D/debug/debug_shape.hpp>
 
 namespace Silice3D {
-namespace debug {
 
 template<typename Shape_t>
 DebugShape<Shape_t>::DebugShape(GameObject* parent, const glm::vec3& color)
@@ -40,7 +39,6 @@ void DebugShape<Shape_t>::Render() {
   gl::Unuse(prog_);
 }
 
-}  // namespace debug
 }  // namespace Silice3D
 
 #endif

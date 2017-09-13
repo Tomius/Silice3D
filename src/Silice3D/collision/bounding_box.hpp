@@ -9,8 +9,6 @@
 namespace Silice3D {
 
 class BoundingBox {
-  glm::vec3 mins_ = {0.0, 0.0, 0.0};
-  glm::vec3 maxes_= {0.0, 0.0, 0.0};
  public:
   BoundingBox() = default;
 
@@ -24,9 +22,13 @@ class BoundingBox {
 
   bool CollidesWithSphere(const glm::vec3& center, float radius) const;
   bool CollidesWithFrustum(const Frustum& frustum) const;
+
+private:
+  glm::vec3 mins_ = {0.0, 0.0, 0.0};
+  glm::vec3 maxes_= {0.0, 0.0, 0.0};
 };
 
-}
+} // namespace Silice3D
 
 
 #endif

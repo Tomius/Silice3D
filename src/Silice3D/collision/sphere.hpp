@@ -1,10 +1,12 @@
 // Copyright (c) Tamas Csala
 
-#ifndef COLLISION_SPHERE_HPP_
-#define COLLISION_SPHERE_HPP_
+#ifndef SILICE3D_COLLISION_SPHERE_HPP_
+#define SILICE3D_COLLISION_SPHERE_HPP_
 
 #include <Silice3D/common/glm.hpp>
 #include <Silice3D/collision/frustum.hpp>
+
+namespace Silice3D {
 
 class Sphere {
  public:
@@ -22,6 +24,8 @@ class Sphere {
   glm::vec3 center_ = {0.0, 0.0, 0.0};
   float radius_ = 0.0;
 };
+
+} // namespace Silice3D
 
 
 #endif
