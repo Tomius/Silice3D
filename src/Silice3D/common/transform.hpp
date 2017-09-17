@@ -212,7 +212,7 @@ class Transformation {
   }
 };
 
-using Transform = Transformation<float>;
+using Transform = Transformation<double>;
 
 }  // namespace Silice3D
 

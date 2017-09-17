@@ -9,23 +9,23 @@ namespace Silice3D {
 
 class FreeFlyCamera : public PerspectiveCamera {
  public:
-  FreeFlyCamera(GameObject* parent, float fov, float z_near,
-                float z_far, const glm::vec3& pos,
-                const glm::vec3& target = glm::vec3{0.0},
-                float speed_per_sec = 5.0f,
-                float mouse_sensitivity = 5.0f);
+  FreeFlyCamera(GameObject* parent, double fov, double z_near,
+                double z_far, const glm::dvec3& pos,
+                const glm::dvec3& target = glm::dvec3{0.0},
+                double speed_per_sec = 5.0f,
+                double mouse_sensitivity = 5.0f);
 
-  float speed_per_sec() const { return speed_per_sec_; }
-  float mouse_sensitivity() const { return mouse_sensitivity_; }
-  float cos_max_pitch_angle() const { return cos_max_pitch_angle_; }
+  double speed_per_sec() const { return speed_per_sec_; }
+  double mouse_sensitivity() const { return mouse_sensitivity_; }
+  double cos_max_pitch_angle() const { return cos_max_pitch_angle_; }
 
-  void set_speed_per_sec(float value) { speed_per_sec_ = value; }
-  void set_mouse_sensitivity(float value) { mouse_sensitivity_ = value; }
-  void set_cos_max_pitch_angle(float value) { cos_max_pitch_angle_ = value; }
+  void set_speed_per_sec(double value) { speed_per_sec_ = value; }
+  void set_mouse_sensitivity(double value) { mouse_sensitivity_ = value; }
+  void set_cos_max_pitch_angle(double value) { cos_max_pitch_angle_ = value; }
 
  protected:
   bool first_call_;
-  float speed_per_sec_, mouse_sensitivity_, cos_max_pitch_angle_;
+  double speed_per_sec_, mouse_sensitivity_, cos_max_pitch_angle_;
 
  private:
   virtual void Update() override;

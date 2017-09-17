@@ -6,13 +6,13 @@
 #include <Silice3D/common/glm.hpp>
 
 #ifndef M_PI
-  #define M_PI 3.14159265359f
+  #define M_PI 3.14159265359
 #endif
 #ifndef M_PI_2
-  #define M_PI_2 1.57079632679f
+  #define M_PI_2 1.57079632679
 #endif
 
-
+namespace Silice3D {
 namespace Math {
 
 static constexpr double kEpsilon = 1e-5;
@@ -40,6 +40,7 @@ constexpr T Cube(T v) {
   return v * v * v;
 }
 
-}
+} // namespace Math
+} // namespace Silice3D
 
 #endif

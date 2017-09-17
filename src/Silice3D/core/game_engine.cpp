@@ -35,8 +35,8 @@ GameEngine::GameEngine() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #else
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 #endif
 
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -185,13 +185,17 @@ void GameEngine::CharCallback(GLFWwindow* window, unsigned codepoint) {
 
 void GameEngine::ScreenResizeCallback(GLFWwindow* window, int width, int height) {
   gl::Viewport(width, height);
+  Silice3D::Label::ScreenResizedForTextRendering(width, height);
+
   GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
   if (game_engine) {
     if (width == 0 || height == 0) {
       game_engine->minimized_ = true;
-    } else if (game_engine->scene_) {
+    } else {
       game_engine->minimized_ = false;
-      game_engine->scene_->ScreenResizedAll(width, height);
+      if (game_engine->scene_) {
+        game_engine->scene_->ScreenResizedAll(width, height);
+      }
     }
   }
 }

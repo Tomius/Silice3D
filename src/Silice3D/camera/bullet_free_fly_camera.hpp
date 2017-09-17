@@ -11,11 +11,11 @@ namespace Silice3D {
 
 class BulletFreeFlyCamera : public FreeFlyCamera {
  public:
-  BulletFreeFlyCamera(GameObject* parent, float fov, float z_near,
-                      float z_far, const glm::vec3& pos,
-                      const glm::vec3& target = glm::vec3{0.0},
-                      float speed_per_sec = 5.0f,
-                      float mouse_sensitivity = 1.0f);
+  BulletFreeFlyCamera(GameObject* parent, double fov, double z_near,
+                      double z_far, const glm::dvec3& pos,
+                      const glm::dvec3& target = glm::dvec3{0.0},
+                      double speed_per_sec = 5.0f,
+                      double mouse_sensitivity = 1.0f);
 
  private:
   btRigidBody* bt_rigid_body_;

@@ -5,7 +5,7 @@
 namespace Silice3D {
 
 bool Sphere::CollidesWithSphere(const Sphere& sphere) const {
-  float dist = glm::length(center_ - sphere.center_);
+  double dist = glm::length(center_ - sphere.center_);
   return dist < radius_ + sphere.radius_;
 }
 
@@ -16,7 +16,7 @@ bool Sphere::CollidesWithFrustum(const Frustum& frustum) const {
     const Plane& plane = frustum.planes[i];
 
     // find the distance to this plane
-    float dist = glm::dot(plane.normal, center_) + plane.dist;
+    double dist = glm::dot(plane.normal, center_) + plane.dist;
 
     // if this distance is < -sphere.radius, we are outside
     if (dist < -radius_)

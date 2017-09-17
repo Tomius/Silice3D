@@ -71,15 +71,15 @@ static std::vector<glm::mat4> ReorderTransforms(std::vector<const GameObject*>& 
                                                 const ICamera& camera) {
   std::vector<glm::mat4> transforms;
   if (Optimizations::kDepthOrdering) {
-    glm::vec3 camPos = camera.transform().pos();
+    glm::dvec3 camPos = camera.transform().pos();
     std::sort(instances.begin(), instances.end(), [camPos](const GameObject* a, const GameObject* b) -> bool {
-      float a_dist = glm::length(a->transform().pos() - camPos);
-      float b_dist = glm::length(b->transform().pos() - camPos);
+      double a_dist = glm::length(a->transform().pos() - camPos);
+      double b_dist = glm::length(b->transform().pos() - camPos);
       return Optimizations::kInverseDepthOrdering ? a_dist > b_dist : a_dist < b_dist;
     });
   }
   for (const GameObject* instance : instances) {
-    transforms.push_back(instance->transform());
+    transforms.push_back(instance->transform().matrix());
   }
 
   return transforms;

@@ -5,11 +5,11 @@
 
 namespace Silice3D {
 
-FreeFlyCamera::FreeFlyCamera(GameObject* parent, float fov, float z_near,
-                             float z_far, const glm::vec3& pos,
-                             const glm::vec3& target /*= glm::vec3{0.0}*/,
-                             float speed_per_sec /*= 5.0f*/,
-                             float mouse_sensitivity /*= 5.0f*/)
+FreeFlyCamera::FreeFlyCamera(GameObject* parent, double fov, double z_near,
+                             double z_far, const glm::dvec3& pos,
+                             const glm::dvec3& target /*= glm::dvec3{0.0}*/,
+                             double speed_per_sec /*= 5.0f*/,
+                             double mouse_sensitivity /*= 5.0f*/)
     : PerspectiveCamera(parent, fov, z_near, z_far)
     , first_call_(true)
     , speed_per_sec_(speed_per_sec)
@@ -33,16 +33,16 @@ void FreeFlyCamera::Update() {
     first_call_ = false;
   }
 
-  const float dt = scene_->camera_time().dt();
+  const double dt = scene_->camera_time().dt();
 
   // Mouse movement - update the coordinate system
   if (diff.x || diff.y) {
-    float dx(diff.x * mouse_sensitivity_ / 10000);
-    float dy(-diff.y * mouse_sensitivity_ / 10000);
+    double dx(diff.x * mouse_sensitivity_ / 10000);
+    double dy(-diff.y * mouse_sensitivity_ / 10000);
 
     // If we are looking up / down, we don't want to be able
     // to rotate to the other side
-    float dot_up_fwd = glm::dot(transform().up(), transform().forward());
+    double dot_up_fwd = glm::dot(transform().up(), transform().forward());
     if (dot_up_fwd > cos_max_pitch_angle_ && dy > 0) {
       dy = 0;
     }
@@ -51,13 +51,13 @@ void FreeFlyCamera::Update() {
     }
 
     transform().set_forward(transform().forward() +
-                             transform().right()*dx +
-                             transform().up()*dy);
+                            transform().right()*dx +
+                            transform().up()*dy);
   }
 
   // Update the position
-  float ds = dt * speed_per_sec_;
-  glm::vec3 local_pos = transform().local_pos();
+  double ds = dt * speed_per_sec_;
+  glm::dvec3 local_pos = transform().local_pos();
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
     local_pos += transform().forward() * ds;
   }

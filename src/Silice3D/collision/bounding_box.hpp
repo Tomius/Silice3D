@@ -12,20 +12,20 @@ class BoundingBox {
  public:
   BoundingBox() = default;
 
-  BoundingBox(const glm::vec3& mins, const glm::vec3& maxes)
+  BoundingBox(const glm::dvec3& mins, const glm::dvec3& maxes)
       : mins_(mins), maxes_(maxes) {}
 
-  glm::vec3 mins() const { return mins_; }
-  glm::vec3 maxes() const { return maxes_; }
-  glm::vec3 center() const { return (maxes_+mins_) / 2.0f; }
-  glm::vec3 extent() const { return maxes_-mins_; }
+  glm::dvec3 mins() const { return mins_; }
+  glm::dvec3 maxes() const { return maxes_; }
+  glm::dvec3 center() const { return (maxes_+mins_) / 2.0; }
+  glm::dvec3 extent() const { return maxes_-mins_; }
 
-  bool CollidesWithSphere(const glm::vec3& center, float radius) const;
+  bool CollidesWithSphere(const glm::dvec3& center, double radius) const;
   bool CollidesWithFrustum(const Frustum& frustum) const;
 
 private:
-  glm::vec3 mins_ = {0.0, 0.0, 0.0};
-  glm::vec3 maxes_= {0.0, 0.0, 0.0};
+  glm::dvec3 mins_ = {0.0, 0.0, 0.0};
+  glm::dvec3 maxes_= {0.0, 0.0, 0.0};
 };
 
 } // namespace Silice3D

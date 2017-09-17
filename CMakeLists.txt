@@ -24,6 +24,8 @@ set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 #--------------------------------------------------------------------
 add_subdirectory(deps/glfw)
 add_subdirectory(deps/glm)
+
+set (GLAD_EXTENSIONS "GL_ARB_bindless_texture")
 add_subdirectory(deps/glad)
 
 set (ASSIMP_BUILD_ASSIMP_TOOLS OFF)
