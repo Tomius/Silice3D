@@ -15,10 +15,11 @@
 namespace Silice3D {
 
 Label::Label(GameObject* parent, const std::string& text,
-      const glm::vec2& pos, const glm::vec4& color)
+             const glm::vec2& pos, float scale,
+             const glm::vec4& color)
     : GameObject(parent)
     , pos_(pos)
-    , scale_(1.0)
+    , scale_(scale)
     , color_(color)
     , text_(gltCreateText()) {
   set_text(text);
@@ -84,7 +85,7 @@ void Label::TerminateTextRendering() {
   gltTerminate();
 }
 
-void Label::ScreenResized(size_t width, size_t height) {
+void Label::ScreenResizedForTextRendering(size_t width, size_t height) {
   gltViewport(width, height);
 }
 

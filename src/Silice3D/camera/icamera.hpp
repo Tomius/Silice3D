@@ -12,6 +12,7 @@ namespace Silice3D {
 class ICamera : public GameObject {
 public:
   using GameObject::GameObject;
+
   virtual glm::mat4 cameraMatrix() const = 0;
   virtual glm::mat4 projectionMatrix() const = 0;
   const Frustum& frustum() const { return frustum_; }

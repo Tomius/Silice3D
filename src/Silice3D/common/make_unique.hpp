@@ -3,6 +3,8 @@
 #ifndef COMMON_MAKE_UNIQUE_HPP_
 #define COMMON_MAKE_UNIQUE_HPP_
 
+#include <memory>
+
 namespace Silice3D {
 
 template<typename T, typename... Args>

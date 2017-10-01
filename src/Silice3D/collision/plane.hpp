@@ -10,12 +10,12 @@
 namespace Silice3D {
 
 struct Plane {
-  glm::vec3 normal = {0.0, 0.0, 0.0};
-  float dist = 0.0;
+  glm::dvec3 normal = {0.0, 0.0, 0.0};
+  double dist = 0.0;
 
   Plane() = default;
-  Plane(float nx, float ny, float nz, float dist);
-  Plane(const glm::vec3& normal, float dist);
+  Plane(double nx, double ny, double nz, double dist);
+  Plane(const glm::dvec3& normal, double dist);
 
   void Normalize();
 };

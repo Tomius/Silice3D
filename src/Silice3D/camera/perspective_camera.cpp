@@ -29,7 +29,7 @@ class CameraTransform : public Transform {
   vec3 up_ = {0.0, 1.0, 0.0};
 };
 
-PerspectiveCamera::PerspectiveCamera(GameObject* parent, float fovy, float z_near, float z_far)
+PerspectiveCamera::PerspectiveCamera(GameObject* parent, double fovy, double z_near, double z_far)
     : ICamera(parent, CameraTransform{}), fovy_(fovy), z_near_(z_near)
     , z_far_(z_far), width_(0), height_(0) {
   assert(fovy_ < M_PI);

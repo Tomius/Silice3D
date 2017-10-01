@@ -4,8 +4,8 @@
 
 namespace Silice3D {
 
-bool BoundingBox::CollidesWithSphere(const glm::vec3& center, float radius) const {
-  float dmin = 0;
+bool BoundingBox::CollidesWithSphere(const glm::dvec3& center, double radius) const {
+  double dmin = 0;
   for (int i = 0; i < 3; ++i) {
     if (center[i] < mins_[i]) {
       dmin += Math::Sqr(center[i] - mins_[i]);
@@ -17,14 +17,14 @@ bool BoundingBox::CollidesWithSphere(const glm::vec3& center, float radius) cons
 }
 
 bool BoundingBox::CollidesWithFrustum(const Frustum& frustum) const {
-  glm::vec3 center = this->center();
-  glm::vec3 extent = this->extent();
+  glm::dvec3 center = this->center();
+  glm::dvec3 extent = this->extent();
 
   for (int i = 0; i < 6; ++i) {
     const Plane& plane = frustum.planes[i];
 
-    float d = glm::dot(center, plane.normal);
-    float r = glm::dot(extent, glm::abs(plane.normal));
+    double d = glm::dot(center, plane.normal);
+    double r = glm::dot(extent, glm::abs(plane.normal));
 
     if (d + r < -plane.dist) {
       return false;

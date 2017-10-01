@@ -4,14 +4,14 @@
 
 namespace Silice3D {
 
-BulletFreeFlyCamera::BulletFreeFlyCamera(GameObject* parent, float fov, float z_near,
-                                         float z_far, const glm::vec3& pos,
-                                         const glm::vec3& target /*= glm::vec3{0.0}*/,
-                                         float speed_per_sec /*= 5.0f*/,
-                                         float mouse_sensitivity /*= 1.0f*/)
+BulletFreeFlyCamera::BulletFreeFlyCamera(GameObject* parent, double fov, double z_near,
+                                         double z_far, const glm::dvec3& pos,
+                                         const glm::dvec3& target /*= glm::dvec3{0.0}*/,
+                                         double speed_per_sec /*= 5.0f*/,
+                                         double mouse_sensitivity /*= 1.0f*/)
     : FreeFlyCamera(parent, fov, z_near, z_far, pos, target,
                     speed_per_sec, mouse_sensitivity) {
-  float radius = 3.0f * z_near;
+  double radius = 3.0f * z_near;
   btCollisionShape* shape = new btSphereShape(radius);
   auto rbody = AddComponent<BulletRigidBody>(
     1.0f, std::unique_ptr<btCollisionShape>{shape}, kColDynamic);
@@ -46,12 +46,12 @@ void BulletFreeFlyCamera::Update() {
 
   // Mouse movement - update the coordinate system
   if (diff.x || diff.y) {
-    float dx(diff.x * mouse_sensitivity_ / 10000);
-    float dy(-diff.y * mouse_sensitivity_ / 10000);
+    double dx(diff.x * mouse_sensitivity_ / 10000);
+    double dy(-diff.y * mouse_sensitivity_ / 10000);
 
     // If we are looking up / down, we don't want to be able
     // to rotate to the other side
-    float dot_up_fwd = glm::dot(transform().up(), transform().forward());
+    double dot_up_fwd = glm::dot(transform().up(), transform().forward());
     if (dot_up_fwd > cos_max_pitch_angle_ && dy > 0) {
       dy = 0;
     }
@@ -65,7 +65,7 @@ void BulletFreeFlyCamera::Update() {
   }
 
   // Calculate the offset
-  glm::vec3 offset = {0.0, 0.0, 0.0};
+  glm::dvec3 offset = {0.0, 0.0, 0.0};
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
     offset += transform().forward();
   }

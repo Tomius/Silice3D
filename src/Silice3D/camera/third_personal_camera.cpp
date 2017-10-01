@@ -6,16 +6,16 @@
 namespace Silice3D {
 
 ThirdPersonalCamera::ThirdPersonalCamera(GameObject* parent,
-                                         float fov,
-                                         float z_near,
-                                         float z_far,
-                                         const glm::vec3& position,
-                                         float mouse_sensitivity /*= 1.0*/,
-                                         float mouse_scroll_sensitivity /*= 1.0*/,
-                                         float min_dist_mod /*= 0.25*/,
-                                         float max_dist_mod /*= 4.00*/,
-                                         float base_distance /*= 0.0*/,
-                                         float dist_offset /*= 0.0*/)
+                                         double fov,
+                                         double z_near,
+                                         double z_far,
+                                         const glm::dvec3& position,
+                                         double mouse_sensitivity /*= 1.0*/,
+                                         double mouse_scroll_sensitivity /*= 1.0*/,
+                                         double min_dist_mod /*= 0.25*/,
+                                         double max_dist_mod /*= 4.00*/,
+                                         double base_distance /*= 0.0*/,
+                                         double dist_offset /*= 0.0*/)
     : PerspectiveCamera(parent, fov, z_near, z_far)
     , target_(parent->transform())
     , first_call_(true)
@@ -47,17 +47,17 @@ void ThirdPersonalCamera::Update() {
     first_call_ = false;
   }
 
-  const float dt = scene_->camera_time().dt();
+  const double dt = scene_->camera_time().dt();
 
   // Mouse movement - update the coordinate system
   if (diff.x || diff.y) {
-    float mouse_sensitivity = mouse_sensitivity_ * curr_dist_mod_ / 1000;
-    float dx(diff.x * mouse_sensitivity);
-    float dy(-diff.y * mouse_sensitivity);
+    double mouse_sensitivity = mouse_sensitivity_ * curr_dist_mod_ / 1000;
+    double dx(diff.x * mouse_sensitivity);
+    double dy(-diff.y * mouse_sensitivity);
 
     // If we are looking up / down, we don't want to be able
     // to rotate to the other side
-    float dot_up_fwd = glm::dot(transform().up(), transform().forward());
+    double dot_up_fwd = glm::dot(transform().up(), transform().forward());
     if (dot_up_fwd > cos_max_pitch_angle_ && dy > 0) {
       dy = 0;
     }
@@ -70,7 +70,7 @@ void ThirdPersonalCamera::Update() {
                              transform().up()*dy);
   }
 
-  float dist_diff_mod = dest_dist_mod_ - curr_dist_mod_;
+  double dist_diff_mod = dest_dist_mod_ - curr_dist_mod_;
   if (fabs(dist_diff_mod) > dt * mouse_scroll_sensitivity_) {
     curr_dist_mod_ *= dist_diff_mod > 0 ?
       (1 + dt * mouse_scroll_sensitivity_) :
@@ -78,10 +78,10 @@ void ThirdPersonalCamera::Update() {
   }
 
   // Update the position
-  glm::vec3 tpos(target_.pos()), fwd(transform().forward());
+  glm::dvec3 tpos(target_.pos()), fwd(transform().forward());
   fwd = transform().forward();
-  float dist = curr_dist_mod_*base_distance_ + dist_offset_;
-  glm::vec3 pos = tpos - fwd*dist;
+  double dist = curr_dist_mod_*base_distance_ + dist_offset_;
+  glm::dvec3 pos = tpos - fwd*dist;
   transform().set_pos(pos);
 
   PerspectiveCamera::UpdateCache();
