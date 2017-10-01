@@ -16,7 +16,10 @@ class FpsDisplay : public GameObject {
  private:
   constexpr static float kRefreshInterval = 0.1f;
 
-  Label* label_ = nullptr;
+  Label* fps_label_ = nullptr;
+  Label* object_count_label_ = nullptr;
+  Label* triangle_count_label_ = nullptr;
+  Label* triangle_per_sec_label_ = nullptr;
   double sum_frame_num_ = 0.0;
   double sum_time_ = 0.0;
   double accum_time_ = 0.0;

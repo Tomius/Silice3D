@@ -58,6 +58,8 @@ class Scene : public GameObject {
 
   MeshRendererCache* mesh_cache() { return &mesh_cache_; }
 
+  size_t triangle_count();
+
   unsigned AddLightSource(LightSource light_source);
   const LightSource& GetLightSource(unsigned id) const;
   LightSource& GetLightSource(unsigned id);

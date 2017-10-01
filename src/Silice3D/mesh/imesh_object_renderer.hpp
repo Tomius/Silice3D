@@ -19,6 +19,8 @@ public:
   virtual void ClearShadowRenderBatch() = 0;
   virtual void ShadowRenderBatch(Scene* scene) = 0;
 
+  virtual size_t GetTriangleCount() const = 0;
+
   virtual ~IMeshObjectRenderer();
 };
 using MeshRendererCache = std::map<std::string, std::unique_ptr<IMeshObjectRenderer>>;

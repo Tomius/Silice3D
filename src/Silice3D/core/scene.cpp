@@ -46,6 +46,14 @@ void Scene::Turn() {
   Render2DAll();
 }
 
+size_t Scene::triangle_count() {
+  size_t sum_triangle_count = 0;
+  for (auto& pair : mesh_cache_) {
+    sum_triangle_count += pair.second->GetTriangleCount();
+  }
+  return sum_triangle_count;
+}
+
 unsigned Scene::AddLightSource(LightSource light_source) {
   static unsigned id = 1;
   light_sources_[id] = light_source;

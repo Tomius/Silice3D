@@ -185,6 +185,14 @@ void MeshObjectRenderer::ShadowRenderBatch(Scene* scene) {
   }
 }
 
+size_t MeshObjectRenderer::GetTriangleCount() const {
+  if (Optimizations::kDelayedModelMatrixEvalutaion) {
+    return instances_.size() * mesh_.triangleCount();
+  } else {
+    return instance_transforms_.size() * mesh_.triangleCount();
+  }
+}
+
 BoundingBox MeshObjectRenderer::GetBoundingBox(const glm::mat4& transform) const {
   return mesh_.boundingBox(transform);
 }
