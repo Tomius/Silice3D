@@ -77,12 +77,12 @@ void GameObject::RenderAll() {
   }
 }
 
-void GameObject::ShadowRenderAll() {
+void GameObject::ShadowRenderAll(const ICamera& shadow_camera) {
   if (!enabled_) { return; }
 
-  ShadowRender();
+  ShadowRender(shadow_camera);
   for (auto& component : components_) {
-    component->ShadowRenderAll();
+    component->ShadowRenderAll(shadow_camera);
   }
 }
 

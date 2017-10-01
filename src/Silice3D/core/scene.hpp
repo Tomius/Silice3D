@@ -13,6 +13,7 @@
 #include <Silice3D/common/auto_reset_event.hpp>
 #include <Silice3D/camera/icamera.hpp>
 #include <Silice3D/core/game_object.hpp>
+#include <Silice3D/lighting/shadow.hpp>
 #include <Silice3D/lighting/light_source.hpp>
 #include <Silice3D/mesh/imesh_object_renderer.hpp>
 
@@ -42,9 +43,9 @@ class Scene : public GameObject {
   ICamera* camera() { return camera_; }
   void set_camera(ICamera* camera) { camera_ = camera; }
 
-  const ICamera* shadow_camera() const { return shadow_camera_; }
-  ICamera* shadow_camera() { return shadow_camera_; }
-  void set_shadow_camera(ICamera* shadow_camera) { shadow_camera_ = shadow_camera; }
+  const Shadow* shadow() const { return shadow_; }
+  Shadow* shadow() { return shadow_; }
+  void set_shadow(Shadow* shadow) { shadow_ = shadow; }
 
   GLFWwindow* window() const { return window_; }
   void set_window(GLFWwindow* window) { window_ = window; }
@@ -70,7 +71,7 @@ class Scene : public GameObject {
 
  protected:
   ICamera* camera_;
-  ICamera* shadow_camera_;
+  Shadow* shadow_;
   Timer game_time_, environment_time_, camera_time_;
   GLFWwindow* window_;
   GameEngine* engine_;

@@ -23,10 +23,10 @@ void MeshObjectBatchRenderer::Render() {
   }
 }
 
-void MeshObjectBatchRenderer::ShadowRender() {
+void MeshObjectBatchRenderer::ShadowRender(const ICamera& shadow_camera) {
   MeshRendererCache* cache = scene()->mesh_cache();
   for (auto& pair : *cache) {
-    pair.second->ShadowRenderBatch(scene());
+    pair.second->ShadowRenderBatch(scene(), shadow_camera);
   }
 }
 

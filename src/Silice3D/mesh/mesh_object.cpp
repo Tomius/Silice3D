@@ -37,9 +37,10 @@ void MeshObject::Update() {
       renderer_->AddInstanceToRenderBatch(this);
     }
 
-    const auto& shadow_cam = *scene()->shadow_camera();
-    bool is_shadow_visible = !Optimizations::kFrustumCulling ||
-                              bbox.CollidesWithFrustum(shadow_cam.frustum());
+    // const auto& shadow_cam = *scene()->shadow_camera();
+    // bool is_shadow_visible = !Optimizations::kFrustumCulling ||
+    //                           bbox.CollidesWithFrustum(shadow_cam.frustum());
+    bool is_shadow_visible = true;  // TODO
     if (is_shadow_visible) {
       renderer_->AddInstanceToShadowRenderBatch(this);
     }
@@ -59,14 +60,13 @@ void MeshObject::Render() {
   }
 }
 
-void MeshObject::ShadowRender() {
+void MeshObject::ShadowRender(const ICamera& shadow_camera) {
   if (!Optimizations::kInstanceGrouping) {
-    const auto& shadow_cam = *scene()->shadow_camera();
     bool is_visible = !Optimizations::kFrustumCulling ||
-                       GetBoundingBox().CollidesWithFrustum(shadow_cam.frustum());
+                       GetBoundingBox().CollidesWithFrustum(shadow_camera.frustum());
     if (is_visible) {
       renderer_->AddInstanceToShadowRenderBatch(this);
-      renderer_->ShadowRenderBatch(scene());
+      renderer_->ShadowRenderBatch(scene(), shadow_camera);
       renderer_->ClearShadowRenderBatch();
     }
   }

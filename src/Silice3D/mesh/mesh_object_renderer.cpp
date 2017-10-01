@@ -105,14 +105,16 @@ void MeshObjectRenderer::RenderBatch(Scene* scene) {
   const auto& cam = *scene->camera();
 
   if (recieve_shadows_) {
-    auto shadow_cam = scene->shadow_camera();
+    auto shadow = scene->shadow();
 
     gl::Use(prog_cache_.shadow_recieve_prog_);
     prog_cache_.shadow_recieve_prog_.update();
 
     prog_cache_.srp_uProjectionMatrix_ = cam.projectionMatrix();
     prog_cache_.srp_uCameraMatrix_ = cam.cameraMatrix();
-    prog_cache_.srp_uShadowCP_ = shadow_cam->projectionMatrix() * shadow_cam->cameraMatrix();
+    for (int i = 0; i < Shadow::kCascadesCount; ++i) {
+      prog_cache_.srp_uShadowCP_[i] = shadow->GetProjectionMatrix(i) * shadow->GetCameraMatrix(i);
+    }
   } else {
     gl::Use(prog_cache_.basic_prog_);
     prog_cache_.basic_prog_.update();
@@ -158,19 +160,17 @@ void MeshObjectRenderer::ClearShadowRenderBatch() {
   }
 }
 
-void MeshObjectRenderer::ShadowRenderBatch(Scene* scene) {
+void MeshObjectRenderer::ShadowRenderBatch(Scene* scene, const ICamera& shadow_camera) {
   if (cast_shadows_) {
-    const auto& shadow_cam = *scene->shadow_camera();
-
     auto prog_user = gl::MakeTemporaryBind(prog_cache_.shadow_cast_prog_);
     prog_cache_.shadow_cast_prog_.update();
 
-    prog_cache_.scp_uProjectionMatrix_ = shadow_cam.projectionMatrix();
-    prog_cache_.scp_uCameraMatrix_ = shadow_cam.cameraMatrix();
+    prog_cache_.scp_uProjectionMatrix_ = shadow_camera.projectionMatrix();
+    prog_cache_.scp_uCameraMatrix_ = shadow_camera.cameraMatrix();
 
     if (Optimizations::kAttribModelMat) {
       if (Optimizations::kDelayedModelMatrixEvalutaion) {
-        mesh_.uploadModelMatrices(ReorderTransforms(shadow_instances_, shadow_cam));
+        mesh_.uploadModelMatrices(ReorderTransforms(shadow_instances_, shadow_camera));
         mesh_.render(shadow_instances_.size());
       } else {
         mesh_.uploadModelMatrices(shadow_instance_transforms_);

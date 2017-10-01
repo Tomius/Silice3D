@@ -21,6 +21,7 @@ constexpr int kShadowTextureSlot = 0;
 constexpr int kDiffuseTextureSlot = 1;
 
 class Scene;
+class ICamera;
 
 class GameObject {
  public:
@@ -60,7 +61,7 @@ class GameObject {
   void set_enabled(bool value) { enabled_ = value; }
 
   virtual void Render() {}
-  virtual void ShadowRender() {}
+  virtual void ShadowRender(const ICamera& /*shadow_camera*/) {}
   virtual void Render2D() {}
   virtual void Update() {}
   virtual void UpdatePhysics() {}
@@ -73,17 +74,17 @@ class GameObject {
   virtual void MouseMoved(double /*xpos*/, double /*ypos*/) {}
 
   virtual void RenderAll();
-  virtual void ShadowRenderAll();
+  virtual void ShadowRenderAll(const ICamera& shadow_camera);
   virtual void Render2DAll();
   virtual void UpdateAll();
   virtual void UpdatePhysicsAll();
   virtual void ScreenResizedCleanAll();
-  virtual void ScreenResizedAll(size_t /*width*/, size_t /*height*/);
-  virtual void KeyActionAll(int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/);
-  virtual void CharTypedAll(unsigned /*codepoint*/);
-  virtual void MouseScrolledAll(double /*xoffset*/, double /*yoffset*/);
-  virtual void MouseButtonPressedAll(int /*button*/, int /*action*/, int /*mods*/);
-  virtual void MouseMovedAll(double /*xpos*/, double /*ypos*/);
+  virtual void ScreenResizedAll(size_t width, size_t height);
+  virtual void KeyActionAll(int key, int scancode, int action, int mods);
+  virtual void CharTypedAll(unsigned codepoint);
+  virtual void MouseScrolledAll(double xoffset, double yoffset);
+  virtual void MouseButtonPressedAll(int button, int action, int mods);
+  virtual void MouseMovedAll(double xpos, double ypos);
 
  protected:
   Scene* scene_;

@@ -31,7 +31,7 @@ public:
 
   void AddInstanceToShadowRenderBatch(const GameObject* game_object);
   virtual void ClearShadowRenderBatch() override;
-  virtual void ShadowRenderBatch(Scene* scene) override;
+  virtual void ShadowRenderBatch(Scene* scene, const ICamera& shadow_camera) override;
 
   BoundingBox GetBoundingBox(const glm::mat4& transform) const;
 

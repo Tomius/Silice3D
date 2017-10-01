@@ -10,6 +10,7 @@
 namespace Silice3D {
 
 class Scene;
+class ICamera;
 
 class IMeshObjectRenderer {
 public:
@@ -17,7 +18,7 @@ public:
   virtual void RenderBatch(Scene* scene) = 0;
 
   virtual void ClearShadowRenderBatch() = 0;
-  virtual void ShadowRenderBatch(Scene* scene) = 0;
+  virtual void ShadowRenderBatch(Scene* scene, const ICamera& shadow_camera) = 0;
 
   virtual size_t GetTriangleCount() const = 0;
 

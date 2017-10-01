@@ -4,7 +4,7 @@
 #define SILICE3D_CAMERA_PERSPECTIVE_CAMERA_HPP_
 
 #include <Silice3D/camera/icamera.hpp>
-#include <Silice3D/collision/frustum.hpp>
+#include <Silice3D/core/game_object.hpp>
 
 namespace Silice3D {
 
