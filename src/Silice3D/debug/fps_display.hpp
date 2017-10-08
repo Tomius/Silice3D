@@ -11,7 +11,6 @@ namespace Silice3D {
 class FpsDisplay : public GameObject {
  public:
   explicit FpsDisplay(GameObject* parent);
-  ~FpsDisplay();
 
  private:
   constexpr static float kRefreshInterval = 0.1f;
@@ -27,6 +26,7 @@ class FpsDisplay : public GameObject {
   bool first_display_interval_ = true;
 
   virtual void Update() override;
+  virtual void RemovedFromScene() override;
 };
 
 }

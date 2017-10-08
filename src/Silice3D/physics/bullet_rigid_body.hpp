@@ -55,8 +55,6 @@ class BulletRigidBody : public GameObject, public btMotionState {
                   const glm::vec3& pos, const glm::fquat& rot,
                   CollisionType collision_type);
 
-  virtual ~BulletRigidBody();
-
   btRigidBody* bt_rigid_body() { return bt_rigid_body_.get(); }
   const btRigidBody* bt_rigid_body() const { return bt_rigid_body_.get(); }
 
@@ -86,6 +84,7 @@ class BulletRigidBody : public GameObject, public btMotionState {
 
   // GameObject virtual functions
   virtual void UpdatePhysics() override;
+  virtual void RemovedFromScene() override;
 
   // btMotionState virtual functions
   virtual void getWorldTransform(btTransform &t) const override;

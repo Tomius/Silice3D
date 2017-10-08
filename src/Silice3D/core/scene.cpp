@@ -31,7 +31,7 @@ Scene::~Scene() {
   physics_can_run_.Set();
   physics_thread_.join();
 
-  ResetChildren();
+  RemovedFromSceneAll();
 }
 
 ShaderManager* Scene::shader_manager() const { return engine_->shader_manager(); }

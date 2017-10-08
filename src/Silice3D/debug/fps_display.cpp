@@ -28,12 +28,6 @@ FpsDisplay::FpsDisplay(GameObject* parent)
   triangle_per_sec_label_->set_vertical_alignment(VerticalAlignment::kTop);
 }
 
-FpsDisplay::~FpsDisplay() {
-  if (sum_time_ != 0) {
-    std::cout << "Average FPS: " << sum_frame_num_ / sum_time_ << std::endl;
-  }
-}
-
 void FpsDisplay::Update() {
   calls_++;
   accum_time_ += scene_->camera_time().dt();
@@ -75,6 +69,12 @@ void FpsDisplay::Update() {
     }
 
     accum_time_ = calls_ = 0;
+  }
+}
+
+void FpsDisplay::RemovedFromScene() {
+  if (sum_time_ != 0) {
+    std::cout << "Average FPS: " << sum_frame_num_ / sum_time_ << std::endl;
   }
 }
 

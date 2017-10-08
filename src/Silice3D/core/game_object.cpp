@@ -6,18 +6,6 @@
 
 namespace Silice3D {
 
-void GameObject::ResetChildren() {
-  for (auto& comp_ptr : components_) {
-    comp_ptr.reset();
-  }
-}
-
-GameObject::~GameObject() {
-  // The childrens destructor have to run before this one's,
-  // as those functions might try to access this object via the parent_ ptr
-  ResetChildren ();
-}
-
 GameObject* GameObject::AddComponent(std::unique_ptr<GameObject>&& component) {
   try {
     GameObject *obj = component.get();
@@ -25,6 +13,7 @@ GameObject* GameObject::AddComponent(std::unique_ptr<GameObject>&& component) {
     obj->parent_ = this;
     obj->transform_->set_parent(transform_.get());
     obj->scene_ = scene_;
+    obj->AddedToScene();
 
     return obj;
   } catch (const std::exception& ex) {
@@ -132,6 +121,24 @@ void GameObject::UpdatePhysicsAll() {
   }
 }
 
+void GameObject::AddedToSceneAll() {
+  if (!enabled_) { return; }
+
+  AddedToScene();
+  for (auto& component : components_) {
+    component->AddedToSceneAll();
+  }
+}
+
+void GameObject::RemovedFromSceneAll() {
+  if (!enabled_) { return; }
+
+  RemovedFromScene();
+  for (auto& component : components_) {
+    component->RemovedFromSceneAll();
+  }
+}
+
 void GameObject::KeyActionAll(int key, int scancode, int action, int mods) {
   if (!enabled_) { return; }
 
@@ -202,13 +209,16 @@ void GameObject::AddNewComponents() {
 
 void GameObject::RemoveComponents() {
   if (!components_to_remove_.empty()) {
-    auto components_to_remove_copy = components_to_remove_;
-    components_to_remove_.clear();
+    for (GameObject* go : components_to_remove_) {
+      go->RemovedFromSceneAll();
+    }
 
     components_.erase(std::remove_if(components_.begin(), components_.end(),
       [&](const std::unique_ptr<GameObject>& go_ptr){
-        return components_to_remove_copy.find(go_ptr.get()) != components_to_remove_copy.end();
+        return components_to_remove_.find(go_ptr.get()) != components_to_remove_.end();
       }), components_.end());
+
+    components_to_remove_.clear();
   }
 }
 

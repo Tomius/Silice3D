@@ -141,6 +141,7 @@ void GameEngine::Run() {
 
       glfwSwapBuffers(window_);
     }
+
     glfwPollEvents();
   }
 }
@@ -171,14 +172,14 @@ void GameEngine::KeyCallback(GLFWwindow* window, int key, int scancode,
     }
   }
   GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
-  if (game_engine && game_engine->scene_) {
+  if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
     game_engine->scene_->KeyActionAll(key, scancode, action, mods);
   }
 }
 
 void GameEngine::CharCallback(GLFWwindow* window, unsigned codepoint) {
   GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
-  if (game_engine && game_engine->scene_) {
+  if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
     game_engine->scene_->CharTypedAll(codepoint);
   }
 }
@@ -204,7 +205,7 @@ void GameEngine::MouseScrolledCallback(GLFWwindow* window,
                                        double xoffset,
                                        double yoffset) {
   GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
-  if (game_engine && game_engine->scene_) {
+  if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
     game_engine->scene_->MouseScrolledAll(xoffset, yoffset);
   }
 }
@@ -212,14 +213,14 @@ void GameEngine::MouseScrolledCallback(GLFWwindow* window,
 void GameEngine::MouseButtonPressed(GLFWwindow* window, int button,
                                     int action, int mods) {
     GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
-    if (game_engine && game_engine->scene_) {
+    if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
       game_engine->scene_->MouseButtonPressedAll(button, action, mods);
     }
   }
 
 void GameEngine::MouseMoved(GLFWwindow* window, double xpos, double ypos) {
   GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
-  if (game_engine && game_engine->scene_) {
+  if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
     game_engine->scene_->MouseMovedAll(xpos, ypos);
   }
 }

@@ -69,10 +69,6 @@ BulletRigidBody::Restrains::Restrains()
   , z_rot_lock{0}
 {}
 
-BulletRigidBody::~BulletRigidBody() {
-  scene_->bt_world()->removeCollisionObject(bt_rigid_body_.get());
-}
-
 void BulletRigidBody::set_restrains(Restrains value) {
   restrains_ = value;
   bt_rigid_body_->setLinearFactor(btVector3(
@@ -124,6 +120,10 @@ void BulletRigidBody::UpdatePhysics() {
     }
     up_to_date_ = true;
   }
+}
+
+void BulletRigidBody::RemovedFromScene() {
+  scene_->bt_world()->removeCollisionObject(bt_rigid_body_.get());
 }
 
 }
