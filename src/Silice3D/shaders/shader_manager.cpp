@@ -7,8 +7,8 @@
 
 namespace Silice3D {
 
-static gl::ShaderType get_shader_type(std::string& filename,
-                                      const ShaderFile* included_from) {
+static gl::ShaderType GetShaderType(std::string& filename,
+                                    const ShaderFile* included_from) {
   size_t dot_position = filename.find_last_of('.');
   if (dot_position != std::string::npos) {
     std::string extension = filename.substr(dot_position+1);
@@ -38,16 +38,19 @@ static gl::ShaderType get_shader_type(std::string& filename,
 
 ShaderFile* ShaderManager::publish(const std::string& filename,
                                    const gl::ShaderSource& src) {
-  return load(*this, filename, src);
+  return LoadShader(*this, filename, src);
 }
 
 ShaderFile* ShaderManager::get(const std::string& filename,
                                const ShaderFile* included_from) {
-  auto iter = shaders_.find(filename);
+  std::string filename_with_correct_extension = filename;
+  GetShaderType(filename_with_correct_extension, included_from);
+
+  auto iter = shaders_.find(filename_with_correct_extension);
   if (iter != shaders_.end()) {
     return iter->second.get();
   } else {
-    ShaderFile* shader = load(*this, filename, included_from);
+    ShaderFile* shader = LoadShader(*this, filename, included_from);
     return shader;
   }
 }
@@ -56,7 +59,7 @@ ShaderFile::ShaderFile(ShaderManager& shader_manager,
                        std::string filename,
                        const gl::ShaderSource& src,
                        const ShaderFile* included_from)
-    : gl::Shader(get_shader_type(filename, included_from)) {
+    : gl::Shader(GetShaderType(filename, included_from)) {
   std::string src_str = src.source();
   findIncludes(src_str, shader_manager);
   for (ShaderFile *included : includes_) {

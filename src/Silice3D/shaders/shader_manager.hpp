@@ -26,7 +26,7 @@ class ShaderManager {
   std::map<std::string, std::unique_ptr<ShaderFile>> shaders_;
 
   template<typename... Args>
-  ShaderFile* load(Args&&... args);
+  ShaderFile* LoadShader(Args&&... args);
 };
 
 class ShaderFile : public gl::Shader {
@@ -61,8 +61,9 @@ class ShaderFile : public gl::Shader {
 };
 
 template<typename... Args>
-ShaderFile* ShaderManager::load(Args&&... args) {
+ShaderFile* ShaderManager::LoadShader(Args&&... args) {
   auto shader = new ShaderFile{std::forward<Args>(args)...};
+  assert(shaders_.find(shader->source_file_name()) == shaders_.end());
   shaders_[shader->source_file_name()] = std::unique_ptr<ShaderFile>{shader};
   return shader;
 }

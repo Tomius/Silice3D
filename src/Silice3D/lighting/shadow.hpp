@@ -25,7 +25,7 @@ class Shadow : public GameObject {
   glm::mat4 GetProjectionMatrix(unsigned cascade_idx) const;
   glm::mat4 GetCameraMatrix(unsigned cascade_idx) const;
 
-  static constexpr const unsigned kCascadesCount = 4;
+  static constexpr const unsigned kCascadesCount = 3;
 
  private:
   gl::Texture2DArray depth_tex_;
