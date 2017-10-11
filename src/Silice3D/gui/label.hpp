@@ -22,8 +22,11 @@ class Label : public GameObject {
         const glm::vec4& color = glm::vec4{1.0});
   virtual ~Label();
 
-  glm::vec2 position() const;
-  void set_position(glm::vec2 pos);
+  glm::vec2 normalized_position() const;
+  void set_normalized_position(glm::vec2 pos);
+
+  glm::ivec2 display_position() const;
+  void set_display_position(glm::ivec2 pos);
 
   std::string text() const;
   void set_text(const std::string& text);
@@ -48,14 +51,17 @@ public:
   virtual void Render2D() override;
 
 private:
-  glm::vec2 pos_;
+  glm::vec2 normalized_pos_;
+  glm::ivec2 display_pos_;
   float scale_;
   glm::vec4 color_;
 
   HorizontalAlignment horizontal_alignment_ = HorizontalAlignment::kCenter;
   VerticalAlignment vertical_alignment_ = VerticalAlignment::kCenter;
 
-  GLTtext *text_;
+  GLTtext *text_ = nullptr;
+
+  virtual void ScreenResized(size_t width, size_t height) override;
 };
 
 }  // namespace Silice3D

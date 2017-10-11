@@ -27,6 +27,7 @@ class FpsDisplay : public GameObject {
 
   virtual void Update() override;
   virtual void RemovedFromScene() override;
+  virtual void ScreenResized(size_t width, size_t height) override;
 };
 
 }

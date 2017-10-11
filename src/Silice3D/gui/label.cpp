@@ -18,7 +18,7 @@ Label::Label(GameObject* parent, const std::string& text,
              const glm::vec2& pos, float scale,
              const glm::vec4& color)
     : GameObject(parent)
-    , pos_(pos)
+    , normalized_pos_(pos)
     , scale_(scale)
     , color_(color)
     , text_(gltCreateText()) {
@@ -29,12 +29,22 @@ Label::~Label() {
   gltDeleteText(text_);
 }
 
-glm::vec2 Label::position() const {
-  return pos_;
+glm::vec2 Label::normalized_position() const {
+  return normalized_pos_;
 }
 
-void Label::set_position(glm::vec2 pos) {
-  pos_ = pos;
+void Label::set_normalized_position(glm::vec2 pos) {
+  normalized_pos_ = pos;
+  display_pos_ = glm::ivec2(scene_->engine()->window_size() * pos);
+}
+
+glm::ivec2 Label::display_position() const {
+  return display_pos_;
+}
+
+void Label::set_display_position(glm::ivec2 pos) {
+  display_pos_ = pos;
+  normalized_pos_ = glm::vec2(scene_->engine()->window_size()) / glm::vec2(pos);
 }
 
 std::string Label::text() const {
@@ -89,6 +99,10 @@ void Label::ScreenResizedForTextRendering(size_t width, size_t height) {
   gltViewport(width, height);
 }
 
+void Label::ScreenResized(size_t width, size_t height) {
+  display_pos_ = glm::ivec2(glm::vec2(width, height) * normalized_pos_);
+}
+
 void Label::Render2D() {
   int horizontal_alignment = 0;
   switch (horizontal_alignment_) {
@@ -104,7 +118,7 @@ void Label::Render2D() {
   }
 
   gltColor(color_.x, color_.g, color_.b, color_.a);
-  gltDrawText2DAligned (text_, pos_.x, pos_.y, scale_,
+  gltDrawText2DAligned (text_, display_pos_.x, display_pos_.y, scale_,
                         horizontal_alignment,
                         vertical_alignment);
   OGLWRAP_CHECK_ERROR ();

@@ -44,7 +44,7 @@ GameEngine::GameEngine() {
   glfwWindowHint(GLFW_DEPTH_BITS, 24);
   glfwWindowHint(GLFW_STENCIL_BITS, 8);
 
-#if SILICE3D_NO_FULLSCREEN
+#if !SILICE3D_NO_FULLSCREEN
   window_ = glfwCreateWindow(vidmode->width, vidmode->height,
                              "Pyromaze", nullptr, nullptr);
 #else

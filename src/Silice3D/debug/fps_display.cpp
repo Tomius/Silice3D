@@ -10,20 +10,20 @@ namespace Silice3D {
 FpsDisplay::FpsDisplay(GameObject* parent)
     : GameObject(parent)
     , accum_time_(scene_->camera_time().dt()) {
-  fps_label_ = AddComponent<Label> ("FPS:      ", glm::vec2{1900, 0});
+  fps_label_ = AddComponent<Label> ("FPS:      ", glm::vec2{0.99, 0});
   fps_label_->set_horizontal_alignment(HorizontalAlignment::kRight);
   fps_label_->set_vertical_alignment(VerticalAlignment::kTop);
   fps_label_->set_scale(1.5);
 
-  object_count_label_ = AddComponent<Label> ("Object count:      ", glm::vec2{1900, 40});
+  object_count_label_ = AddComponent<Label> ("Object count:      ", glm::vec2{0.99, 0.04});
   object_count_label_->set_horizontal_alignment(HorizontalAlignment::kRight);
   object_count_label_->set_vertical_alignment(VerticalAlignment::kTop);
 
-  triangle_count_label_ = AddComponent<Label> ("Triangle count:      ", glm::vec2{1900, 55});
+  triangle_count_label_ = AddComponent<Label> ("Triangle count:      ", glm::vec2{0.99, 0.055});
   triangle_count_label_->set_horizontal_alignment(HorizontalAlignment::kRight);
   triangle_count_label_->set_vertical_alignment(VerticalAlignment::kTop);
 
-  triangle_per_sec_label_ = AddComponent<Label> ("Triangle per sec:      ", glm::vec2{1900, 70});
+  triangle_per_sec_label_ = AddComponent<Label> ("Triangle per sec:      ", glm::vec2{0.99, 0.07});
   triangle_per_sec_label_->set_horizontal_alignment(HorizontalAlignment::kRight);
   triangle_per_sec_label_->set_vertical_alignment(VerticalAlignment::kTop);
 }
@@ -76,6 +76,14 @@ void FpsDisplay::RemovedFromScene() {
   if (sum_time_ != 0) {
     std::cout << "Average FPS: " << sum_frame_num_ / sum_time_ << std::endl;
   }
+}
+
+void FpsDisplay::ScreenResized(size_t /*width*/, size_t height) {
+  float scale = 0.25 + (height / 1080.0) * 0.75;
+  fps_label_->set_scale(scale);
+  object_count_label_->set_scale(scale);
+  triangle_count_label_->set_scale(scale);
+  triangle_per_sec_label_->set_scale(scale);
 }
 
 }
