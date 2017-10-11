@@ -15,7 +15,7 @@ namespace Silice3D {
 enum class HorizontalAlignment {kLeft, kCenter, kRight};
 enum class VerticalAlignment {kBottom, kCenter, kTop};
 
-class Label : public GameObject {
+class Label : public GameObject { // TODO: text rendering without a GameObject
  public:
   Label(GameObject* parent, const std::string& text,
         const glm::vec2& pos, float scale = 1.0,
@@ -49,6 +49,7 @@ public:
   static void ScreenResizedForTextRendering(size_t width, size_t height);
 
   virtual void Render2D() override;
+  virtual void ScreenResized(size_t width, size_t height) override;
 
 private:
   glm::vec2 normalized_pos_;
@@ -60,8 +61,6 @@ private:
   VerticalAlignment vertical_alignment_ = VerticalAlignment::kCenter;
 
   GLTtext *text_ = nullptr;
-
-  virtual void ScreenResized(size_t width, size_t height) override;
 };
 
 }  // namespace Silice3D

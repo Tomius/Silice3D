@@ -80,7 +80,7 @@ void FpsDisplay::RemovedFromScene() {
 
 void FpsDisplay::ScreenResized(size_t /*width*/, size_t height) {
   float scale = 0.25 + (height / 1080.0) * 0.75;
-  fps_label_->set_scale(scale);
+  fps_label_->set_scale(1.5 * scale);
   object_count_label_->set_scale(scale);
   triangle_count_label_->set_scale(scale);
   triangle_per_sec_label_->set_scale(scale);

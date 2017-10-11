@@ -19,6 +19,7 @@ Label::Label(GameObject* parent, const std::string& text,
              const glm::vec4& color)
     : GameObject(parent)
     , normalized_pos_(pos)
+    , display_pos_(0, 0)
     , scale_(scale)
     , color_(color)
     , text_(gltCreateText()) {
