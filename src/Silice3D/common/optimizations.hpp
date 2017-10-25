@@ -15,7 +15,6 @@ constexpr bool kInstanceGrouping = true;
 constexpr bool kAttribModelMat = true;
 constexpr bool kInvalidateBuffer = true;
 constexpr bool kInstancing = true;
-constexpr bool kSharedPrograms = false; /* useless */
 constexpr bool kPingPongBuffer = false; /* useless */
 
 // GPU bottleneck fixes
@@ -25,6 +24,9 @@ constexpr bool kFrustumCulling = true;
 constexpr bool kDelayedModelMatrixEvalutaion = false; /* performance drop */
 constexpr bool kDepthOrdering = false;                /* performance drop */
 constexpr bool kInverseDepthOrdering = false;         /* useless */
+
+// Already removed optimizations
+// constexpr bool kSharedPrograms = false; /* useless */
 
 static_assert(!kAttribModelMat || kInstanceGrouping,
               "kAttribModelMat should only be set if kInstanceGrouping is true");

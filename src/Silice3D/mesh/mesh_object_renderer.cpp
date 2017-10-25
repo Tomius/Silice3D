@@ -15,16 +15,13 @@ MeshObjectRenderer::MeshObjectRenderer (const std::string& mesh_path,
                                          aiProcess_PreTransformVertices |
                                          aiProcess_Triangulate |
                                          aiProcess_CalcTangentSpace)
-    , local_prog_cache_(shader_manager, vertex_shader)
-    , prog_cache_(Optimizations::kSharedPrograms ?
-                  GetProgramCacheEntry(shader_manager, vertex_shader) :
-                  local_prog_cache_) {
+    , prog_data_(shader_manager, vertex_shader) {
   mesh_.setup();
   mesh_.setupDiffuseTextures(kDiffuseTextureSlot);
 }
 
-MeshObjectRenderer::ProgramCacheEntry::ProgramCacheEntry(ShaderManager* shader_manager,
-                                                         const std::string& vertex_shader)
+MeshObjectRenderer::ProgramData::ProgramData(ShaderManager* shader_manager,
+                                             const std::string& vertex_shader)
     : basic_prog_(shader_manager->get(vertex_shader),
                   shader_manager->get("mesh.frag"))
     , shadow_recieve_prog_(shader_manager->get(vertex_shader),
@@ -51,7 +48,6 @@ MeshObjectRenderer::ProgramCacheEntry::ProgramCacheEntry(ShaderManager* shader_m
   basic_prog_.validate();
 
   gl::Use(shadow_recieve_prog_);
-  gl::UniformSampler(shadow_recieve_prog_, "uShadowMap").set(kShadowTextureSlot);
   gl::UniformSampler(shadow_recieve_prog_, "uDiffuseTexture").set(kDiffuseTextureSlot);
   shadow_recieve_prog_.validate();
   gl::Unuse(shadow_recieve_prog_);
@@ -107,20 +103,20 @@ void MeshObjectRenderer::RenderBatch(Scene* scene) {
   if (recieve_shadows_) {
     auto shadow = scene->shadow();
 
-    gl::Use(prog_cache_.shadow_recieve_prog_);
-    prog_cache_.shadow_recieve_prog_.update();
+    gl::Use(prog_data_.shadow_recieve_prog_);
+    prog_data_.shadow_recieve_prog_.update();
 
-    prog_cache_.srp_uProjectionMatrix_ = cam.projectionMatrix();
-    prog_cache_.srp_uCameraMatrix_ = cam.cameraMatrix();
+    prog_data_.srp_uProjectionMatrix_ = cam.projectionMatrix();
+    prog_data_.srp_uCameraMatrix_ = cam.cameraMatrix();
     for (int i = 0; i < Shadow::kCascadesCount; ++i) {
-      prog_cache_.srp_uShadowCP_[i] = shadow->GetProjectionMatrix(i) * shadow->GetCameraMatrix(i);
+      prog_data_.srp_uShadowCP_[i] = shadow->GetProjectionMatrix(i) * shadow->GetCameraMatrix(i);
     }
   } else {
-    gl::Use(prog_cache_.basic_prog_);
-    prog_cache_.basic_prog_.update();
+    gl::Use(prog_data_.basic_prog_);
+    prog_data_.basic_prog_.update();
 
-    prog_cache_.bp_uProjectionMatrix_ = cam.projectionMatrix();
-    prog_cache_.bp_uCameraMatrix_ = cam.cameraMatrix();
+    prog_data_.bp_uProjectionMatrix_ = cam.projectionMatrix();
+    prog_data_.bp_uCameraMatrix_ = cam.cameraMatrix();
   }
 
   if (Optimizations::kAttribModelMat) {
@@ -134,9 +130,9 @@ void MeshObjectRenderer::RenderBatch(Scene* scene) {
   } else {
     for (glm::mat4& transform : instance_transforms_) {
       if (recieve_shadows_) {
-        prog_cache_.srp_uModelMatrix_ = transform;
+        prog_data_.srp_uModelMatrix_ = transform;
       } else {
-        prog_cache_.bp_uModelMatrix_ = transform;
+        prog_data_.bp_uModelMatrix_ = transform;
       }
       mesh_.render(1);
     }
@@ -162,11 +158,11 @@ void MeshObjectRenderer::ClearShadowRenderBatch() {
 
 void MeshObjectRenderer::ShadowRenderBatch(Scene* scene, const ICamera& shadow_camera) {
   if (cast_shadows_) {
-    auto prog_user = gl::MakeTemporaryBind(prog_cache_.shadow_cast_prog_);
-    prog_cache_.shadow_cast_prog_.update();
+    auto prog_user = gl::MakeTemporaryBind(prog_data_.shadow_cast_prog_);
+    prog_data_.shadow_cast_prog_.update();
 
-    prog_cache_.scp_uProjectionMatrix_ = shadow_camera.projectionMatrix();
-    prog_cache_.scp_uCameraMatrix_ = shadow_camera.cameraMatrix();
+    prog_data_.scp_uProjectionMatrix_ = shadow_camera.projectionMatrix();
+    prog_data_.scp_uCameraMatrix_ = shadow_camera.cameraMatrix();
 
     if (Optimizations::kAttribModelMat) {
       if (Optimizations::kDelayedModelMatrixEvalutaion) {
@@ -178,7 +174,7 @@ void MeshObjectRenderer::ShadowRenderBatch(Scene* scene, const ICamera& shadow_c
       }
     } else {
       for (glm::mat4& transform : shadow_instance_transforms_) {
-        prog_cache_.scp_uModelMatrix_ = transform;
+        prog_data_.scp_uModelMatrix_ = transform;
         mesh_.render(1);
       }
     }
@@ -196,22 +192,6 @@ size_t MeshObjectRenderer::GetTriangleCount() const {
 BoundingBox MeshObjectRenderer::GetBoundingBox(const glm::mat4& transform) const {
   return mesh_.boundingBox(transform);
 }
-
-MeshObjectRenderer::ProgramCacheEntry& MeshObjectRenderer::GetProgramCacheEntry(ShaderManager* shader_manager,
-                                                                                const std::string& vertex_shader) {
-  using ProgramCacheEntry = MeshObjectRenderer::ProgramCacheEntry;
-  // TODO: cache per scene because of shader manager
-  static std::map<std::string, std::unique_ptr<ProgramCacheEntry>> cache;
-  auto iter = cache.find(vertex_shader);
-  if (iter == cache.end()) {
-    ProgramCacheEntry* cache_entry = new ProgramCacheEntry(shader_manager, vertex_shader);
-    cache[vertex_shader] = std::unique_ptr<ProgramCacheEntry>{cache_entry};
-    return *cache_entry;
-  } else {
-    return *iter->second.get();
-  }
-}
-
 
 }   // namespace Silice3D
 
