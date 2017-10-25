@@ -15,7 +15,6 @@ constexpr bool kInstanceGrouping = true;
 constexpr bool kAttribModelMat = true;
 constexpr bool kInvalidateBuffer = true;
 constexpr bool kInstancing = true;
-constexpr bool kPingPongBuffer = false; /* useless */
 
 // GPU bottleneck fixes
 constexpr bool kFrustumCulling = true;
