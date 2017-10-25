@@ -1,8 +1,6 @@
 // Copyright (c) Tamas Csala
 
 #include <Silice3D/mesh/mesh_object.hpp>
-#include <Silice3D/common/optimizations.hpp>
-
 #include <Silice3D/core/scene.hpp>
 #include <Silice3D/lighting/shadow.hpp>
 
@@ -28,47 +26,18 @@ BoundingBox MeshObject::GetBoundingBox() const {
 }
 
 void MeshObject::Update() {
-  if (Optimizations::kInstanceGrouping) {
-    auto bbox = GetBoundingBox();
-    const auto& cam = *scene()->camera();
-    bool is_visible = !Optimizations::kFrustumCulling ||
-                       bbox.CollidesWithFrustum(cam.frustum());
-    if (is_visible) {
-      renderer_->AddInstanceToRenderBatch(this);
-    }
-
-    // const auto& shadow_cam = *scene()->shadow_camera();
-    // bool is_shadow_visible = !Optimizations::kFrustumCulling ||
-    //                           bbox.CollidesWithFrustum(shadow_cam.frustum());
-    bool is_shadow_visible = true;  // TODO
-    if (is_shadow_visible) {
-      renderer_->AddInstanceToShadowRenderBatch(this);
-    }
+  auto bbox = GetBoundingBox();
+  const auto& cam = *scene()->camera();
+  bool is_visible = bbox.CollidesWithFrustum(cam.frustum());
+  if (is_visible) {
+    renderer_->AddInstanceToRenderBatch(this);
   }
-}
 
-void MeshObject::Render() {
-  if (!Optimizations::kInstanceGrouping) {
-    const auto& cam = *scene()->camera();
-    bool is_visible = !Optimizations::kFrustumCulling ||
-                       GetBoundingBox().CollidesWithFrustum(cam.frustum());
-    if (is_visible) {
-      renderer_->AddInstanceToRenderBatch(this);
-      renderer_->RenderBatch(scene());
-      renderer_->ClearRenderBatch();
-    }
-  }
-}
-
-void MeshObject::ShadowRender(const ICamera& shadow_camera) {
-  if (!Optimizations::kInstanceGrouping) {
-    bool is_visible = !Optimizations::kFrustumCulling ||
-                       GetBoundingBox().CollidesWithFrustum(shadow_camera.frustum());
-    if (is_visible) {
-      renderer_->AddInstanceToShadowRenderBatch(this);
-      renderer_->ShadowRenderBatch(scene(), shadow_camera);
-      renderer_->ClearShadowRenderBatch();
-    }
+  // const auto& shadow_cam = *scene()->shadow_camera();
+  // bool is_shadow_visible = bbox.CollidesWithFrustum(shadow_cam.frustum());
+  bool is_shadow_visible = true;  // TODO
+  if (is_shadow_visible) {
+    renderer_->AddInstanceToShadowRenderBatch(this);
   }
 }
 

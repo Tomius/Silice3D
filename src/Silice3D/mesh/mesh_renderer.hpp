@@ -87,7 +87,6 @@ class MeshRenderer {
       buffer = std::move(temp_buffer);
     }
 
-    void ensureModelMatrixBufferSize(size_t size);
     void setupModelMatrixAttrib();
   };
 

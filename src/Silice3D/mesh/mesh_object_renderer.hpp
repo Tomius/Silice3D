@@ -71,11 +71,6 @@ private:
   std::unique_ptr<btTriangleIndexVertexArray> bt_triangles_;
   std::unique_ptr<btCollisionShape> bt_shape_;
 
-  // used if (Optimizations::kDelayedModelMatrixEvalutaion)
-  std::vector<const GameObject*> instances_;
-  std::vector<const GameObject*> shadow_instances_;
-
-  // used if (!Optimizations::kDelayedModelMatrixEvalutaion)
   std::vector<glm::mat4> instance_transforms_;
   std::vector<glm::mat4> shadow_instance_transforms_;
 

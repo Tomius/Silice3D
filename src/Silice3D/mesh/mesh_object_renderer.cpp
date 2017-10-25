@@ -2,7 +2,6 @@
 
 #include <Silice3D/core/scene.hpp>
 #include <Silice3D/lighting/shadow.hpp>
-#include <Silice3D/common/optimizations.hpp>
 #include <Silice3D/mesh/mesh_object_renderer.hpp>
 
 namespace Silice3D {
@@ -26,9 +25,7 @@ MeshObjectRenderer::ProgramData::ProgramData(ShaderManager* shader_manager,
                   shader_manager->get("mesh.frag"))
     , shadow_recieve_prog_(shader_manager->get(vertex_shader),
                            shader_manager->get("mesh_shadow.frag"))
-    , shadow_cast_prog_(shader_manager->get(
-               Optimizations::kAttribModelMat ? "shadow_attribute_model_mat.vert"
-                                              : "shadow_uniform_model_mat.vert"),
+    , shadow_cast_prog_(shader_manager->get("shadow.vert"),
                         shader_manager->get("shadow.frag"))
 
     , bp_uProjectionMatrix_(basic_prog_, "uProjectionMatrix")
@@ -63,38 +60,12 @@ btCollisionShape* MeshObjectRenderer::GetCollisionShape() {
   return bt_shape_.get();
 }
 
-static std::vector<glm::mat4> ReorderTransforms(std::vector<const GameObject*>& instances,
-                                                const ICamera& camera) {
-  std::vector<glm::mat4> transforms;
-  if (Optimizations::kDepthOrdering) {
-    glm::dvec3 camPos = camera.transform().pos();
-    std::sort(instances.begin(), instances.end(), [camPos](const GameObject* a, const GameObject* b) -> bool {
-      double a_dist = glm::length(a->transform().pos() - camPos);
-      double b_dist = glm::length(b->transform().pos() - camPos);
-      return Optimizations::kInverseDepthOrdering ? a_dist > b_dist : a_dist < b_dist;
-    });
-  }
-  for (const GameObject* instance : instances) {
-    transforms.push_back(instance->transform().matrix());
-  }
-
-  return transforms;
-}
-
 void MeshObjectRenderer::AddInstanceToRenderBatch(const GameObject* game_object) {
-  if (Optimizations::kDelayedModelMatrixEvalutaion) {
-    instances_.push_back(game_object);
-  } else {
-    instance_transforms_.push_back(game_object->transform().matrix());
-  }
+  instance_transforms_.push_back(game_object->transform().matrix());
 }
 
 void MeshObjectRenderer::ClearRenderBatch() {
-  if (Optimizations::kDelayedModelMatrixEvalutaion) {
-    instances_.clear();
-  } else {
-    instance_transforms_.clear();
-  }
+  instance_transforms_.clear();
 }
 
 void MeshObjectRenderer::RenderBatch(Scene* scene) {
@@ -119,41 +90,17 @@ void MeshObjectRenderer::RenderBatch(Scene* scene) {
     prog_data_.bp_uCameraMatrix_ = cam.cameraMatrix();
   }
 
-  if (Optimizations::kAttribModelMat) {
-    if (Optimizations::kDelayedModelMatrixEvalutaion) {
-      mesh_.uploadModelMatrices(ReorderTransforms(instances_, cam));
-      mesh_.render(instances_.size());
-    } else {
-      mesh_.uploadModelMatrices(instance_transforms_);
-      mesh_.render(instance_transforms_.size());
-    }
-  } else {
-    for (glm::mat4& transform : instance_transforms_) {
-      if (recieve_shadows_) {
-        prog_data_.srp_uModelMatrix_ = transform;
-      } else {
-        prog_data_.bp_uModelMatrix_ = transform;
-      }
-      mesh_.render(1);
-    }
-  }
+  mesh_.uploadModelMatrices(instance_transforms_);
+  mesh_.render(instance_transforms_.size());
   gl::UnuseProgram();
 }
 
 void MeshObjectRenderer::AddInstanceToShadowRenderBatch(const GameObject* game_object) {
-  if (Optimizations::kDelayedModelMatrixEvalutaion) {
-    shadow_instances_.push_back(game_object);
-  } else {
-    shadow_instance_transforms_.push_back(game_object->transform().matrix());
-  }
+  shadow_instance_transforms_.push_back(game_object->transform().matrix());
 }
 
 void MeshObjectRenderer::ClearShadowRenderBatch() {
-  if (Optimizations::kDelayedModelMatrixEvalutaion) {
-    shadow_instances_.clear();
-  } else {
-    shadow_instance_transforms_.clear();
-  }
+  shadow_instance_transforms_.clear();
 }
 
 void MeshObjectRenderer::ShadowRenderBatch(Scene* scene, const ICamera& shadow_camera) {
@@ -164,29 +111,13 @@ void MeshObjectRenderer::ShadowRenderBatch(Scene* scene, const ICamera& shadow_c
     prog_data_.scp_uProjectionMatrix_ = shadow_camera.projectionMatrix();
     prog_data_.scp_uCameraMatrix_ = shadow_camera.cameraMatrix();
 
-    if (Optimizations::kAttribModelMat) {
-      if (Optimizations::kDelayedModelMatrixEvalutaion) {
-        mesh_.uploadModelMatrices(ReorderTransforms(shadow_instances_, shadow_camera));
-        mesh_.render(shadow_instances_.size());
-      } else {
-        mesh_.uploadModelMatrices(shadow_instance_transforms_);
-        mesh_.render(shadow_instance_transforms_.size());
-      }
-    } else {
-      for (glm::mat4& transform : shadow_instance_transforms_) {
-        prog_data_.scp_uModelMatrix_ = transform;
-        mesh_.render(1);
-      }
-    }
+    mesh_.uploadModelMatrices(shadow_instance_transforms_);
+    mesh_.render(shadow_instance_transforms_.size());
   }
 }
 
 size_t MeshObjectRenderer::GetTriangleCount() const {
-  if (Optimizations::kDelayedModelMatrixEvalutaion) {
-    return instances_.size() * mesh_.triangleCount();
-  } else {
-    return instance_transforms_.size() * mesh_.triangleCount();
-  }
+  return instance_transforms_.size() * mesh_.triangleCount();
 }
 
 BoundingBox MeshObjectRenderer::GetBoundingBox(const glm::mat4& transform) const {

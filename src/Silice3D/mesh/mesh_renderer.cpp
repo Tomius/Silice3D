@@ -6,7 +6,6 @@
 #include <oglwrap/oglwrap.h>
 
 #include <Silice3D/mesh/mesh_renderer.hpp>
-#include <Silice3D/common/optimizations.hpp>
 
 namespace Silice3D {
 
@@ -83,25 +82,9 @@ void MeshRenderer::MeshDataStorage::uploadIndexData(const std::vector<GLuint>& i
 void MeshRenderer::MeshDataStorage::uploadModelMatrices(const std::vector<glm::mat4>& matrices) {
   gl::Bind(vao);
   gl::Bind(model_matrix_buffer);
-  if (Optimizations::kInvalidateBuffer) {
-    model_matrix_buffer.data(matrices, gl::kStreamDraw);
-  } else {
-    ensureModelMatrixBufferSize(matrices.size());
-    glInvalidateBufferData(model_matrix_buffer.expose());
-    model_matrix_buffer.subData(0, matrices.size() * sizeof(glm::mat4), matrices.data());
-  }
+  model_matrix_buffer.data(matrices, gl::kStreamDraw);
   gl::Unbind(model_matrix_buffer);
   gl::Unbind(vao);
-}
-
-void MeshRenderer::MeshDataStorage::ensureModelMatrixBufferSize(size_t size) {
-  if (model_matrix_buffer_allocation < size) {
-    model_matrix_buffer_allocation = 2*size;
-    if (!Optimizations::kInvalidateBuffer) {
-      glBufferStorage(GL_ARRAY_BUFFER, model_matrix_buffer_allocation * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
-      // model_matrix_buffer.data(model_matrix_buffer_allocation * sizeof(glm::mat4), nullptr, gl::kStreamDraw);
-    }
-  }
 }
 
 void MeshRenderer::MeshDataStorage::setupModelMatrixAttrib() {
@@ -427,23 +410,11 @@ void MeshRenderer::render(size_t instance_count) {
       }
     }
 
-    if (Optimizations::kInstancing) {
-      glDrawElementsInstanced(GL_TRIANGLES,
-                              entries_[i].idx_count,
-                              GL_UNSIGNED_INT,
-                              (void*)(entries_[i].base_idx * sizeof(unsigned)),
-                              instance_count);
-    } else {
-      for (int instance = 0; instance < instance_count; ++instance) {
-        glDrawElementsInstancedBaseInstance(GL_TRIANGLES,
-                                            entries_[i].idx_count,
-                                            GL_UNSIGNED_INT,
-                                            (void*)(entries_[i].base_idx * sizeof(unsigned)),
-                                            1,
-                                            instance);
-      }
-    }
-
+    glDrawElementsInstanced(GL_TRIANGLES,
+                            entries_[i].idx_count,
+                            GL_UNSIGNED_INT,
+                            (void*)(entries_[i].base_idx * sizeof(unsigned)),
+                            instance_count);
 
     if (textures_enabled_) {
       for (auto iter = materials_.begin(); iter != materials_.end(); iter++) {
