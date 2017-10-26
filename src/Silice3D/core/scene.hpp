@@ -13,8 +13,8 @@
 #include <Silice3D/common/auto_reset_event.hpp>
 #include <Silice3D/camera/icamera.hpp>
 #include <Silice3D/core/game_object.hpp>
-#include <Silice3D/lighting/shadow.hpp>
-#include <Silice3D/lighting/light_source.hpp>
+#include <Silice3D/lighting/point_light_source.hpp>
+#include <Silice3D/lighting/directional_light_source.hpp>
 #include <Silice3D/mesh/imesh_object_renderer.hpp>
 
 namespace Silice3D {
@@ -43,10 +43,6 @@ class Scene : public GameObject {
   ICamera* camera() { return camera_; }
   void set_camera(ICamera* camera) { camera_ = camera; }
 
-  const Shadow* shadow() const { return shadow_; }
-  Shadow* shadow() { return shadow_; }
-  void set_shadow(Shadow* shadow) { shadow_ = shadow; }
-
   GLFWwindow* window() const { return window_; }
   void set_window(GLFWwindow* window) { window_ = window; }
 
@@ -61,22 +57,26 @@ class Scene : public GameObject {
 
   size_t triangle_count();
 
-  unsigned AddLightSource(LightSource light_source);
-  const LightSource& GetLightSource(unsigned id) const;
-  LightSource& GetLightSource(unsigned id);
-  void EnumerateLightSources(std::function<void(const LightSource&)> processor) const;
-  bool RemoveLightSource(unsigned id);
-
   virtual void Turn();
+
+  void RegisterLightSource(PointLightSource* light);
+  void UnregisterLightSource(PointLightSource* light);
+
+  void RegisterLightSource(DirectionalLightSource* light);
+  void UnregisterLightSource(DirectionalLightSource* light);
 
  protected:
   ICamera* camera_;
-  Shadow* shadow_;
   Timer game_time_, environment_time_, camera_time_;
   GLFWwindow* window_;
   GameEngine* engine_;
-  std::map<unsigned, LightSource> light_sources_;
+
+  // Mesh loading
   MeshRendererCache mesh_cache_;
+
+  // Lighting
+  std::set<PointLightSource*> point_light_sources_;
+  std::set<DirectionalLightSource*> directional_light_sources_;
 
   // Bullet classes
   std::unique_ptr<btCollisionConfiguration> bt_collision_config_;

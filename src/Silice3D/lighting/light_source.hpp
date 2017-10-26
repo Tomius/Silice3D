@@ -4,16 +4,21 @@
 #define SILICE3D_LIGHT_SOURCE_HPP_
 
 #include <Silice3D/common/glm.hpp>
+#include <Silice3D/core/game_object.hpp>
 
-struct LightSource {
-  // directional lights are directed towards the origin
-  enum class Type {kPoint, kDirectional} type = Type::kPoint;
-  glm::vec3 position = {0.0, 0.0, 0.0};
-  glm::vec3 color = {0.0, 0.0, 0.0};
+namespace Silice3D {
 
-  LightSource () = default;
-  LightSource (Type type, const glm::vec3& pos, const glm::vec3& color)
-    : type (type), position (pos), color (color) {}
+class LightSource : public GameObject {
+public:
+  LightSource (GameObject* parent, const glm::vec3& color);
+
+  glm::vec3 color() const { return color_; }
+  void set_color(const glm::vec3& color) { color_ = color; }
+
+private:
+  glm::vec3 color_ = {0.0, 0.0, 0.0};
 };
+
+} // namespace Silice3D
 
 #endif

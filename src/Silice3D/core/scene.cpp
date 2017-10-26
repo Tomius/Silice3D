@@ -5,6 +5,7 @@
 
 #include <Silice3D/core/scene.hpp>
 #include <Silice3D/core/game_engine.hpp>
+#include <Silice3D/lighting/shadow_caster.hpp>
 
 namespace Silice3D {
 
@@ -23,6 +24,50 @@ Scene::Scene(GameEngine* engine, GLFWwindow* window)
       }
     }} {
   set_scene(this);
+
+  shader_manager()->get("lighting.frag")->set_update_func([this](const gl::Program& prog) {
+    static constexpr const size_t kMaxLightCount = 32;
+
+    size_t current_light_index = 0;
+    for (DirectionalLightSource* light : directional_light_sources_) {
+      if (current_light_index >= kMaxLightCount) {
+        break;
+      }
+
+      std::string uniform_name = "uDirectionalLights[" + std::to_string(current_light_index++) + "]";
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".direction") = light->transform().pos();
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->color();
+      ShadowCaster* shadow_caster = light->shadow_caster();
+      if (shadow_caster == nullptr) {
+        gl::Uniform<int>(prog, uniform_name + ".cascades_count") = 0;
+      } else {
+        gl::Uniform<int>(prog, uniform_name + ".cascades_count") = shadow_caster->cascades_count();
+        GLuint64 bindless_handle = shadow_caster->shadow_texture().bindless_handle();
+        static_assert(sizeof(GLuint64) == sizeof(glm::uvec2), "Expected 32 bit ints");
+        gl::Uniform<glm::uvec2>(prog, uniform_name + ".shadowMapId") = *reinterpret_cast<glm::uvec2*>(&bindless_handle);
+
+        for (int i = 0; i < shadow_caster->cascades_count(); ++i) {
+          std::string shadow_cp_uniform_name = uniform_name + ".shadowCP[" + std::to_string(i) + "]";
+          gl::Uniform<glm::mat4>(prog, shadow_cp_uniform_name) = shadow_caster->GetProjectionMatrix(i) * shadow_caster->GetCameraMatrix(i);
+        }
+      }
+    }
+
+    current_light_index = 0;
+    for (PointLightSource* light : point_light_sources_) {
+      if (current_light_index >= kMaxLightCount) {
+        break;
+      }
+
+      std::string uniform_name = "uPointLights[" + std::to_string(current_light_index++) + "]";
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".position") = light->transform().pos();
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->color();
+    }
+
+    gl::Uniform<int>(prog, "uDirectionalLightCount") = std::min(directional_light_sources_.size(), kMaxLightCount);
+    gl::Uniform<int>(prog, "uPointLightCount") = std::min(point_light_sources_.size(), kMaxLightCount);
+    gl::Uniform<glm::vec3>(prog, "w_uCamPos") = glm::vec3{scene()->camera()->transform().pos()};
+  });
 }
 
 Scene::~Scene() {
@@ -46,46 +91,28 @@ void Scene::Turn() {
   Render2DAll();
 }
 
+void Scene::RegisterLightSource(PointLightSource* light) {
+  point_light_sources_.insert(light);
+}
+
+void Scene::UnregisterLightSource(PointLightSource* light) {
+  point_light_sources_.erase(light);
+}
+
+void Scene::RegisterLightSource(DirectionalLightSource* light) {
+  directional_light_sources_.insert(light);
+}
+
+void Scene::UnregisterLightSource(DirectionalLightSource* light) {
+  directional_light_sources_.erase(light);
+}
+
 size_t Scene::triangle_count() {
   size_t sum_triangle_count = 0;
   for (auto& pair : mesh_cache_) {
     sum_triangle_count += pair.second->GetTriangleCount();
   }
   return sum_triangle_count;
-}
-
-unsigned Scene::AddLightSource(LightSource light_source) {
-  static unsigned id = 1;
-  light_sources_[id] = light_source;
-  return id++;
-}
-
-const LightSource& Scene::GetLightSource(unsigned id) const {
-  auto iter = light_sources_.find(id);
-  if (iter != light_sources_.end()) {
-    return iter->second;
-  } else {
-    throw std::out_of_range("");
-  }
-}
-
-LightSource& Scene::GetLightSource(unsigned id) {
-  auto iter = light_sources_.find(id);
-  if (iter != light_sources_.end()) {
-    return iter->second;
-  } else {
-    throw std::out_of_range("");
-  }
-}
-
-void Scene::EnumerateLightSources(std::function<void(const LightSource&)> processor) const {
-  for (const auto& pair : light_sources_) {
-    processor(pair.second);
-  }
-}
-
-bool Scene::RemoveLightSource(unsigned id) {
-  return light_sources_.erase(id) == 1;
 }
 
 void Scene::UpdateAll() {
@@ -97,7 +124,16 @@ void Scene::UpdateAll() {
 }
 
 void Scene::RenderAll() {
-  if (camera_) { GameObject::RenderAll(); }
+  if (camera_) {
+    for (DirectionalLightSource* light_source : directional_light_sources_) {
+      ShadowCaster* shadow_caster = light_source->shadow_caster();
+      if (shadow_caster != nullptr) {
+        shadow_caster->FillShadowMap(this);
+      }
+    }
+
+    GameObject::RenderAll();
+  }
 }
 
 void Scene::Render2DAll() {

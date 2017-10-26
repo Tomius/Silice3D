@@ -236,6 +236,9 @@ bool GameObject::StealComponent(GameObject* go) {
       component->parent_ = this;
       component->transform_->set_parent(transform_.get());
       component->scene_ = scene_;
+      if (go->scene() != scene()) {
+        component->AddedToScene();
+      }
       return true;
     }
   }

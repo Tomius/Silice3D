@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef SILICE3D_SHADOW_HPP_
-#define SILICE3D_SHADOW_HPP_
+#ifndef SILICE3D_SHADOW_CASTER_HPP_
+#define SILICE3D_SHADOW_CASTER_HPP_
 
 #include <vector>
 #include <glad/glad.h>
@@ -13,9 +13,10 @@
 
 namespace Silice3D {
 
-class Shadow : public GameObject {
+// TODO: Shadow caster for point lights
+class ShadowCaster : public GameObject {
  public:
-  Shadow(GameObject* parent, const glm::vec3& light_source_pos, int shadow_map_size);
+  ShadowCaster(GameObject* parent, size_t shadow_map_size, size_t cascades_count);
 
   gl::Texture2DArray& shadow_texture();
   const gl::Texture2DArray& shadow_texture() const;
@@ -25,15 +26,14 @@ class Shadow : public GameObject {
   glm::mat4 GetProjectionMatrix(unsigned cascade_idx) const;
   glm::mat4 GetCameraMatrix(unsigned cascade_idx) const;
 
-  static constexpr const unsigned kCascadesCount = 3;
+  size_t cascades_count() const;
 
  private:
   gl::Texture2DArray depth_tex_;
-  gl::Framebuffer fbo_[kCascadesCount];
+  std::vector<gl::Framebuffer> fbos_;
 
   size_t w_, h_, size_;
-  glm::vec3 light_source_pos_;
-  glm::vec4 target_bounding_spheres_[kCascadesCount];
+  std::vector<glm::vec4> target_bounding_spheres_;
 
   virtual void ScreenResized(size_t width, size_t height) override;
   virtual void Update() override;

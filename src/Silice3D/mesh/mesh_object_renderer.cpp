@@ -1,7 +1,6 @@
 // Copyright (c) Tamas Csala
 
 #include <Silice3D/core/scene.hpp>
-#include <Silice3D/lighting/shadow.hpp>
 #include <Silice3D/mesh/mesh_object_renderer.hpp>
 
 namespace Silice3D {
@@ -72,16 +71,11 @@ void MeshObjectRenderer::RenderBatch(Scene* scene) {
   const auto& cam = *scene->camera();
 
   if (recieve_shadows_) {
-    auto shadow = scene->shadow();
-
     gl::Use(prog_data_.shadow_recieve_prog_);
     prog_data_.shadow_recieve_prog_.update();
 
     prog_data_.srp_uProjectionMatrix_ = cam.projectionMatrix();
     prog_data_.srp_uCameraMatrix_ = cam.cameraMatrix();
-    for (int i = 0; i < Shadow::kCascadesCount; ++i) {
-      prog_data_.srp_uShadowCP_[i] = shadow->GetProjectionMatrix(i) * shadow->GetCameraMatrix(i);
-    }
   } else {
     gl::Use(prog_data_.basic_prog_);
     prog_data_.basic_prog_.update();
@@ -111,8 +105,16 @@ void MeshObjectRenderer::ShadowRenderBatch(Scene* scene, const ICamera& shadow_c
     prog_data_.scp_uProjectionMatrix_ = shadow_camera.projectionMatrix();
     prog_data_.scp_uCameraMatrix_ = shadow_camera.cameraMatrix();
 
-    mesh_.uploadModelMatrices(shadow_instance_transforms_);
-    mesh_.render(shadow_instance_transforms_.size());
+    std::vector<glm::mat4> visibile_object_transforms;
+    for (const glm::mat4& transform : shadow_instance_transforms_) {
+      BoundingBox bbox = GetBoundingBox(transform);
+      bool is_visible = bbox.CollidesWithFrustum(shadow_camera.frustum());
+      if (is_visible) {
+        visibile_object_transforms.push_back(transform);
+      }
+    }
+    mesh_.uploadModelMatrices(visibile_object_transforms);
+    mesh_.render(visibile_object_transforms.size());
   }
 }
 

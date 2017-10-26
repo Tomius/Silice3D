@@ -2,7 +2,6 @@
 
 #include <Silice3D/mesh/mesh_object.hpp>
 #include <Silice3D/core/scene.hpp>
-#include <Silice3D/lighting/shadow.hpp>
 
 namespace Silice3D {
 
@@ -33,12 +32,7 @@ void MeshObject::Update() {
     renderer_->AddInstanceToRenderBatch(this);
   }
 
-  // const auto& shadow_cam = *scene()->shadow_camera();
-  // bool is_shadow_visible = bbox.CollidesWithFrustum(shadow_cam.frustum());
-  bool is_shadow_visible = true;  // TODO
-  if (is_shadow_visible) {
-    renderer_->AddInstanceToShadowRenderBatch(this);
-  }
+  renderer_->AddInstanceToShadowRenderBatch(this);
 }
 
 }   // namespace Silice3D

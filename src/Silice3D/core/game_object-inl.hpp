@@ -21,11 +21,11 @@ GameObject::GameObject(GameObject* parent, const Transform_t& transform)
 
 template<typename T, typename... Args>
 T* GameObject::AddComponent(Args&&... args) {
-  static_assert(std::is_base_of<GameObject, T>::value, "Unknown type");
+  static_assert(std::is_base_of<GameObject, T>::value, "Not a GameObject");
 
   try {
     T *obj = new T(this, std::forward<Args>(args)...);
-    components_just_added_.push_back(std::unique_ptr<GameObject>(obj));
+    AddComponent(std::unique_ptr<GameObject>(obj));
     return obj;
   } catch (const std::exception& ex) {
     std::cerr << ex.what() << std::endl;

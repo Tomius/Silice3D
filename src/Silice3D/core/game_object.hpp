@@ -32,13 +32,14 @@ class GameObject {
 
   template<typename T, typename... Args>
   T* AddComponent(Args&&... contructor_args);
-  GameObject* AddComponent(std::unique_ptr<GameObject>&& component);
+
+  virtual GameObject* AddComponent(std::unique_ptr<GameObject>&& component);
 
   // Detaches a componenent from its parent, and adopts it.
   // Returns true on success.
-  bool StealComponent(GameObject* component_to_steal);
+  virtual bool StealComponent(GameObject* component_to_steal);
 
-  void RemoveComponent(GameObject* component_to_remove);
+  virtual void RemoveComponent(GameObject* component_to_remove);
 
   void EnumerateChildren(bool recursive, const std::function<void(GameObject*)>& processor);
 
