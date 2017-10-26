@@ -34,6 +34,8 @@ class ShadowCaster : public GameObject {
 
   size_t w_, h_, size_;
   std::vector<glm::vec4> target_bounding_spheres_;
+  float z_near;
+  float z_far;
 
   virtual void ScreenResized(size_t width, size_t height) override;
   virtual void Update() override;

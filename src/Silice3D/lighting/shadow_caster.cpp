@@ -7,6 +7,7 @@
 
 #include <Silice3D/lighting/shadow_caster.hpp>
 #include <Silice3D/core/scene.hpp>
+#include <Silice3D/camera/perspective_camera.hpp>
 
 namespace Silice3D {
 
@@ -27,6 +28,7 @@ ShadowCaster::ShadowCaster(GameObject* parent, size_t shadow_map_size, size_t ca
   depth_tex_.borderColor(glm::vec4(1.0f));
   depth_tex_.compareFunc(gl::kLequal);
   depth_tex_.compareMode(gl::kCompareRefToTexture);
+  depth_tex_.maxAnisotropy();
   gl::Unbind(depth_tex_);
 
   // Setup the FBOs
@@ -50,13 +52,12 @@ void ShadowCaster::ScreenResized(size_t width, size_t height) {
 
 glm::mat4 ShadowCaster::GetProjectionMatrix(unsigned cascade_idx) const {
   float size = target_bounding_spheres_[cascade_idx].w;
-  return glm::ortho<float>(-size, size, -size, size, 0, 2*size);
+  return glm::ortho<float>(-size, size, -size, size, 0, 2*z_far);
 }
 
 glm::mat4 ShadowCaster::GetCameraMatrix(unsigned cascade_idx) const {
   return glm::lookAt(
-    glm::vec3(target_bounding_spheres_[cascade_idx]) +
-        glm::normalize(glm::vec3(transform().pos())) * target_bounding_spheres_[cascade_idx].w,
+    glm::vec3(target_bounding_spheres_[cascade_idx]) + z_far * glm::normalize(glm::vec3(transform().pos())),
     glm::vec3(target_bounding_spheres_[cascade_idx]),
     glm::vec3(0, 1, 0));
 }
@@ -114,41 +115,23 @@ size_t ShadowCaster::cascades_count() const {
 }
 
 void ShadowCaster::Update() {
-  auto cam = scene()->camera();
-  auto mvp = cam->projectionMatrix() * cam->cameraMatrix();
+  ICamera* cam = scene()->camera();
+  glm::vec3 cam_pos = cam->transform().pos();
+  glm::vec3 cam_dir = cam->transform().forward();
 
+  PerspectiveCamera* perspective_camera = dynamic_cast<PerspectiveCamera*>(cam);
+  if (perspective_camera == nullptr) {
+    throw std::runtime_error("ShadowCaster expected perspective camera");
+  }
+
+  z_near = perspective_camera->z_near();
+  z_far = perspective_camera->z_far();
+
+  float last_depth = z_near;
   for (int i = 0; i < fbos_.size(); ++i) {
-    float z_limit = pow((i+1.0)/fbos_.size(), 0.1) * 0.998;
-
-    glm::vec4 points[] {
-      /* near plane corners */
-      {-1, -1, -z_limit, 1},
-      {+1, -1, -z_limit, 1},
-      {-1, +1, -z_limit, 1},
-      {+1, +1, -z_limit, 1},
-
-      /* "far" plane corners */
-      {-1, -1, z_limit, 1},
-      {+1, -1, z_limit, 1},
-      {-1, +1, z_limit, 1},
-      {+1, +1, z_limit, 1}
-    };
-
-    float zero = 0.0f;  // This is needed to bypass a visual c++ compile error
-    float infty = 1.0f / zero;
-    glm::vec3 mins{infty, infty, infty}, maxes{-infty, -infty, -infty};
-
-    for (glm::vec4& point : points){
-      point = glm::inverse(mvp) * point;
-      point.x /= point.w;
-      point.y /= point.w;
-      point.z /= point.w;
-
-      mins = glm::min(glm::vec3(point), mins);
-      maxes = glm::max(glm::vec3(point), maxes);
-    }
-
-    target_bounding_spheres_[i] = glm::vec4{(maxes + mins) / 2.0f, glm::length(maxes - mins) * sqrt(2) / 2.0};
+    float max_depth = z_near * pow(z_far/z_near, (i+1.0f) / (fbos_.size()));
+    target_bounding_spheres_[i] = glm::vec4{cam_pos + (last_depth+max_depth)/2.0f*cam_dir, max_depth-last_depth};
+    last_depth = 0.8*max_depth;
   }
 }
 
