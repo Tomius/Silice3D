@@ -21,13 +21,13 @@ btCollisionShape* MeshObject::GetCollisionShape() {
 }
 
 BoundingBox MeshObject::GetBoundingBox() const {
-  return renderer_->GetBoundingBox(transform().matrix());
+  return renderer_->GetBoundingBox(transform().GetMatrix());
 }
 
 void MeshObject::Update() {
   auto bbox = GetBoundingBox();
   const auto& cam = *scene()->camera();
-  bool is_visible = bbox.CollidesWithFrustum(cam.frustum());
+  bool is_visible = bbox.CollidesWithFrustum(cam.GetFrustum());
   if (is_visible) {
     renderer_->AddInstanceToRenderBatch(this);
   }

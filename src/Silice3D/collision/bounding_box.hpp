@@ -15,10 +15,10 @@ class BoundingBox {
   BoundingBox(const glm::dvec3& mins, const glm::dvec3& maxes)
       : mins_(mins), maxes_(maxes) {}
 
-  glm::dvec3 mins() const { return mins_; }
-  glm::dvec3 maxes() const { return maxes_; }
-  glm::dvec3 center() const { return (maxes_+mins_) / 2.0; }
-  glm::dvec3 extent() const { return maxes_-mins_; }
+  glm::dvec3 GetMins() const { return mins_; }
+  glm::dvec3 GetMaxes() const { return maxes_; }
+  glm::dvec3 GetCenter() const { return (maxes_+mins_) / 2.0; }
+  glm::dvec3 GetExtent() const { return maxes_-mins_; }
 
   bool CollidesWithSphere(const glm::dvec3& center, double radius) const;
   bool CollidesWithFrustum(const Frustum& frustum) const;

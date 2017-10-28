@@ -60,7 +60,7 @@ btCollisionShape* MeshObjectRenderer::GetCollisionShape() {
 }
 
 void MeshObjectRenderer::AddInstanceToRenderBatch(const GameObject* game_object) {
-  instance_transforms_.push_back(game_object->transform().matrix());
+  instance_transforms_.push_back(game_object->transform().GetMatrix());
 }
 
 void MeshObjectRenderer::ClearRenderBatch() {
@@ -72,16 +72,16 @@ void MeshObjectRenderer::RenderBatch(Scene* scene) {
 
   if (recieve_shadows_) {
     gl::Use(prog_data_.shadow_recieve_prog_);
-    prog_data_.shadow_recieve_prog_.update();
+    prog_data_.shadow_recieve_prog_.Update();
 
-    prog_data_.srp_uProjectionMatrix_ = cam.projectionMatrix();
-    prog_data_.srp_uCameraMatrix_ = cam.cameraMatrix();
+    prog_data_.srp_uProjectionMatrix_ = cam.GetProjectionMatrix();
+    prog_data_.srp_uCameraMatrix_ = cam.GetCameraMatrix();
   } else {
     gl::Use(prog_data_.basic_prog_);
-    prog_data_.basic_prog_.update();
+    prog_data_.basic_prog_.Update();
 
-    prog_data_.bp_uProjectionMatrix_ = cam.projectionMatrix();
-    prog_data_.bp_uCameraMatrix_ = cam.cameraMatrix();
+    prog_data_.bp_uProjectionMatrix_ = cam.GetProjectionMatrix();
+    prog_data_.bp_uCameraMatrix_ = cam.GetCameraMatrix();
   }
 
   mesh_.uploadModelMatrices(instance_transforms_);
@@ -90,7 +90,7 @@ void MeshObjectRenderer::RenderBatch(Scene* scene) {
 }
 
 void MeshObjectRenderer::AddInstanceToShadowRenderBatch(const GameObject* game_object) {
-  shadow_instance_transforms_.push_back(game_object->transform().matrix());
+  shadow_instance_transforms_.push_back(game_object->transform().GetMatrix());
 }
 
 void MeshObjectRenderer::ClearShadowRenderBatch() {
@@ -100,15 +100,15 @@ void MeshObjectRenderer::ClearShadowRenderBatch() {
 void MeshObjectRenderer::ShadowRenderBatch(Scene* scene, const ICamera& shadow_camera) {
   if (cast_shadows_) {
     auto prog_user = gl::MakeTemporaryBind(prog_data_.shadow_cast_prog_);
-    prog_data_.shadow_cast_prog_.update();
+    prog_data_.shadow_cast_prog_.Update();
 
-    prog_data_.scp_uProjectionMatrix_ = shadow_camera.projectionMatrix();
-    prog_data_.scp_uCameraMatrix_ = shadow_camera.cameraMatrix();
+    prog_data_.scp_uProjectionMatrix_ = shadow_camera.GetProjectionMatrix();
+    prog_data_.scp_uCameraMatrix_ = shadow_camera.GetCameraMatrix();
 
     std::vector<glm::mat4> visibile_object_transforms;
     for (const glm::mat4& transform : shadow_instance_transforms_) {
       BoundingBox bbox = GetBoundingBox(transform);
-      bool is_visible = bbox.CollidesWithFrustum(shadow_camera.frustum());
+      bool is_visible = bbox.CollidesWithFrustum(shadow_camera.GetFrustum());
       if (is_visible) {
         visibile_object_transforms.push_back(transform);
       }

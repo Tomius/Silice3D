@@ -19,7 +19,7 @@ ThirdPersonalCamera::ThirdPersonalCamera(GameObject* parent,
     : PerspectiveCamera(parent, fov, z_near, z_far)
     , target_(parent->transform())
     , first_call_(true)
-    , initial_distance_(glm::length(target_.pos() - position) - dist_offset)
+    , initial_distance_(glm::length(target_.GetPos() - position) - dist_offset)
     , base_distance_(base_distance == 0.0 ? initial_distance_ : base_distance)
     , cos_max_pitch_angle_(0.999)
     , mouse_sensitivity_(mouse_sensitivity)
@@ -29,8 +29,8 @@ ThirdPersonalCamera::ThirdPersonalCamera(GameObject* parent,
     , dist_offset_(dist_offset)
     , curr_dist_mod_(initial_distance_ / base_distance_)
     , dest_dist_mod_(curr_dist_mod_){
-  transform().set_pos(position);
-  transform().set_forward(target_.pos() - position);
+  transform().SetPos(position);
+  transform().SetForward(target_.GetPos() - position);
 }
 
 void ThirdPersonalCamera::Update() {
@@ -47,7 +47,7 @@ void ThirdPersonalCamera::Update() {
     first_call_ = false;
   }
 
-  const double dt = scene_->camera_time().dt();
+  const double dt = scene_->camera_time().GetDeltaTime();
 
   // Mouse movement - update the coordinate system
   if (diff.x || diff.y) {
@@ -57,7 +57,7 @@ void ThirdPersonalCamera::Update() {
 
     // If we are looking up / down, we don't want to be able
     // to rotate to the other side
-    double dot_up_fwd = glm::dot(transform().up(), transform().forward());
+    double dot_up_fwd = glm::dot(transform().GetUp(), transform().GetForward());
     if (dot_up_fwd > cos_max_pitch_angle_ && dy > 0) {
       dy = 0;
     }
@@ -65,9 +65,9 @@ void ThirdPersonalCamera::Update() {
       dy = 0;
     }
 
-    transform().set_forward(transform().forward() +
-                             transform().right()*dx +
-                             transform().up()*dy);
+    transform().SetForward(transform().GetForward() +
+                             transform().GetRight()*dx +
+                             transform().GetUp()*dy);
   }
 
   double dist_diff_mod = dest_dist_mod_ - curr_dist_mod_;
@@ -78,11 +78,11 @@ void ThirdPersonalCamera::Update() {
   }
 
   // Update the position
-  glm::dvec3 tpos(target_.pos()), fwd(transform().forward());
-  fwd = transform().forward();
+  glm::dvec3 tpos(target_.GetPos()), fwd(transform().GetForward());
+  fwd = transform().GetForward();
   double dist = curr_dist_mod_*base_distance_ + dist_offset_;
   glm::dvec3 pos = tpos - fwd*dist;
-  transform().set_pos(pos);
+  transform().SetPos(pos);
 
   PerspectiveCamera::UpdateCache();
 }

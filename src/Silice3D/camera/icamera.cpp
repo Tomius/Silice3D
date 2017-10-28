@@ -3,7 +3,7 @@
 #include <Silice3D/camera/icamera.hpp>
 
 void Silice3D::ICamera::UpdateFrustum() {
-  glm::mat4 m = projectionMatrix() * cameraMatrix();
+  glm::mat4 m = GetProjectionMatrix() * GetCameraMatrix();
 
   // See: http://web.archive.org/web/20120531231005/http://crazyjoke.free.fr/doc/3D/plane%20extraction.pdf
   // REMEMBER: m[i][j] is j-th row, i-th column (glm is column major)

@@ -25,7 +25,7 @@ Scene::Scene(GameEngine* engine, GLFWwindow* window)
     }} {
   set_scene(this);
 
-  shader_manager()->get("lighting.frag")->set_update_func([this](const gl::Program& prog) {
+  shader_manager()->get("lighting.frag")->SetUpdateFunc([this](const gl::Program& prog) {
     static constexpr const size_t kMaxLightCount = 32;
 
     size_t current_light_index = 0;
@@ -35,7 +35,7 @@ Scene::Scene(GameEngine* engine, GLFWwindow* window)
       }
 
       std::string uniform_name = "uDirectionalLights[" + std::to_string(current_light_index++) + "]";
-      gl::Uniform<glm::vec3>(prog, uniform_name + ".direction") = light->transform().pos();
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".direction") = light->transform().GetPos();
       gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->color();
       ShadowCaster* shadow_caster = light->shadow_caster();
       if (shadow_caster == nullptr) {
@@ -60,13 +60,13 @@ Scene::Scene(GameEngine* engine, GLFWwindow* window)
       }
 
       std::string uniform_name = "uPointLights[" + std::to_string(current_light_index++) + "]";
-      gl::Uniform<glm::vec3>(prog, uniform_name + ".position") = light->transform().pos();
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".position") = light->transform().GetPos();
       gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->color();
     }
 
     gl::Uniform<int>(prog, "uDirectionalLightCount") = std::min(directional_light_sources_.size(), kMaxLightCount);
     gl::Uniform<int>(prog, "uPointLightCount") = std::min(point_light_sources_.size(), kMaxLightCount);
-    gl::Uniform<glm::vec3>(prog, "w_uCamPos") = glm::vec3{scene()->camera()->transform().pos()};
+    gl::Uniform<glm::vec3>(prog, "w_uCamPos") = glm::vec3{scene()->camera()->transform().GetPos()};
   });
 }
 
@@ -147,7 +147,7 @@ void Scene::Render2DAll() {
 
 void Scene::UpdatePhysicsInBackgroundThread() {
   if (bt_world_) {
-    bt_world_->stepSimulation(game_time().dt(), 16, btScalar(1.)/btScalar(120.));
+    bt_world_->stepSimulation(game_time().GetDeltaTime(), 16, btScalar(1.)/btScalar(120.));
   }
 }
 

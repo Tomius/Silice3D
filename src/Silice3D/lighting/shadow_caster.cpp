@@ -52,12 +52,12 @@ void ShadowCaster::ScreenResized(size_t width, size_t height) {
 
 glm::mat4 ShadowCaster::GetProjectionMatrix(unsigned cascade_idx) const {
   float size = target_bounding_spheres_[cascade_idx].w;
-  return glm::ortho<float>(-size, size, -size, size, 0, 2*z_far);
+  return glm::ortho<float>(-size, size, -size, size, 0, 2*z_far_);
 }
 
 glm::mat4 ShadowCaster::GetCameraMatrix(unsigned cascade_idx) const {
   return glm::lookAt(
-    glm::vec3(target_bounding_spheres_[cascade_idx]) + z_far * glm::normalize(glm::vec3(transform().pos())),
+    glm::vec3(target_bounding_spheres_[cascade_idx]) + z_far_ * glm::normalize(glm::vec3(transform().GetPos())),
     glm::vec3(target_bounding_spheres_[cascade_idx]),
     glm::vec3(0, 1, 0));
 }
@@ -75,25 +75,33 @@ public:
   ShadowCasterCamera (GameObject* parent,
                       Transform transform,
                       const glm::mat4& projection_matrix,
-                      const glm::mat4& camera_matrix)
+                      const glm::mat4& camera_matrix,
+                      float z_far)
       : ICamera(parent, transform)
-      , projection_matrix_ (projection_matrix)
-      , camera_matrix_ (camera_matrix)
+      , projection_matrix_(projection_matrix)
+      , camera_matrix_(camera_matrix)
+      , z_far_(z_far)
   {
     UpdateFrustum();
   }
 
-private:
-  glm::mat4 projection_matrix_;
-  glm::mat4 camera_matrix_;
-
-  virtual glm::mat4 projectionMatrix() const override {
+  virtual const glm::mat4& GetProjectionMatrix() const override {
     return projection_matrix_;
   }
 
-  virtual glm::mat4 cameraMatrix() const override {
-    return camera_matrix_;
+  virtual const glm::mat4& GetCameraMatrix() const override {
+   return camera_matrix_;
   }
+
+  virtual double GetFovx() const override { return M_PI_2; }
+  virtual double GetFovy() const override { return M_PI_2; }
+  virtual double GetZNear() const override { return 0.0; }
+  virtual double GetZFar() const override { return z_far_; }
+
+private:
+  glm::mat4 projection_matrix_;
+  glm::mat4 camera_matrix_;
+  float z_far_;
 };
 
 void ShadowCaster::FillShadowMap(Scene* scene) {
@@ -102,7 +110,7 @@ void ShadowCaster::FillShadowMap(Scene* scene) {
     gl::Clear().Color().Depth();
     gl::Viewport(0, 0, size_, size_);
 
-    ShadowCasterCamera shadowCamera (this, transform(), GetProjectionMatrix(i), GetCameraMatrix(i));
+    ShadowCasterCamera shadowCamera(this, transform(), GetProjectionMatrix(i), GetCameraMatrix(i), z_far_);
     scene->ShadowRenderAll(shadowCamera);
 
     gl::Unbind(fbos_[i]);
@@ -116,20 +124,15 @@ size_t ShadowCaster::cascades_count() const {
 
 void ShadowCaster::Update() {
   ICamera* cam = scene()->camera();
-  glm::vec3 cam_pos = cam->transform().pos();
-  glm::vec3 cam_dir = cam->transform().forward();
+  glm::vec3 cam_pos = cam->transform().GetPos();
+  glm::vec3 cam_dir = cam->transform().GetForward();
 
-  PerspectiveCamera* perspective_camera = dynamic_cast<PerspectiveCamera*>(cam);
-  if (perspective_camera == nullptr) {
-    throw std::runtime_error("ShadowCaster expected perspective camera");
-  }
+  z_near_ = cam->GetZNear();
+  z_far_ = cam->GetZFar();
 
-  z_near = perspective_camera->z_near();
-  z_far = perspective_camera->z_far();
-
-  float last_depth = z_near;
+  float last_depth = z_near_;
   for (int i = 0; i < fbos_.size(); ++i) {
-    float max_depth = z_near * pow(z_far/z_near, (i+1.0f) / (fbos_.size()));
+    float max_depth = z_near_ * pow(z_far_/z_near_, (i+1.0f) / (fbos_.size()));
     target_bounding_spheres_[i] = glm::vec4{cam_pos + (last_depth+max_depth)/2.0f*cam_dir, max_depth-last_depth};
     last_depth = 0.8*max_depth;
   }

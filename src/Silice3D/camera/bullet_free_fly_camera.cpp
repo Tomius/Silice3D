@@ -51,7 +51,7 @@ void BulletFreeFlyCamera::Update() {
 
     // If we are looking up / down, we don't want to be able
     // to rotate to the other side
-    double dot_up_fwd = glm::dot(transform().up(), transform().forward());
+    double dot_up_fwd = glm::dot(transform().GetUp(), transform().GetForward());
     if (dot_up_fwd > cos_max_pitch_angle_ && dy > 0) {
       dy = 0;
     }
@@ -59,24 +59,24 @@ void BulletFreeFlyCamera::Update() {
       dy = 0;
     }
 
-    transform().set_forward(transform().forward() +
-                            transform().right()*dx +
-                            transform().up()*dy);
+    transform().SetForward(transform().GetForward() +
+                            transform().GetRight()*dx +
+                            transform().GetUp()*dy);
   }
 
   // Calculate the offset
   glm::dvec3 offset = {0.0, 0.0, 0.0};
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-    offset += transform().forward();
+    offset += transform().GetForward();
   }
   if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-    offset -= transform().forward();
+    offset -= transform().GetForward();
   }
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-    offset += transform().right();
+    offset += transform().GetRight();
   }
   if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-    offset -= transform().right();
+    offset -= transform().GetRight();
   }
   offset.y = 0;
   if (length(offset) > Math::kEpsilon) {

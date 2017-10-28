@@ -32,10 +32,10 @@ class ShadowCaster : public GameObject {
   gl::Texture2DArray depth_tex_;
   std::vector<gl::Framebuffer> fbos_;
 
-  size_t w_, h_, size_;
+  size_t w_ = 0, h_ = 0, size_ = 0;
   std::vector<glm::vec4> target_bounding_spheres_;
-  float z_near;
-  float z_far;
+  float z_near_ = 0.0f;
+  float z_far_ = 0.0f;
 
   virtual void ScreenResized(size_t width, size_t height) override;
   virtual void Update() override;

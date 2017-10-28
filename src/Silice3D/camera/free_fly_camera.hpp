@@ -15,20 +15,19 @@ class FreeFlyCamera : public PerspectiveCamera {
                 double speed_per_sec = 5.0f,
                 double mouse_sensitivity = 5.0f);
 
-  double speed_per_sec() const { return speed_per_sec_; }
-  double mouse_sensitivity() const { return mouse_sensitivity_; }
-  double cos_max_pitch_angle() const { return cos_max_pitch_angle_; }
+  double GetSpeedPerSec() const { return speed_per_sec_; }
+  double GetMouseSensitivity() const { return mouse_sensitivity_; }
+  double GetCosMaxPitchAngle() const { return cos_max_pitch_angle_; }
 
-  void set_speed_per_sec(double value) { speed_per_sec_ = value; }
-  void set_mouse_sensitivity(double value) { mouse_sensitivity_ = value; }
-  void set_cos_max_pitch_angle(double value) { cos_max_pitch_angle_ = value; }
+  void SetSpeedPerSec(double value) { speed_per_sec_ = value; }
+  void SetMouseSensitivity(double value) { mouse_sensitivity_ = value; }
+  void SetCosMaxPitchAngle(double value) { cos_max_pitch_angle_ = value; }
+
+  virtual void Update() override;
 
  protected:
   bool first_call_;
   double speed_per_sec_, mouse_sensitivity_, cos_max_pitch_angle_;
-
- private:
-  virtual void Update() override;
 };
 
 }  // namespace Silice3D

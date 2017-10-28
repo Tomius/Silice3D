@@ -13,17 +13,20 @@ class PerspectiveCamera : public ICamera {
   PerspectiveCamera(GameObject* parent, double fovy, double z_near, double z_far);
   virtual ~PerspectiveCamera() {}
 
-  glm::mat4 cameraMatrix() const override { return cam_mat_; }
-  glm::mat4 projectionMatrix() const override { return proj_mat_; }
+  const glm::mat4& GetCameraMatrix() const override { return cam_mat_; }
+  const glm::mat4& GetProjectionMatrix() const override { return proj_mat_; }
 
-  double fovx() const { return fovy_*width_/height_;}
-  void set_fovx(double fovx) { fovy_ = fovx*height_/width_; }
-  double fovy() const { return fovy_;}
-  void set_fovy(double fovy) { fovy_ = fovy; }
-  double z_near() const { return z_near_;}
-  void set_z_near(double z_near) { z_near_ = z_near; }
-  double z_far() const { return z_far_;}
-  void set_z_far(double z_far) { z_far_ = z_far; }
+  virtual double GetFovx() const override { return fovy_*width_/height_; }
+  virtual double GetFovy() const override { return fovy_; }
+  virtual double GetZNear() const override { return z_near_; }
+  virtual double GetZFar() const override { return z_far_; }
+
+  void SetFovx(double fovx) { fovy_ = fovx*height_/width_; }
+  void SetFovy(double fovy) { fovy_ = fovy; }
+  void SetZNear(double z_near) { z_near_ = z_near; }
+  void SetZFar(double z_far) { z_far_ = z_far; }
+
+  virtual void ScreenResized(size_t width, size_t height) override;
 
  protected:
   // it must be called through Update()
@@ -36,8 +39,6 @@ class PerspectiveCamera : public ICamera {
 
   void UpdateCameraMatrix();
   void UpdateProjectionMatrix();
-
-  virtual void ScreenResized(size_t width, size_t height) override;
 };
 
 }  // namespace Silice3D

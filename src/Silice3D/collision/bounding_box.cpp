@@ -17,8 +17,8 @@ bool BoundingBox::CollidesWithSphere(const glm::dvec3& center, double radius) co
 }
 
 bool BoundingBox::CollidesWithFrustum(const Frustum& frustum) const {
-  glm::dvec3 center = this->center();
-  glm::dvec3 extent = this->extent();
+  glm::dvec3 center = GetCenter();
+  glm::dvec3 extent = GetExtent();
 
   for (int i = 0; i < 6; ++i) {
     const Plane& plane = frustum.planes[i];

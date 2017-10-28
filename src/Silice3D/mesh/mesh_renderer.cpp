@@ -483,14 +483,14 @@ void MeshRenderer::calculateModelSpaceBoundBox() const {
 BoundingBox MeshRenderer::boundingBox(const glm::mat4& matrix) const {
   calculateModelSpaceBoundBox();
 
-  glm::vec3 trasformed_mins {matrix * glm::vec4{model_space_bounding_box_.mins(), 1}};
-  glm::vec3 trasformed_maxes {matrix * glm::vec4{model_space_bounding_box_.maxes(), 1}};
+  glm::vec3 trasformed_mins {matrix * glm::vec4{model_space_bounding_box_.GetMins(), 1}};
+  glm::vec3 trasformed_maxes {matrix * glm::vec4{model_space_bounding_box_.GetMaxes(), 1}};
 
   return BoundingBox{glm::min(trasformed_mins, trasformed_maxes), glm::max(trasformed_mins, trasformed_maxes)};
 }
 
 glm::vec4 MeshRenderer::bSphere(const BoundingBox& bbox) const {
-  glm::vec3 center = bbox.center(), extent = bbox.extent();
+  glm::vec3 center = bbox.GetCenter(), extent = bbox.GetExtent();
   return glm::vec4(center, sqrt(glm::dot(extent, extent)) / 2);  // Pythagoras.
 }
 
@@ -502,12 +502,12 @@ glm::vec4 MeshRenderer::bSphere(const glm::mat4& model_matrix) const {
 
 /// Returns the center of the bounding sphere.
 glm::vec3 MeshRenderer::bSphereCenter() const {
-  return boundingBox().center();
+  return boundingBox().GetCenter();
 }
 
 /// Returns the radius of the bounding sphere.
 float MeshRenderer::bSphereRadius() const {
-  glm::vec3 extent = boundingBox().extent();
+  glm::vec3 extent = boundingBox().GetExtent();
   return sqrt(glm::dot(extent, extent)) / 2;  // Pythagoras.
 }
 

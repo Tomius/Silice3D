@@ -8,8 +8,7 @@
 namespace Silice3D {
 
 FpsDisplay::FpsDisplay(GameObject* parent)
-    : GameObject(parent)
-    , accum_time_(scene_->camera_time().dt()) {
+    : GameObject(parent) {
   fps_label_ = AddComponent<Label> ("FPS:      ", glm::vec2{0.99, 0});
   fps_label_->set_horizontal_alignment(HorizontalAlignment::kRight);
   fps_label_->set_vertical_alignment(VerticalAlignment::kTop);
@@ -30,7 +29,7 @@ FpsDisplay::FpsDisplay(GameObject* parent)
 
 void FpsDisplay::Update() {
   calls_++;
-  accum_time_ += scene_->camera_time().dt();
+  accum_time_ += scene_->camera_time().GetDeltaTime();
   if (accum_time_ > kRefreshInterval && accum_time_ != 0) {
     if (first_display_interval_) {
       // The first interval is usually much slower, remove that bias

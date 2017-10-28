@@ -17,10 +17,10 @@ class BulletFreeFlyCamera : public FreeFlyCamera {
                       double speed_per_sec = 5.0f,
                       double mouse_sensitivity = 1.0f);
 
+  virtual void Update() override;
+
  private:
   btRigidBody* bt_rigid_body_;
-
-  virtual void Update() override;
 };
 
 }

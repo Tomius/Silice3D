@@ -9,20 +9,20 @@ class CameraTransform : public Transform {
  public:
   // CameraTransform shouldn't inherit the parent's rotation,
   // like how a normal Transform does
-  virtual const quat rot() const override { return rot_; }
-  virtual void set_rot(const quat& new_rot) override { rot_ = new_rot; }
+  virtual quat GetRot() const override { return rot_; }
+  virtual void SetRot(const quat& new_rot) override { rot_ = new_rot; }
 
   // CameraTransform has custom up and right vectors
-  virtual vec3 up() const override { return up_; }
-  virtual void set_up(const vec3& new_up) override {
+  virtual vec3 GetUp() const override { return up_; }
+  virtual void SetUp(const vec3& new_up) override {
     up_ = glm::normalize(new_up);
   }
 
-  virtual vec3 right() const override {
-    return glm::normalize(glm::cross(forward(), up()));
+  virtual vec3 GetRight() const override {
+    return glm::normalize(glm::cross(GetForward(), GetUp()));
   }
-  virtual void set_right(const vec3& new_right) override {
-    set_forward(glm::cross(up(), new_right));
+  virtual void SetRight(const vec3& new_right) override {
+    SetForward(glm::cross(GetUp(), new_right));
   }
 
  private:
@@ -48,7 +48,7 @@ void PerspectiveCamera::UpdateCache() {
 
 void PerspectiveCamera::UpdateCameraMatrix() {
   const Transform& t = transform();
-  cam_mat_ = glm::lookAt(t.pos(), t.pos()+t.forward(), t.up());
+  cam_mat_ = glm::lookAt(t.GetPos(), t.GetPos()+t.GetForward(), t.GetUp());
 }
 
 void PerspectiveCamera::UpdateProjectionMatrix() {

@@ -11,7 +11,7 @@ GameObject* GameObject::AddComponent(std::unique_ptr<GameObject>&& component) {
     GameObject *obj = component.get();
     components_just_added_.push_back(std::move(component));
     obj->parent_ = this;
-    obj->transform_->set_parent(transform_.get());
+    obj->transform_->SetParent(transform_.get());
     obj->scene_ = scene_;
     obj->AddedToScene();
 
@@ -54,7 +54,9 @@ size_t GameObject::children_count(bool recursive) const {
 
 void GameObject::set_parent(GameObject* parent) {
   parent_ = parent;
-  if (parent) { transform_->set_parent(&parent_->transform()); }
+  if (parent) {
+    transform_->SetParent(&parent_->transform());
+  }
 }
 
 void GameObject::RenderAll() {
@@ -234,7 +236,7 @@ bool GameObject::StealComponent(GameObject* go) {
       // that should be removed, as it decrases performance
       parent->RemoveComponent(nullptr);
       component->parent_ = this;
-      component->transform_->set_parent(transform_.get());
+      component->transform_->SetParent(transform_.get());
       component->scene_ = scene_;
       if (go->scene() != scene()) {
         component->AddedToScene();

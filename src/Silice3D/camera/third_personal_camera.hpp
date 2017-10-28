@@ -23,6 +23,9 @@ class ThirdPersonalCamera : public PerspectiveCamera {
 
   virtual ~ThirdPersonalCamera() {}
 
+  virtual void Update() override;
+  virtual void MouseScrolled(double, double yoffset) override;
+
  private:
   // The target object's transform, that the camera is following
   Transform& target_;
@@ -37,10 +40,7 @@ class ThirdPersonalCamera : public PerspectiveCamera {
 
   // For mouseScrolled interpolation
   double curr_dist_mod_, dest_dist_mod_;
-
-  virtual void Update() override;
-  virtual void MouseScrolled(double, double yoffset) override;
-};  // ThirdPersonalCamera
+};
 
 }  // namespace Silice3D
 

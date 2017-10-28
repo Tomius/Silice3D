@@ -28,9 +28,9 @@ template<typename Shape_t>
 void DebugShape<Shape_t>::Render() {
   gl::Use(prog_);
   const auto& cam = *scene_->camera();
-  uCameraMatrix_.set(cam.cameraMatrix());
-  uProjectionMatrix_.set(cam.projectionMatrix());
-  uModelMatrix_.set(transform().matrix());
+  uCameraMatrix_.set(cam.GetCameraMatrix());
+  uProjectionMatrix_.set(cam.GetProjectionMatrix());
+  uModelMatrix_.set(transform().GetMatrix());
   uColor_.set(color_);
 
   gl::FrontFace(shape_.faceWinding());

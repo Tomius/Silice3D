@@ -14,8 +14,8 @@ class Sphere {
   Sphere(glm::dvec3 const& center, double radius)
       : center_(center), radius_(radius) {}
 
-  glm::dvec3 center() const { return center_; }
-  double radius() const { return radius_; }
+  glm::dvec3 GetCenter() const { return center_; }
+  double GetRadius() const { return radius_; }
 
   virtual bool CollidesWithSphere(const Sphere& sphere) const;
   virtual bool CollidesWithFrustum(const Frustum& frustum) const;

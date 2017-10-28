@@ -11,12 +11,12 @@ namespace Silice3D {
 class Timer {
  public:
   double Tick();
-  void   Stop();
-  void   Start();
-  void   Toggle();
+  void Stop();
+  void Start();
+  void Toggle();
 
-  double current_time() const { return current_time_; }
-  double dt() const { return dt_; }
+  double GetCurrentTime() const { return current_time_; }
+  double GetDeltaTime() const { return dt_; }
 
  private:
   double last_time_ = 0.0, current_time_ = 0.0, dt_ = 0.0;

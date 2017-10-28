@@ -14,206 +14,74 @@ namespace Silice3D {
 
 template<typename T>
 class Transformation {
- protected:
+ public:
   using vec3 = glm::tvec3<T>;
   using vec4 = glm::tvec4<T>;
   using mat3 = glm::tmat3x3<T>;
   using mat4 = glm::tmat4x4<T>;
   using quat = glm::tquat<T>;
 
+  Transformation(Transformation* parent = nullptr);
+  virtual ~Transformation() = default;
+
+  // ========== Getters ==============
+  Transformation* GetParent() const;
+
+  // ------ Position ------
+  virtual vec3 GetPos() const;
+  virtual const vec3& GetLocalPos() const;
+
+  // ------ Scale ------
+  virtual vec3 GetScale() const;
+  virtual const vec3& GetLocalScale() const;
+
+  // ------ Rotation ------
+  virtual quat GetRot() const;
+  virtual const quat& GetLocalRot() const;
+  virtual vec3 GetLocalRotationAndScale() const;
+  virtual vec3 GetRotationAndScale() const;
+  virtual vec3 GetForward() const;
+  virtual vec3 GetUp() const;
+  virtual vec3 GetRight() const;
+
+  // ------ Transformation matrix ------
+  virtual mat4 GetWorldToLocalMatrix() const;
+  virtual mat4 GetLocalToWorldMatrix() const;
+  virtual mat4 GetMatrix() const;
+  virtual mat4 GetInverseMatrix() const;
+  operator mat4() const;
+
+  // ========== Setters ==============
+  void SetParent(Transformation* parent);
+
+  // ------ Position ------
+  virtual void SetPos(const vec3& new_pos);
+  virtual void SetLocalPos(const vec3& new_pos);
+
+  // ------ Scale ------
+  virtual void SetScale(const vec3& new_scale);
+  virtual void SetLocalScale(const vec3& new_scale);
+
+  // ------ Rotation ------
+  virtual void SetRot(const quat& new_rot);
+  virtual void SetLocalRot(const quat& new_rot);
+  // Sets the rotation, so that 'local_space_vec' in local space will be
+  // equivalent to 'world_space_vec' in world space.
+  virtual void SetRot(const vec3& local_space_vec, const vec3& world_space_vec);
+  virtual void SetForward(const vec3& new_fwd);
+  virtual void SetUp(const vec3& new_up);
+  virtual void SetRight(const vec3& new_right);
+
+protected:
   Transformation* parent_;
   vec3 pos_, scale_;
   quat rot_;
-
- public:
-  Transformation(Transformation* parent = nullptr)
-      : parent_(parent)
-      , pos_(0, 0, 0)
-      , scale_(1, 1, 1)
-      , rot_(glm::quat_identity<T, glm::defaultp>()) { }
-
-  virtual ~Transformation() {}
-
-  void set_parent(Transformation* parent) { parent_ = parent; }
-  Transformation* parent() const { return parent_; }
-
-  virtual const vec3 pos() const {
-    if (parent_) {
-      return vec3{parent_->localToWorldMatrix() * vec4{pos_, 1}};
-    } else {
-      return pos_;
-    }
-  }
-
-  virtual void set_pos(const vec3& new_pos) {
-    if (parent_) {
-      pos_ = vec3{parent_->worldToLocalMatrix() *
-                  vec4{new_pos - parent_->pos(), 0}};
-    } else {
-      pos_ = new_pos;
-    }
-  }
-
-  const vec3& local_pos() const {
-    return pos_;
-  }
-
-  virtual void set_local_pos(const vec3& new_pos) {
-    pos_ = new_pos;
-  }
-
-  virtual const vec3 scale() const {
-    if (parent_) {
-      return mat3(parent_->localToWorldMatrix()) * scale_;
-    } else {
-      return scale_;
-    }
-  }
-
-  virtual void set_scale(const vec3& new_scale) {
-    if (parent_) {
-      scale_ = mat3(parent_->worldToLocalMatrix()) * new_scale;
-    } else {
-      scale_ = new_scale;
-    }
-  }
-
-  const vec3& local_scale() const {
-    return scale_;
-  }
-
-  virtual void set_local_scale(const vec3& new_scale) {
-    scale_ = new_scale;
-  }
-
-  virtual const quat rot() const {
-    if (parent_) {
-      return parent_->rot() * rot_;
-    } else {
-      return rot_;
-    }
-  }
-
-  virtual void set_rot(const quat& new_rot) {
-    if (parent_) {
-      rot_ = glm::inverse(parent_->rot()) * new_rot;
-    } else {
-      rot_ = new_rot;
-    }
-  }
-
-  const quat& local_rot() const {
-    return rot_;
-  }
-
-  virtual void set_local_rot(const quat& new_rot) {
-    rot_ = new_rot;
-  }
-
-  // Sets the rotation, so that 'local_space_vec' in local space will be
-  // equivalent to 'world_space_vec' in world space.
-  virtual void set_rot(const vec3& local_space_vec, const vec3& world_space_vec) {
-    vec3 local = glm::normalize(local_space_vec);
-    vec3 world = glm::normalize(world_space_vec);
-
-    // Rotate around the vector, that is orthogonal to both.
-    vec3 axis = glm::cross(local, world);
-
-    // If they are not parallel
-    if (glm::length(axis) > Math::kEpsilon) {
-      // Dot gives us the cosine of their angle
-      T cosangle = glm::dot(local, world);
-      // We need the angle in radians
-      T angle = std::acos(cosangle);
-      // Rotate with the calced values
-      set_rot(glm::quat_cast(glm::rotate(angle, axis)));
-    } else {
-      // If they are parallel, we only have to care about the case
-      // when they go the opposite direction
-      if (glm::dot(local, world) < 0) {
-        // Check if local is parallel to the X axis
-        if (fabs(glm::dot(local, vec3(1, 0, 0))) > Math::kEpsilon) {
-          // If not, we can use it, to generate the axis to rotate around
-          vec3 axis = glm::cross(vec3(1, 0, 0), local);
-          set_rot(glm::quat_cast(glm::rotate(T(M_PI), axis)));
-        } else {
-          // Else we can use the Y axis for the same purpose
-          vec3 axis = glm::cross(vec3(0, 1, 0), local);
-          set_rot(glm::quat_cast(glm::rotate(T(M_PI), axis)));
-        }
-      } else {
-        set_rot(glm::quat_identity<T, glm::defaultp>());
-      }
-    }
-  }
-
-  vec3 localRotateAndScale() const {
-    return scale_ * rot_;
-  }
-
-  vec3 rotateAndScale() const {
-    if (parent_) {
-      return parent_->rotateAndScale() * scale_ * rot_;
-    } else {
-      return scale_ * rot_;
-    }
-  }
-
-  virtual vec3 forward() const {
-    return glm::normalize(rot() * vec3(0, 0, -1));
-  }
-
-  virtual void set_forward(const vec3& new_fwd) {
-    set_rot(vec3(0, 0, -1), new_fwd);
-  }
-
-  virtual vec3 up() const {
-    return glm::normalize(rot() * vec3(0, 1, 0));
-  }
-
-  virtual void set_up(const vec3& new_up) {
-     set_rot(vec3(0, 1, 0), new_up);
-  }
-
-  virtual vec3 right() const {
-    return glm::normalize(rot() * vec3(1, 0, 0));
-  }
-
-  virtual void set_right(const vec3& new_right) {
-    set_rot(vec3(1, 0, 0), new_right);
-  }
-
-  mat4 worldToLocalMatrix() const {
-    return glm::inverse(localToWorldMatrix());
-  }
-
-  virtual mat4 localToWorldMatrix() const {
-    mat4 local_transf = glm::scale(glm::mat4_cast(rot_), scale_);
-    local_transf[3] = vec4(pos_, 1);
-
-    if (parent_) {
-      return parent_->localToWorldMatrix() * local_transf;
-    } else {
-      return local_transf;
-    }
-  }
-
-  // To help the users to decide which matrix they need, in case of confusion
-  mat4 matrix() const {
-    return localToWorldMatrix();
-  }
-
-  mat4 inverse_matrix() const {
-    return worldToLocalMatrix();
-  }
-
-  operator mat4() const {
-    return localToWorldMatrix();
-  }
 };
 
 using Transform = Transformation<double>;
 
 }  // namespace Silice3D
+
+#include <Silice3D/common/transform-inl.hpp>
 
 #endif

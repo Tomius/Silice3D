@@ -27,7 +27,7 @@ BulletRigidBody::BulletRigidBody(GameObject* parent, float mass,
                                  const glm::vec3& pos,
                                  CollisionType collision_type)
     : GameObject(parent), up_to_date_(true) {
-  transform().set_pos(pos);
+  transform().SetPos(pos);
   Init(mass, shape, collision_type);
 }
 
@@ -36,7 +36,7 @@ BulletRigidBody::BulletRigidBody(GameObject* parent, float mass,
                                  const glm::vec3& pos,
                                  CollisionType collision_type)
     : GameObject(parent), shape_(std::move(shape)), up_to_date_(true) {
-  transform().set_pos(pos);
+  transform().SetPos(pos);
   Init(mass, shape_.get(), collision_type);
 }
 
@@ -44,8 +44,8 @@ BulletRigidBody::BulletRigidBody(GameObject* parent, float mass, btCollisionShap
                                  const glm::vec3& pos, const glm::fquat& rot,
                                  CollisionType collision_type)
     : GameObject(parent), up_to_date_(true) {
-  transform().set_pos(pos);
-  transform().set_rot(rot);
+  transform().SetPos(pos);
+  transform().SetRot(rot);
   Init(mass, shape, collision_type);
 }
 
@@ -54,8 +54,8 @@ BulletRigidBody::BulletRigidBody(GameObject* parent, float mass,
                                  const glm::vec3& pos, const glm::fquat& rot,
                                  CollisionType collision_type)
     : GameObject(parent), shape_(std::move(shape)), up_to_date_(true) {
-  transform().set_pos(pos);
-  transform().set_rot(rot);
+  transform().SetPos(pos);
+  transform().SetRot(rot);
   Init(mass, shape.get(), collision_type);
 }
 
@@ -95,9 +95,9 @@ void BulletRigidBody::Init(float mass, btCollisionShape* shape,
 
 void BulletRigidBody::getWorldTransform(btTransform &t) const {
   if (up_to_date_) {
-    const glm::vec3& pos = transform().pos();
+    const glm::vec3& pos = transform().GetPos();
     t.setOrigin(btVector3{pos.x, pos.y, pos.z});
-    const glm::fquat& rot = transform().rot();
+    const glm::fquat& rot = transform().GetRot();
     t.setRotation(btQuaternion{rot.x, rot.y, rot.z, rot.w});
   } else {
     t = new_transform_;
@@ -112,11 +112,11 @@ void BulletRigidBody::setWorldTransform(const btTransform &t) {
 void BulletRigidBody::UpdatePhysics() {
   if (!up_to_date_) {
     const btVector3& o = new_transform_.getOrigin();
-    parent_->transform().set_pos(glm::vec3{o.x(), o.y(), o.z()});
+    parent_->transform().SetPos(glm::vec3{o.x(), o.y(), o.z()});
     if (!restrains_.manual_rot) {
       const btQuaternion& r = new_transform_.getRotation();
-      parent_->transform().set_rot(glm::quat(r.getW(), r.getX(),
-                                             r.getY(), r.getZ()));
+      parent_->transform().SetRot(glm::quat(r.getW(), r.getX(),
+                                            r.getY(), r.getZ()));
     }
     up_to_date_ = true;
   }
