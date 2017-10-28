@@ -54,46 +54,18 @@ class MeshRenderer {
    private:
     template<typename T, typename Buffer>
     void uploadNewData(const std::vector<T>& data, Buffer& buffer,
-                       size_t allocation, size_t count) {
-      assert(allocation >= count + data.size());
-
-      gl::Bind(buffer);
-      buffer.subData(count * sizeof(T),
-                     data.size() * sizeof(T),
-                     data.data());
-    }
+                       size_t allocation, size_t count);
 
     template<typename T, typename Buffer>
     void reallocUploadNewData(const std::vector<T>& data, Buffer& buffer,
-                              size_t allocation, size_t count) {
-      assert(allocation >= count + data.size());
-      size_t prev_size = count*sizeof(T);
-      size_t new_size = allocation*sizeof(T);
-
-      // Alloc tmp buffer
-      Buffer temp_buffer;
-      gl::Bind(temp_buffer);
-      temp_buffer.data(new_size, nullptr);
-
-      // Copy old data to tmp buffer
-      glBindBuffer(GL_COPY_READ_BUFFER, buffer.expose());
-      glBindBuffer(GL_COPY_WRITE_BUFFER, temp_buffer.expose());
-      glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, prev_size);
-
-      // Upload new data
-      temp_buffer.subData(prev_size, data.size()*sizeof(T), data.data());
-
-      // Swap the buffers
-      buffer = std::move(temp_buffer);
-    }
+                              size_t allocation, size_t count);
 
     void setupModelMatrixAttrib();
   };
 
-  MeshDataStorage& getMeshDataStorage() {
-    static MeshDataStorage instace;
-    return instace;
-  }
+  static std::unique_ptr<MeshDataStorage> mesh_data_storage_;
+
+  static MeshDataStorage& getMeshDataStorage() { return *mesh_data_storage_; }
 
   /**
    * @brief A class to store per mesh data (the class loads in a scene, that
@@ -156,6 +128,9 @@ public:
     * @param flags - The assimp post-process flags. */
   MeshRenderer(const std::string& filename,
                gl::Bitfield<aiPostProcessSteps> flags);
+
+  static void InitializeMeshDataStorage();
+  static void FreeMeshDataStorage();
 
   /// Sets up a btTriangleIndexVertexArray, and returns a vector of indices
   /// that should be stored throughout the lifetime of the bullet object

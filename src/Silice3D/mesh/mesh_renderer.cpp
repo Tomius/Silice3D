@@ -6,6 +6,7 @@
 #include <oglwrap/oglwrap.h>
 
 #include <Silice3D/mesh/mesh_renderer.hpp>
+#include <Silice3D/common/make_unique.hpp>
 
 namespace Silice3D {
 
@@ -87,6 +88,41 @@ void MeshRenderer::MeshDataStorage::uploadModelMatrices(const std::vector<glm::m
   gl::Unbind(vao);
 }
 
+template<typename T, typename Buffer>
+void MeshRenderer::MeshDataStorage::uploadNewData(const std::vector<T>& data, Buffer& buffer,
+                   size_t allocation, size_t count) {
+  assert(allocation >= count + data.size());
+
+  gl::Bind(buffer);
+  buffer.subData(count * sizeof(T),
+                 data.size() * sizeof(T),
+                 data.data());
+}
+
+template<typename T, typename Buffer>
+void MeshRenderer::MeshDataStorage::reallocUploadNewData(const std::vector<T>& data, Buffer& buffer,
+                          size_t allocation, size_t count) {
+  assert(allocation >= count + data.size());
+  size_t prev_size = count*sizeof(T);
+  size_t new_size = allocation*sizeof(T);
+
+  // Alloc tmp buffer
+  Buffer temp_buffer;
+  gl::Bind(temp_buffer);
+  temp_buffer.data(new_size, nullptr);
+
+  // Copy old data to tmp buffer
+  glBindBuffer(GL_COPY_READ_BUFFER, buffer.expose());
+  glBindBuffer(GL_COPY_WRITE_BUFFER, temp_buffer.expose());
+  glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, prev_size);
+
+  // Upload new data
+  temp_buffer.subData(prev_size, data.size()*sizeof(T), data.data());
+
+  // Swap the buffers
+  buffer = std::move(temp_buffer);
+}
+
 void MeshRenderer::MeshDataStorage::setupModelMatrixAttrib() {
   for (int i = 0; i < 4; ++i) {
     auto attrib = gl::VertexAttribObject(kModelMatrixAttributeLocation + i);
@@ -119,6 +155,17 @@ MeshRenderer::MeshRenderer(const std::string& filename,
     triangle_count += scene_->mMeshes[mesh_idx]->mNumFaces;
   }
 }
+
+std::unique_ptr<MeshRenderer::MeshDataStorage> MeshRenderer::mesh_data_storage_;
+
+void MeshRenderer::InitializeMeshDataStorage() {
+  mesh_data_storage_ = make_unique<MeshDataStorage>();
+}
+
+void MeshRenderer::FreeMeshDataStorage() {
+  mesh_data_storage_ = nullptr;
+}
+
 
 /// Sets up a btTriangleIndexVertexArray, and returns a vector of indices
 /// that should be stored throughout the lifetime of the bullet object

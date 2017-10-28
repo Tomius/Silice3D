@@ -7,6 +7,7 @@
 
 #include <Silice3D/core/game_engine.hpp>
 #include <Silice3D/gui/label.hpp>
+#include <Silice3D/mesh/mesh_renderer.hpp>
 
 #ifdef USE_DEBUG_CONTEXT
 void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
@@ -92,6 +93,8 @@ GameEngine::GameEngine(const std::string& application_name, WindowMode windowMod
     std::terminate();
   }
 
+  MeshRenderer::InitializeMeshDataStorage();
+
   gl::Enable(gl::kDepthTest);
 
   glfwSetWindowUserPointer(window_, this);
@@ -111,6 +114,7 @@ GameEngine::~GameEngine() {
     glfwDestroyWindow(window_);
     window_ = nullptr;
   }
+  MeshRenderer::FreeMeshDataStorage();
   Label::TerminateTextRendering();
   glfwTerminate();
 }
