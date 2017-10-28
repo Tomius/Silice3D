@@ -1,8 +1,6 @@
 // Copyright (c), Tamas Csala
 
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/oglwrap.h>
+#include <Silice3D/common/oglwrap.hpp>
 
 #ifdef OGLWRAP_DEBUG
   #define GLT_DEBUG

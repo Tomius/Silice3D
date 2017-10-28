@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef SILICE3D_TRANSFORM_HPP_
-#define SILICE3D_TRANSFORM_HPP_
+#ifndef SILICE3D_COMMON_TRANSFORM_HPP_
+#define SILICE3D_COMMON_TRANSFORM_HPP_
 
 #include <cmath>
 #include <vector>

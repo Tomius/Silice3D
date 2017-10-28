@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef SILICE3D_TRANSFORM_INL_HPP_
-#define SILICE3D_TRANSFORM_INL_HPP_
+#ifndef SILICE3D_COMMON_TRANSFORM_INL_HPP_
+#define SILICE3D_COMMON_TRANSFORM_INL_HPP_
 
 namespace Silice3D {
 

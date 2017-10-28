@@ -3,9 +3,7 @@
 #ifndef SILICE3D_DEBUG_DEBUG_TEXTURE_HPP_
 #define SILICE3D_DEBUG_DEBUG_TEXTURE_HPP_
 
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/oglwrap.h>
+#include <Silice3D/common/oglwrap.hpp>
 #include <oglwrap/shapes/rectangle_shape.h>
 
 #include <Silice3D/shaders/shader_manager.hpp>

@@ -1,7 +1,7 @@
 // based on https://github.com/progschj/ThreadPool/blob/master/ThreadPool.h
 
-#ifndef THREAD_POOL_H
-#define THREAD_POOL_H
+#ifndef SILICE3D_COMMON_THREAD_POOL_H
+#define SILICE3D_COMMON_THREAD_POOL_H
 
 #include <vector>
 #include <queue>

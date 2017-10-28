@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef COMMON_MAKE_UNIQUE_HPP_
-#define COMMON_MAKE_UNIQUE_HPP_
+#ifndef SILICE3D_COMMON_MAKE_UNIQUE_HPP_
+#define SILICE3D_COMMON_MAKE_UNIQUE_HPP_
 
 #include <memory>
 

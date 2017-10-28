@@ -2,12 +2,10 @@
 
 #include <vector>
 #include <lodepng.h>
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/oglwrap.h>
 
-#include <Silice3D/mesh/mesh_renderer.hpp>
+#include <Silice3D/common/oglwrap.hpp>
 #include <Silice3D/common/make_unique.hpp>
+#include <Silice3D/mesh/mesh_renderer.hpp>
 
 namespace Silice3D {
 

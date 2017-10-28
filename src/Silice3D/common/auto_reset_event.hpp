@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef AUTO_RESET_EVENT_H
-#define AUTO_RESET_EVENT_H
+#ifndef SILICE3D_COMMON_AUTO_RESET_EVENT_H
+#define SILICE3D_COMMON_AUTO_RESET_EVENT_H
 
 #include <thread>
 #include <mutex>

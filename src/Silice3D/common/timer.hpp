@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef SILICE3D_TIMER_HPP_
-#define SILICE3D_TIMER_HPP_
+#ifndef SILICE3D_COMMON_TIMER_HPP_
+#define SILICE3D_COMMON_TIMER_HPP_
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

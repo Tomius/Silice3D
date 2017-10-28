@@ -6,11 +6,9 @@
 #include <map>
 #include <memory>
 #include <climits>
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/oglwrap.h>
 #include <btBulletDynamicsCommon.h>
 
+#include <Silice3D/common/oglwrap.hpp>
 #include <Silice3D/mesh/assimp.hpp>
 #include <Silice3D/collision/bounding_box.hpp>
 

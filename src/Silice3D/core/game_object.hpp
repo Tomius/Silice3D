@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef SILICE3D_GAME_OBJECT_HPP_
-#define SILICE3D_GAME_OBJECT_HPP_
+#ifndef SILICE3D_CORE_GAME_OBJECT_HPP_
+#define SILICE3D_CORE_GAME_OBJECT_HPP_
 
 #include <set>
 #include <memory>
@@ -9,10 +9,8 @@
 #include <iostream>
 #include <algorithm>
 #include <functional>
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/oglwrap.h>
 
+#include <Silice3D/common/oglwrap.hpp>
 #include <Silice3D/common/transform.hpp>
 
 namespace Silice3D {

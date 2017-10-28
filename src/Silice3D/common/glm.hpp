@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef COMMON_GLM_HPP_
-#define COMMON_GLM_HPP_
+#ifndef SILICE3D_COMMON_GLM_HPP_
+#define SILICE3D_COMMON_GLM_HPP_
 
 #include <iostream>
 

@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef SILICE3D_SCENE_HPP_
-#define SILICE3D_SCENE_HPP_
+#ifndef SILICE3D_CORE_SCENE_HPP_
+#define SILICE3D_CORE_SCENE_HPP_
 
 #include <map>
 #include <vector>

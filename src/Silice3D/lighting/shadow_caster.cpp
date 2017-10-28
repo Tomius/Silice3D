@@ -1,10 +1,7 @@
 // Copyright (c) Tamas Csala
 
 #include <vector>
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/context.h>
-#include <oglwrap/smart_enums.h>
+#include <Silice3D/common/oglwrap.hpp>
 
 #include <Silice3D/lighting/shadow_caster.hpp>
 #include <Silice3D/core/scene.hpp>

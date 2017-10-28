@@ -3,9 +3,7 @@
 #ifndef SILICE3D_DEBUG_DEBUG_SHAPE_HPP_
 #define SILICE3D_DEBUG_DEBUG_SHAPE_HPP_
 
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/oglwrap.h>
+#include <Silice3D/common/oglwrap.hpp>
 #include <oglwrap/shapes/cube_shape.h>
 #include <oglwrap/shapes/sphere_shape.h>
 

@@ -1,10 +1,9 @@
 // Copyright (c) Tamas Csala
 
 #include <string>
-#include <glad/glad.h>
+
+#include <Silice3D/common/oglwrap.hpp>
 #include <GLFW/glfw3.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/oglwrap.h>
 
 #include <Silice3D/core/game_engine.hpp>
 #include <Silice3D/gui/label.hpp>

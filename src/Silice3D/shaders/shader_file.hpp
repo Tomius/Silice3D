@@ -11,9 +11,7 @@
 #include <vector>
 #include <memory>
 
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/oglwrap.h>
+#include <Silice3D/common/oglwrap.hpp>
 
 namespace Silice3D {
 

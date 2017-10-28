@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef SILICE3D_GAME_OBJECT_INL_HPP_
-#define SILICE3D_GAME_OBJECT_INL_HPP_
+#ifndef SILICE3D_CORE_GAME_OBJECT_INL_HPP_
+#define SILICE3D_CORE_GAME_OBJECT_INL_HPP_
 
 #include <iostream>
 

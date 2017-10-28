@@ -3,12 +3,9 @@
 #ifndef SILICE3D_MESH_MESH_OBJECT_RENDERER_HPP_
 #define SILICE3D_MESH_MESH_OBJECT_RENDERER_HPP_
 
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/oglwrap.h>
-
-#include <Silice3D/core/game_object.hpp>
+#include <Silice3D/common/oglwrap.hpp>
 #include <Silice3D/common/make_unique.hpp>
+#include <Silice3D/core/game_object.hpp>
 #include <Silice3D/shaders/shader_manager.hpp>
 #include <Silice3D/mesh/mesh_renderer.hpp>
 #include <Silice3D/mesh/imesh_object_renderer.hpp>

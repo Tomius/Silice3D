@@ -4,12 +4,7 @@
 #define SILICE3D_SHADOW_CASTER_HPP_
 
 #include <vector>
-#include <glad/glad.h>
-#include <Silice3D/common/glm.hpp>
-#include <oglwrap/shader.h>
-#include <oglwrap/uniform.h>
-#include <oglwrap/framebuffer.h>
-
+#include <Silice3D/common/oglwrap.hpp>
 #include <Silice3D/core/game_object.hpp>
 
 namespace Silice3D {

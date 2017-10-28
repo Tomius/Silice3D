@@ -1,7 +1,7 @@
 // Copyright (c) Tamas Csala
 
-#ifndef COMMON_MISC_HPP_
-#define COMMON_MISC_HPP_
+#ifndef SILICE3D_COMMON_MATH_HPP_
+#define SILICE3D_COMMON_MATH_HPP_
 
 #include <Silice3D/common/glm.hpp>
 
