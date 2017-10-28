@@ -24,7 +24,7 @@ MeshObjectRenderer::ProgramData::ProgramData(ShaderManager* shader_manager,
                   shader_manager->get("mesh.frag"))
     , shadow_recieve_prog_(shader_manager->get(vertex_shader),
                            shader_manager->get("mesh_shadow.frag"))
-    , shadow_cast_prog_(shader_manager->get("shadow.vert"),
+    , shadow_cast_prog_(shader_manager->get(vertex_shader),
                         shader_manager->get("shadow.frag"))
 
     , bp_uProjectionMatrix_(basic_prog_, "uProjectionMatrix")

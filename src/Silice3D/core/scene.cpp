@@ -137,6 +137,11 @@ void Scene::RenderAll() {
       }
     }
 
+    gl::DepthFunc(gl::kLess);
+    gl::DrawBuffer(gl::kNone);  // don't write into the color buffer
+    GameObject::ShadowRenderAll(*camera_);
+    gl::DepthFunc(gl::kLequal);
+    gl::DrawBuffer(gl::kBack);
     GameObject::RenderAll();
   }
 }
@@ -152,7 +157,7 @@ void Scene::Render2DAll() {
 
 void Scene::UpdatePhysicsInBackgroundThread() {
   if (bt_world_) {
-    bt_world_->stepSimulation(game_time().GetDeltaTime(), 16, btScalar(1.)/btScalar(120.));
+    bt_world_->stepSimulation(game_time().GetDeltaTime(), 16, btScalar(1.0)/btScalar(60.0));
   }
 }
 
