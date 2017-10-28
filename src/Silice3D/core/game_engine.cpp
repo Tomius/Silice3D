@@ -19,7 +19,7 @@ void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severi
 
 namespace Silice3D {
 
-GameEngine::GameEngine() {
+GameEngine::GameEngine(const std::string& application_name, WindowMode windowMode) {
   glfwSetErrorCallback(ErrorCallback);
 
   if (!glfwInit()) {
@@ -44,13 +44,13 @@ GameEngine::GameEngine() {
   glfwWindowHint(GLFW_DEPTH_BITS, 24);
   glfwWindowHint(GLFW_STENCIL_BITS, 8);
 
-#if SILICE3D_NO_FULLSCREEN
-  window_ = glfwCreateWindow(vidmode->width, vidmode->height,
-                             "Pyromaze", nullptr, nullptr);
-#else
-  window_ = glfwCreateWindow(vidmode->width, vidmode->height,
-                             "Pyromaze", monitor, nullptr);
-#endif
+  if (windowMode == WindowMode::kFullScreen) {
+    window_ = glfwCreateWindow(vidmode->width, vidmode->height,
+                               application_name.c_str(), monitor, nullptr);
+  } else {
+    window_ = glfwCreateWindow(vidmode->width, vidmode->height,
+                               application_name.c_str(), nullptr, nullptr);
+  }
 
   if (!window_) {
     std::cerr << "FATAL: Couldn't create a glfw window. Aborting now." << std::endl;
@@ -119,16 +119,6 @@ void GameEngine::LoadScene(std::unique_ptr<Scene>&& new_scene) {
   new_scene_ = std::move(new_scene);
 }
 
-glm::vec2 GameEngine::window_size() {
-  if (window_) {
-    int width, height;
-    glfwGetWindowSize(window_, &width, &height);
-    return glm::vec2(width, height);
-  } else {
-    return glm::vec2{0.0, 0.0};
-  }
-}
-
 void GameEngine::Run() {
   while (!glfwWindowShouldClose(window_)) {
     if (new_scene_) {
@@ -143,6 +133,16 @@ void GameEngine::Run() {
     }
 
     glfwPollEvents();
+  }
+}
+
+glm::vec2 GameEngine::GetWindowSize() {
+  if (window_) {
+    int width, height;
+    glfwGetWindowSize(window_, &width, &height);
+    return glm::vec2(width, height);
+  } else {
+    return glm::vec2{0.0, 0.0};
   }
 }
 

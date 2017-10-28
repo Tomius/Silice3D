@@ -25,7 +25,7 @@ class ShaderManager;
 
 class Scene : public GameObject {
  public:
-  Scene(GameEngine* engine, GLFWwindow* window);
+  Scene(GameEngine* engine);
   ~Scene();
 
   virtual float gravity() const { return 9.81f; }
@@ -43,8 +43,7 @@ class Scene : public GameObject {
   ICamera* camera() { return camera_; }
   void set_camera(ICamera* camera) { camera_ = camera; }
 
-  GLFWwindow* window() const { return window_; }
-  void set_window(GLFWwindow* window) { window_ = window; }
+  GLFWwindow* window() const;
 
   ShaderManager* shader_manager() const;
 
@@ -68,7 +67,6 @@ class Scene : public GameObject {
  protected:
   ICamera* camera_;
   Timer game_time_, environment_time_, camera_time_;
-  GLFWwindow* window_;
   GameEngine* engine_;
 
   // Mesh loading

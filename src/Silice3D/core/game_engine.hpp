@@ -13,20 +13,18 @@ namespace Silice3D {
 
 class GameEngine {
  public:
-  GameEngine();
+  enum class WindowMode { kFullScreen, kWindowed };
+
+  GameEngine(const std::string& application_name, WindowMode windowMode);
   ~GameEngine();
 
+  void Run();
   void LoadScene(std::unique_ptr<Scene>&& new_scene);
 
-  Scene* scene() { return scene_.get(); }
-
-  GLFWwindow* window() { return window_; }
-
-  ShaderManager* shader_manager() { return shader_manager_.get(); }
-
-  glm::vec2 window_size();
-
-  void Run();
+  Scene* GetScene() { return scene_.get(); }
+  GLFWwindow* GetWindow() { return window_; }
+  ShaderManager* GetShaderManager() { return shader_manager_.get(); }
+  glm::vec2 GetWindowSize();
 
  private:
   bool minimized_ = false;
@@ -35,7 +33,7 @@ class GameEngine {
   std::unique_ptr<ShaderManager> shader_manager_ = make_unique<ShaderManager>();
   GLFWwindow *window_;
 
-  // Callbacks
+  // GLFW Callbacks
   static void ErrorCallback(int error, const char* message);
 
   static void KeyCallback(GLFWwindow* window, int key, int scancode,

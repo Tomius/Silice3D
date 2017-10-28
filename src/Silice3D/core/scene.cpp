@@ -9,10 +9,9 @@
 
 namespace Silice3D {
 
-Scene::Scene(GameEngine* engine, GLFWwindow* window)
+Scene::Scene(GameEngine* engine)
     : GameObject(nullptr)
     , camera_(nullptr)
-    , window_(window)
     , engine_(engine)
     , physics_thread_should_quit_(false)
     , physics_thread_{[this](){
@@ -79,7 +78,13 @@ Scene::~Scene() {
   RemovedFromSceneAll();
 }
 
-ShaderManager* Scene::shader_manager() const { return engine_->shader_manager(); }
+GLFWwindow* Scene::window() const {
+  return engine_->GetWindow();
+}
+
+ShaderManager* Scene::shader_manager() const {
+  return engine_->GetShaderManager();
+}
 
 void Scene::Turn() {
   physics_finished_.WaitOne();
