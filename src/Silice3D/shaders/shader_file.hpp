@@ -12,6 +12,7 @@
 #include <memory>
 
 #include <glad/glad.h>
+#include <Silice3D/common/glm.hpp>
 #include <oglwrap/oglwrap.h>
 
 namespace Silice3D {

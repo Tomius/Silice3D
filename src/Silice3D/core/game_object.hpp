@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <functional>
 #include <glad/glad.h>
+#include <Silice3D/common/glm.hpp>
 #include <oglwrap/oglwrap.h>
 
 #include <Silice3D/common/transform.hpp>

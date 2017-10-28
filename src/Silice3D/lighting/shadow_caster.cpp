@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <glad/glad.h>
+#include <Silice3D/common/glm.hpp>
 #include <oglwrap/context.h>
 #include <oglwrap/smart_enums.h>
 

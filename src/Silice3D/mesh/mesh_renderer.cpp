@@ -3,6 +3,7 @@
 #include <vector>
 #include <lodepng.h>
 #include <glad/glad.h>
+#include <Silice3D/common/glm.hpp>
 #include <oglwrap/oglwrap.h>
 
 #include <Silice3D/mesh/mesh_renderer.hpp>

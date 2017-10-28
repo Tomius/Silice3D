@@ -3,6 +3,7 @@
 #include <string>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <Silice3D/common/glm.hpp>
 #include <oglwrap/oglwrap.h>
 
 #include <Silice3D/core/game_engine.hpp>
@@ -36,8 +37,8 @@ GameEngine::GameEngine(const std::string& application_name, WindowMode windowMod
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #else
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 #endif
 
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -67,8 +68,8 @@ GameEngine::GameEngine(const std::string& application_name, WindowMode windowMod
   glfwGetFramebufferSize(window_, &width, &height);
   std::cout << "Resolution: "  << width << " x " << height << std::endl;
 
-  if (ogl_major_version < 3 || (ogl_major_version == 3 && ogl_minor_version < 3)) {
-    std::cerr << "At least OpenGL version 3.3 is required to run this program\n";
+  if (ogl_major_version < 4 || (ogl_major_version == 4 && ogl_minor_version < 5)) {
+    std::cerr << "At least OpenGL version 4.5 is required to run this program\n";
     std::terminate();
   }
 
@@ -96,6 +97,8 @@ GameEngine::GameEngine(const std::string& application_name, WindowMode windowMod
   MeshRenderer::InitializeMeshDataStorage();
 
   gl::Enable(gl::kDepthTest);
+
+  glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
 
   glfwSetWindowUserPointer(window_, this);
   glfwSetKeyCallback(window_, KeyCallback);

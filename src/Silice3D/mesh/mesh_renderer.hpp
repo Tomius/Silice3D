@@ -7,6 +7,7 @@
 #include <memory>
 #include <climits>
 #include <glad/glad.h>
+#include <Silice3D/common/glm.hpp>
 #include <oglwrap/oglwrap.h>
 #include <btBulletDynamicsCommon.h>
 
