@@ -23,11 +23,12 @@ Scene::Scene(GameEngine* engine)
   set_scene(this);
 
   shader_manager()->get("lighting.frag")->SetUpdateFunc([this](const gl::Program& prog) {
-    static constexpr const size_t kMaxLightCount = 32;
+    static constexpr const size_t kMaxDirLightCount = 16;
+    static constexpr const size_t kMaxPointLightCount = 128;
 
     size_t current_light_index = 0;
     for (DirectionalLightSource* light : directional_light_sources_) {
-      if (current_light_index >= kMaxLightCount) {
+      if (current_light_index >= kMaxDirLightCount) {
         break;
       }
 
@@ -52,7 +53,7 @@ Scene::Scene(GameEngine* engine)
 
     current_light_index = 0;
     for (PointLightSource* light : point_light_sources_) {
-      if (current_light_index >= kMaxLightCount) {
+      if (current_light_index >= kMaxPointLightCount) {
         break;
       }
 
@@ -61,8 +62,8 @@ Scene::Scene(GameEngine* engine)
       gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->color();
     }
 
-    gl::Uniform<int>(prog, "uDirectionalLightCount") = std::min(directional_light_sources_.size(), kMaxLightCount);
-    gl::Uniform<int>(prog, "uPointLightCount") = std::min(point_light_sources_.size(), kMaxLightCount);
+    gl::Uniform<int>(prog, "uDirectionalLightCount") = std::min(directional_light_sources_.size(), kMaxDirLightCount);
+    gl::Uniform<int>(prog, "uPointLightCount") = std::min(point_light_sources_.size(), kMaxPointLightCount);
     gl::Uniform<glm::vec3>(prog, "w_uCamPos") = glm::vec3{scene()->camera()->transform().GetPos()};
   });
 }
@@ -138,6 +139,7 @@ void Scene::RenderAll() {
     gl::DepthFunc(gl::kLess);
     gl::DrawBuffer(gl::kNone);  // don't write into the color buffer
     GameObject::ShadowRenderAll(*camera_);
+    // GameObject::RenderAll();
     gl::DepthFunc(gl::kLequal);
     gl::DrawBuffer(gl::kBack);
     GameObject::RenderAll();
