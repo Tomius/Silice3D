@@ -32,7 +32,7 @@ BulletFreeFlyCamera::BulletFreeFlyCamera(GameObject* parent, double fov, double 
 
 void BulletFreeFlyCamera::Update() {
   glm::dvec2 cursor_pos;
-  GLFWwindow* window = scene_->window();
+  GLFWwindow* window = GetScene()->GetWindow();
   glfwGetCursorPos(window, &cursor_pos.x, &cursor_pos.y);
   static glm::dvec2 prev_cursor_pos;
   glm::dvec2 diff = cursor_pos - prev_cursor_pos;
@@ -51,7 +51,7 @@ void BulletFreeFlyCamera::Update() {
 
     // If we are looking up / down, we don't want to be able
     // to rotate to the other side
-    double dot_up_fwd = glm::dot(transform().GetUp(), transform().GetForward());
+    double dot_up_fwd = glm::dot(GetTransform().GetUp(), GetTransform().GetForward());
     if (dot_up_fwd > cos_max_pitch_angle_ && dy > 0) {
       dy = 0;
     }
@@ -59,24 +59,24 @@ void BulletFreeFlyCamera::Update() {
       dy = 0;
     }
 
-    transform().SetForward(transform().GetForward() +
-                            transform().GetRight()*dx +
-                            transform().GetUp()*dy);
+    GetTransform().SetForward(GetTransform().GetForward() +
+                            GetTransform().GetRight()*dx +
+                            GetTransform().GetUp()*dy);
   }
 
   // Calculate the offset
   glm::dvec3 offset = {0.0, 0.0, 0.0};
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-    offset += transform().GetForward();
+    offset += GetTransform().GetForward();
   }
   if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-    offset -= transform().GetForward();
+    offset -= GetTransform().GetForward();
   }
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-    offset += transform().GetRight();
+    offset += GetTransform().GetRight();
   }
   if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-    offset -= transform().GetRight();
+    offset -= GetTransform().GetRight();
   }
   offset.y = 0;
   if (length(offset) > Math::kEpsilon) {

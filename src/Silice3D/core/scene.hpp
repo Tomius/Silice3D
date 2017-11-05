@@ -28,33 +28,33 @@ class Scene : public GameObject {
   Scene(GameEngine* engine);
   ~Scene();
 
-  virtual float gravity() const { return 9.81f; }
+  virtual float GetGravity() const { return 9.81f; }
 
-  const Timer& game_time() const { return game_time_; }
-  Timer& game_time() { return game_time_; }
+  const Timer& GetGameTime() const { return game_time_; }
+  Timer& GetGameTime() { return game_time_; }
 
-  const Timer& environment_time() const { return environment_time_; }
-  Timer& environment_time() { return environment_time_; }
+  const Timer& GetEnvironmentTime() const { return environment_time_; }
+  Timer& GetEnvironmentTime() { return environment_time_; }
 
-  const Timer& camera_time() const { return camera_time_; }
-  Timer& camera_time() { return camera_time_; }
+  const Timer& GetCameraTime() const { return camera_time_; }
+  Timer& GetCameraTime() { return camera_time_; }
 
-  const ICamera* camera() const { return camera_; }
-  ICamera* camera() { return camera_; }
-  void set_camera(ICamera* camera) { camera_ = camera; }
+  const ICamera* GetCamera() const { return camera_; }
+  ICamera* GetCamera() { return camera_; }
+  void SetCamera(ICamera* camera) { camera_ = camera; }
 
-  GLFWwindow* window() const;
+  GLFWwindow* GetWindow() const;
 
-  ShaderManager* shader_manager() const;
+  ShaderManager* GetShaderManager() const;
 
-  GameEngine* engine() const { return engine_; }
+  GameEngine* GetEngine() const { return engine_; }
 
-  const btDynamicsWorld* bt_world() const { return bt_world_.get(); }
-  btDynamicsWorld* bt_world() { return bt_world_.get(); }
+  const btDynamicsWorld* GetBtWorld() const { return bt_world_.get(); }
+  btDynamicsWorld* GetBtWorld() { return bt_world_.get(); }
 
-  MeshRendererCache* mesh_cache() { return &mesh_cache_; }
+  MeshRendererCache* GetMeshCache() { return &mesh_cache_; }
 
-  size_t triangle_count();
+  size_t GetTriangleCount();
 
   virtual void Turn();
 

@@ -7,6 +7,39 @@
 
 namespace Silice3D {
 
+// Because btDiscreteDynamicsWorld has O(n^2) destructor for n objects by default...
+class btFastDestructableDynamicsWorld : public btDiscreteDynamicsWorld {
+public:
+  using btDiscreteDynamicsWorld::btDiscreteDynamicsWorld;
+
+  void aboutToDestruct() {
+    m_nonStaticRigidBodies = btAlignedObjectArray<btRigidBody*>();
+    m_collisionObjects = btAlignedObjectArray<btCollisionObject*>();
+    m_aboutToDestruct = true;
+  }
+
+  virtual void removeRigidBody(btRigidBody *body) override {
+    if (!m_aboutToDestruct) {
+      btDiscreteDynamicsWorld::removeRigidBody(body);
+    }
+  }
+
+  virtual void removeCollisionObject(btCollisionObject *collisionObject) override {
+    if (!m_aboutToDestruct) {
+      btDiscreteDynamicsWorld::removeCollisionObject(collisionObject);
+    } else {
+      btBroadphaseProxy* bp = collisionObject->getBroadphaseHandle();
+      if (bp) {
+        btAlignedFree(bp);
+        collisionObject->setBroadphaseHandle(0);
+      }
+    }
+  }
+
+private:
+  bool m_aboutToDestruct = false;
+};
+
 Scene::Scene(GameEngine* engine)
     : GameObject(nullptr)
     , camera_(nullptr)
@@ -20,9 +53,21 @@ Scene::Scene(GameEngine* engine)
         physics_finished_.Set();
       }
     }} {
-  set_scene(this);
+  SetScene(this);
 
-  shader_manager()->get("lighting.frag")->SetUpdateFunc([this](const gl::Program& prog) {
+  { // Bullet initilization
+    bt_collision_config_ = make_unique<btDefaultCollisionConfiguration>();
+    bt_dispatcher_ = make_unique<btCollisionDispatcher>(bt_collision_config_.get());
+    bt_broadphase_ = make_unique<btDbvtBroadphase>();
+    bt_solver_ = make_unique<btSequentialImpulseConstraintSolver>();
+
+    bt_world_ = make_unique<btFastDestructableDynamicsWorld>(
+        bt_dispatcher_.get(), bt_broadphase_.get(),
+        bt_solver_.get(), bt_collision_config_.get());
+    bt_world_->setGravity(btVector3(0, -9.81, 0));
+  }
+
+  GetShaderManager()->get("lighting.frag")->SetUpdateFunc([this](const gl::Program& prog) {
     static constexpr const size_t kMaxDirLightCount = 16;
     static constexpr const size_t kMaxPointLightCount = 128;
 
@@ -33,7 +78,7 @@ Scene::Scene(GameEngine* engine)
       }
 
       std::string uniform_name = "uDirectionalLights[" + std::to_string(current_light_index++) + "]";
-      gl::Uniform<glm::vec3>(prog, uniform_name + ".direction") = light->transform().GetPos();
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".direction") = light->GetTransform().GetPos();
       gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->color();
       ShadowCaster* shadow_caster = light->shadow_caster();
       if (shadow_caster == nullptr) {
@@ -58,30 +103,32 @@ Scene::Scene(GameEngine* engine)
       }
 
       std::string uniform_name = "uPointLights[" + std::to_string(current_light_index++) + "]";
-      gl::Uniform<glm::vec3>(prog, uniform_name + ".position") = light->transform().GetPos();
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".position") = light->GetTransform().GetPos();
       gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->color();
     }
 
     gl::Uniform<int>(prog, "uDirectionalLightCount") = std::min(directional_light_sources_.size(), kMaxDirLightCount);
     gl::Uniform<int>(prog, "uPointLightCount") = std::min(point_light_sources_.size(), kMaxPointLightCount);
-    gl::Uniform<glm::vec3>(prog, "w_uCamPos") = glm::vec3{scene()->camera()->transform().GetPos()};
+    gl::Uniform<glm::vec3>(prog, "w_uCamPos") = glm::vec3{GetScene()->GetCamera()->GetTransform().GetPos()};
   });
 }
 
 Scene::~Scene() {
-  // close the physics thread
+  // Close the physics thread
   physics_thread_should_quit_ = true;
   physics_can_run_.Set();
   physics_thread_.join();
 
+  // Signal object's that they will be removed from the scene
+  dynamic_cast<btFastDestructableDynamicsWorld*>(bt_world_.get())->aboutToDestruct();
   RemovedFromSceneAll();
 }
 
-GLFWwindow* Scene::window() const {
+GLFWwindow* Scene::GetWindow() const {
   return engine_->GetWindow();
 }
 
-ShaderManager* Scene::shader_manager() const {
+ShaderManager* Scene::GetShaderManager() const {
   return engine_->GetShaderManager();
 }
 
@@ -111,7 +158,7 @@ void Scene::UnregisterLightSource(DirectionalLightSource* light) {
   directional_light_sources_.erase(light);
 }
 
-size_t Scene::triangle_count() {
+size_t Scene::GetTriangleCount() {
   size_t sum_triangle_count = 0;
   for (auto& pair : mesh_cache_) {
     sum_triangle_count += pair.second->GetTriangleCount();
@@ -157,7 +204,7 @@ void Scene::Render2DAll() {
 
 void Scene::UpdatePhysicsInBackgroundThread() {
   if (bt_world_) {
-    bt_world_->stepSimulation(game_time().GetDeltaTime(), 16, btScalar(1.0)/btScalar(60.0));
+    bt_world_->stepSimulation(GetGameTime().GetDeltaTime(), 16, btScalar(1.0)/btScalar(60.0));
   }
 }
 

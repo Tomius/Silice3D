@@ -35,7 +35,7 @@ glm::vec2 Label::normalized_position() const {
 
 void Label::set_normalized_position(glm::vec2 pos) {
   normalized_pos_ = pos;
-  display_pos_ = glm::ivec2(scene_->engine()->GetWindowSize() * pos);
+  display_pos_ = glm::ivec2(GetScene()->GetEngine()->GetWindowSize() * pos);
 }
 
 glm::ivec2 Label::display_position() const {
@@ -44,7 +44,7 @@ glm::ivec2 Label::display_position() const {
 
 void Label::set_display_position(glm::ivec2 pos) {
   display_pos_ = pos;
-  normalized_pos_ = glm::vec2(scene_->engine()->GetWindowSize()) / glm::vec2(pos);
+  normalized_pos_ = glm::vec2(GetScene()->GetEngine()->GetWindowSize()) / glm::vec2(pos);
 }
 
 std::string Label::text() const {

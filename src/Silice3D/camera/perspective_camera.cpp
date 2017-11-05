@@ -47,7 +47,7 @@ void PerspectiveCamera::UpdateCache() {
 }
 
 void PerspectiveCamera::UpdateCameraMatrix() {
-  const Transform& t = transform();
+  const Transform& t = GetTransform();
   cam_mat_ = glm::lookAt(t.GetPos(), t.GetPos()+t.GetForward(), t.GetUp());
 }
 

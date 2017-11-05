@@ -34,11 +34,11 @@ void DirectionalLightSource::set_shadow_caster(size_t shadow_map_size, size_t sh
 }
 
 void DirectionalLightSource::AddedToScene() {
-  scene()->RegisterLightSource(this);
+  GetScene()->RegisterLightSource(this);
 }
 
 void DirectionalLightSource::RemovedFromScene() {
-  scene()->UnregisterLightSource(this);
+  GetScene()->UnregisterLightSource(this);
 }
 
 

@@ -29,7 +29,7 @@ FpsDisplay::FpsDisplay(GameObject* parent)
 
 void FpsDisplay::Update() {
   calls_++;
-  accum_time_ += scene_->camera_time().GetDeltaTime();
+  accum_time_ += GetScene()->GetCameraTime().GetDeltaTime();
   if (accum_time_ > kRefreshInterval && accum_time_ != 0) {
     if (first_display_interval_) {
       // The first interval is usually much slower, remove that bias
@@ -42,14 +42,14 @@ void FpsDisplay::Update() {
         fps_label_->set_text(ss.str());
       }
 
-      size_t object_count = scene()->children_count(true);
+      size_t object_count = GetScene()->GetChildrenCount(true);
       {
         std::stringstream ss;
         ss << "Object count: " << std::fixed << std::setw(6) << std::setprecision(2) << object_count;
         object_count_label_->set_text(ss.str());
       }
 
-      size_t triangle_count = scene()->triangle_count();
+      size_t triangle_count = GetScene()->GetTriangleCount();
       {
         std::stringstream ss;
         ss << "Triangle count: " << std::fixed << std::setw(6) << std::setprecision(2) << triangle_count / 1024.0 << "K";

@@ -9,7 +9,8 @@ MeshObject::MeshObject(GameObject* parent, const std::string& mesh_path,
                        const Transform& initial_transform,
                        const std::string& vertex_shader)
     : GameObject(parent, initial_transform)
-    , renderer_(GetMeshRenderer(mesh_path, scene_->shader_manager(), scene_->mesh_cache(), vertex_shader))
+    , renderer_(GetMeshRenderer(mesh_path, GetScene()->GetShaderManager(),
+                                GetScene()->GetMeshCache(), vertex_shader))
 {
 
 }
@@ -21,12 +22,12 @@ btCollisionShape* MeshObject::GetCollisionShape() {
 }
 
 BoundingBox MeshObject::GetBoundingBox() const {
-  return renderer_->GetBoundingBox(transform().GetMatrix());
+  return renderer_->GetBoundingBox(GetTransform().GetMatrix());
 }
 
 void MeshObject::Update() {
   auto bbox = GetBoundingBox();
-  const auto& cam = *scene()->camera();
+  const auto& cam = *GetScene()->GetCamera();
   bool is_visible = bbox.CollidesWithFrustum(cam.GetFrustum());
   if (is_visible) {
     renderer_->AddInstanceToRenderBatch(this);

@@ -60,7 +60,7 @@ btCollisionShape* MeshObjectRenderer::GetCollisionShape() {
 }
 
 void MeshObjectRenderer::AddInstanceToRenderBatch(const GameObject* game_object) {
-  instance_transforms_.push_back(game_object->transform().GetMatrix());
+  instance_transforms_.push_back(game_object->GetTransform().GetMatrix());
 }
 
 void MeshObjectRenderer::ClearRenderBatch() {
@@ -68,7 +68,7 @@ void MeshObjectRenderer::ClearRenderBatch() {
 }
 
 void MeshObjectRenderer::RenderBatch(Scene* scene) {
-  const auto& cam = *scene->camera();
+  const auto& cam = *scene->GetCamera();
 
   if (recieve_shadows_) {
     gl::Use(prog_data_.shadow_recieve_prog_);
@@ -90,7 +90,7 @@ void MeshObjectRenderer::RenderBatch(Scene* scene) {
 }
 
 void MeshObjectRenderer::AddInstanceToShadowRenderBatch(const GameObject* game_object) {
-  shadow_instance_transforms_.push_back(game_object->transform().GetMatrix());
+  shadow_instance_transforms_.push_back(game_object->GetTransform().GetMatrix());
 }
 
 void MeshObjectRenderer::ClearShadowRenderBatch() {

@@ -11,8 +11,8 @@ template<typename Shape_t>
 DebugShape<Shape_t>::DebugShape(GameObject* parent, const glm::vec3& color)
       : GameObject(parent)
       , shape_{{Shape_t::kPosition, Shape_t::kNormal}}
-      , prog_{scene_->shader_manager()->get("debug_shape.vert"),
-              scene_->shader_manager()->get("debug_shape.frag")}
+      , prog_{GetScene()->GetShaderManager()->get("debug_shape.vert"),
+              GetScene()->GetShaderManager()->get("debug_shape.frag")}
       , uProjectionMatrix_{prog_, "uProjectionMatrix"}
       , uCameraMatrix_{prog_, "uCameraMatrix"}
       , uModelMatrix_{prog_, "uModelMatrix"}
@@ -27,10 +27,10 @@ DebugShape<Shape_t>::DebugShape(GameObject* parent, const glm::vec3& color)
 template<typename Shape_t>
 void DebugShape<Shape_t>::Render() {
   gl::Use(prog_);
-  const auto& cam = *scene_->camera();
+  const auto& cam = *GetScene()->GetCamera();
   uCameraMatrix_.set(cam.GetCameraMatrix());
   uProjectionMatrix_.set(cam.GetProjectionMatrix());
-  uModelMatrix_.set(transform().GetMatrix());
+  uModelMatrix_.set(GetTransform().GetMatrix());
   uColor_.set(color_);
 
   gl::FrontFace(shape_.faceWinding());

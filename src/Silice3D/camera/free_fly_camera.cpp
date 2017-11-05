@@ -15,13 +15,13 @@ FreeFlyCamera::FreeFlyCamera(GameObject* parent, double fov, double z_near,
     , speed_per_sec_(speed_per_sec)
     , mouse_sensitivity_(mouse_sensitivity)
     , cos_max_pitch_angle_(0.98f) {
-  transform().SetPos(pos);
-  transform().SetForward(target - pos);
+  GetTransform().SetPos(pos);
+  GetTransform().SetForward(target - pos);
 }
 
 void FreeFlyCamera::Update() {
   glm::dvec2 cursor_pos;
-  GLFWwindow* window = scene_->window();
+  GLFWwindow* window = GetScene()->GetWindow();
   glfwGetCursorPos(window, &cursor_pos.x, &cursor_pos.y);
   static glm::dvec2 prev_cursor_pos;
   glm::dvec2 diff = cursor_pos - prev_cursor_pos;
@@ -33,7 +33,7 @@ void FreeFlyCamera::Update() {
     first_call_ = false;
   }
 
-  const double dt = scene_->camera_time().GetDeltaTime();
+  const double dt = GetScene()->GetCameraTime().GetDeltaTime();
 
   // Mouse movement - update the coordinate system
   if (diff.x || diff.y) {
@@ -42,7 +42,7 @@ void FreeFlyCamera::Update() {
 
     // If we are looking up / down, we don't want to be able
     // to rotate to the other side
-    double dot_up_fwd = glm::dot(transform().GetUp(), transform().GetForward());
+    double dot_up_fwd = glm::dot(GetTransform().GetUp(), GetTransform().GetForward());
     if (dot_up_fwd > cos_max_pitch_angle_ && dy > 0) {
       dy = 0;
     }
@@ -50,27 +50,27 @@ void FreeFlyCamera::Update() {
       dy = 0;
     }
 
-    transform().SetForward(transform().GetForward() +
-                            transform().GetRight()*dx +
-                            transform().GetUp()*dy);
+    GetTransform().SetForward(GetTransform().GetForward() +
+                            GetTransform().GetRight()*dx +
+                            GetTransform().GetUp()*dy);
   }
 
   // Update the position
   double ds = dt * speed_per_sec_;
-  glm::dvec3 local_pos = transform().GetLocalPos();
+  glm::dvec3 local_pos = GetTransform().GetLocalPos();
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-    local_pos += transform().GetForward() * ds;
+    local_pos += GetTransform().GetForward() * ds;
   }
   if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-    local_pos -= transform().GetForward() * ds;
+    local_pos -= GetTransform().GetForward() * ds;
   }
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-    local_pos += transform().GetRight() * ds;
+    local_pos += GetTransform().GetRight() * ds;
   }
   if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-    local_pos -= transform().GetRight() * ds;
+    local_pos -= GetTransform().GetRight() * ds;
   }
-  transform().SetLocalPos(local_pos);
+  GetTransform().SetLocalPos(local_pos);
 
   PerspectiveCamera::UpdateCache();
 }

@@ -12,11 +12,11 @@ PointLightSource::PointLightSource(GameObject* parent,
 { }
 
 void PointLightSource::AddedToScene() {
-  scene()->RegisterLightSource(this);
+  GetScene()->RegisterLightSource(this);
 }
 
 void PointLightSource::RemovedFromScene() {
-  scene()->UnregisterLightSource(this);
+  GetScene()->UnregisterLightSource(this);
 }
 
 } // namespace Silice3D

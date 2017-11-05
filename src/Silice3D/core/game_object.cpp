@@ -44,7 +44,7 @@ void GameObject::EnumerateConstChildren(bool recursive, const std::function<void
   }
 }
 
-size_t GameObject::children_count(bool recursive) const {
+size_t GameObject::GetChildrenCount(bool recursive) const {
   size_t count = 0;
   EnumerateConstChildren (recursive, [&count] (const GameObject*) {
     count++;
@@ -52,10 +52,10 @@ size_t GameObject::children_count(bool recursive) const {
   return count;
 }
 
-void GameObject::set_parent(GameObject* parent) {
+void GameObject::SetParent(GameObject* parent) {
   parent_ = parent;
   if (parent) {
-    transform_->SetParent(&parent_->transform());
+    transform_->SetParent(&parent_->GetTransform());
   }
 }
 
@@ -195,7 +195,7 @@ void GameObject::AddNewComponents() {
   if (!components_just_added_.empty()) {
     // make sure all the componenets just enabled are aware of the screen's size
     int width, height;
-    glfwGetWindowSize(scene()->window(), &width, &height);
+    glfwGetWindowSize(GetScene()->GetWindow(), &width, &height);
     for (const auto& component : components_just_added_) {
       component->ScreenResizedAll(width, height);
     }
@@ -226,7 +226,7 @@ void GameObject::RemoveComponents() {
 
 bool GameObject::StealComponent(GameObject* go) {
   if (!go) { return false; }
-  GameObject* parent = go->parent();
+  GameObject* parent = go->GetParent();
   if (!parent) { return false; }
 
   for (auto& component : parent->components_) {
@@ -238,7 +238,7 @@ bool GameObject::StealComponent(GameObject* go) {
       component->parent_ = this;
       component->transform_->SetParent(transform_.get());
       component->scene_ = scene_;
-      if (go->scene() != scene()) {
+      if (go->GetScene() != GetScene()) {
         component->AddedToScene();
       }
       return true;

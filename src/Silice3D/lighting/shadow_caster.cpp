@@ -55,7 +55,7 @@ glm::mat4 ShadowCaster::GetProjectionMatrix(unsigned cascade_idx) const {
 
 glm::mat4 ShadowCaster::GetCameraMatrix(unsigned cascade_idx) const {
   return glm::lookAt(
-    glm::vec3(target_bounding_spheres_[cascade_idx]) + z_far_ * glm::normalize(glm::vec3(transform().GetPos())),
+    glm::vec3(target_bounding_spheres_[cascade_idx]) + z_far_ * glm::normalize(glm::vec3(GetTransform().GetPos())),
     glm::vec3(target_bounding_spheres_[cascade_idx]),
     glm::vec3(0, 1, 0));
 }
@@ -108,7 +108,7 @@ void ShadowCaster::FillShadowMap(Scene* scene) {
     gl::Clear().Color().Depth();
     gl::Viewport(0, 0, size_, size_);
 
-    ShadowCasterCamera shadowCamera(this, transform(), GetProjectionMatrix(i), GetCameraMatrix(i), z_far_);
+    ShadowCasterCamera shadowCamera(this, GetTransform(), GetProjectionMatrix(i), GetCameraMatrix(i), z_far_);
     scene->ShadowRenderAll(shadowCamera);
 
     gl::Unbind(fbos_[i]);
@@ -121,9 +121,9 @@ size_t ShadowCaster::cascades_count() const {
 }
 
 void ShadowCaster::Update() {
-  ICamera* cam = scene()->camera();
-  glm::vec3 cam_pos = cam->transform().GetPos();
-  glm::vec3 cam_dir = cam->transform().GetForward();
+  ICamera* cam = GetScene()->GetCamera();
+  glm::vec3 cam_pos = cam->GetTransform().GetPos();
+  glm::vec3 cam_dir = cam->GetTransform().GetForward();
 
   z_near_ = cam->GetZNear();
   z_far_ = cam->GetZFar();

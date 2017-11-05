@@ -15,7 +15,7 @@ GameObject::GameObject(GameObject* parent, const Transform_t& transform)
     , transform_(new Transform_t{transform})
     , enabled_(true) {
   if (parent && transform.GetParent() == nullptr) {
-    transform_->SetParent(&parent_->transform());
+    transform_->SetParent(&parent_->GetTransform());
   }
 }
 

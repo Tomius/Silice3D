@@ -44,21 +44,21 @@ class GameObject {
 
   void EnumerateConstChildren(bool recursive, const std::function<void(const GameObject*)>& processor) const;
 
-  size_t children_count(bool recursive) const;
+  size_t GetChildrenCount(bool recursive) const;
 
-  Transform& transform() { return *transform_.get(); }
-  const Transform& transform() const { return *transform_.get(); }
+  Transform& GetTransform() { return *transform_.get(); }
+  const Transform& GetTransform() const { return *transform_.get(); }
 
-  GameObject* parent() { return parent_; }
-  const GameObject* parent() const { return parent_; }
-  void set_parent(GameObject* parent);
+  GameObject* GetParent() { return parent_; }
+  const GameObject* GetParent() const { return parent_; }
+  void SetParent(GameObject* parent);
 
-  Scene* scene() { return scene_; }
-  const Scene* scene() const { return scene_; }
-  void set_scene(Scene* scene) { scene_ = scene; }
+  Scene* GetScene() { return scene_; }
+  const Scene* GetScene() const { return scene_; }
+  void SetScene(Scene* scene) { scene_ = scene; }
 
-  bool enabled() const { return enabled_; }
-  void set_enabled(bool value) { enabled_ = value; }
+  bool IsEnabled() const { return enabled_; }
+  void SetIsEnabled(bool value) { enabled_ = value; }
 
   virtual void Render() {}
   virtual void ShadowRender(const ICamera& /*shadow_camera*/) {}

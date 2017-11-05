@@ -9,7 +9,7 @@ MeshObjectBatchRenderer::MeshObjectBatchRenderer(GameObject* parent)
   : GameObject(parent) { }
 
 void MeshObjectBatchRenderer::Update() {
-  MeshRendererCache* cache = scene()->mesh_cache();
+  MeshRendererCache* cache = GetScene()->GetMeshCache();
   for (auto& pair : *cache) {
     pair.second->ClearRenderBatch();
     pair.second->ClearShadowRenderBatch();
@@ -17,16 +17,16 @@ void MeshObjectBatchRenderer::Update() {
 }
 
 void MeshObjectBatchRenderer::Render() {
-  MeshRendererCache* cache = scene()->mesh_cache();
+  MeshRendererCache* cache = GetScene()->GetMeshCache();
   for (auto& pair : *cache) {
-    pair.second->RenderBatch(scene());
+    pair.second->RenderBatch(GetScene());
   }
 }
 
 void MeshObjectBatchRenderer::ShadowRender(const ICamera& shadow_camera) {
-  MeshRendererCache* cache = scene()->mesh_cache();
+  MeshRendererCache* cache = GetScene()->GetMeshCache();
   for (auto& pair : *cache) {
-    pair.second->ShadowRenderBatch(scene(), shadow_camera);
+    pair.second->ShadowRenderBatch(GetScene(), shadow_camera);
   }
 }
 
