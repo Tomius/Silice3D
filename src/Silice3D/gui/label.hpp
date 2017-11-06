@@ -22,26 +22,26 @@ class Label : public GameObject { // TODO: text rendering without a GameObject
         const glm::vec4& color = glm::vec4{1.0});
   virtual ~Label();
 
-  glm::vec2 normalized_position() const;
-  void set_normalized_position(glm::vec2 pos);
+  glm::vec2 GetNormalizedPosition() const;
+  void SetNormalizedPosition(const glm::vec2& pos);
 
-  glm::ivec2 display_position() const;
-  void set_display_position(glm::ivec2 pos);
+  glm::ivec2 GetDisplayPosition() const;
+  void SetDisplayPosition(const glm::ivec2& pos);
 
-  std::string text() const;
-  void set_text(const std::string& text);
+  std::string GetText() const;
+  void SetText(const std::string& text);
 
-  glm::vec4 color() const;
-  void set_color(const glm::vec4& color);
+  glm::vec4 GetColor() const;
+  void SetColor(const glm::vec4& color);
 
-  float scale() const;
-  void set_scale(float scale);
+  float GetScale() const;
+  void SetScale(float scale);
 
-  HorizontalAlignment horizontal_alignment() const;
-  void set_horizontal_alignment(const HorizontalAlignment& align);
+  HorizontalAlignment GetHorizontalAlignment() const;
+  void SetHorizontalAlignment(const HorizontalAlignment& align);
 
-  VerticalAlignment vertical_alignment() const;
-  void set_vertical_alignment(const VerticalAlignment& align);
+  VerticalAlignment GetVerticalAlignment() const;
+  void SetVerticalAlignment(const VerticalAlignment& align);
 
 public:
   static bool InitializeTextRendering();

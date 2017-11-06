@@ -11,13 +11,14 @@
 namespace Silice3D {
 
 class DebugTexture {
-  gl::RectangleShape rect_;
-  ShaderProgram prog_;
-
 public:
   DebugTexture(ShaderManager* shader_manager);
 
   void Render(const gl::Texture2D& tex);
+
+private:
+  gl::RectangleShape rect_;
+  ShaderProgram prog_;
 };
 
 } // namespace Silice3D

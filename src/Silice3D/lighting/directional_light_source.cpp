@@ -17,7 +17,7 @@ DirectionalLightSource::DirectionalLightSource(GameObject* parent, const glm::ve
   , shadow_caster_{AddComponent<ShadowCaster>(shadow_map_size, shadow_cascades_count)}
 { }
 
-void DirectionalLightSource::set_no_shadow_caster() {
+void DirectionalLightSource::SetNoShadowCaster() {
   if (shadow_caster_ != nullptr) {
     RemoveComponent(shadow_caster_);
   }
@@ -25,7 +25,7 @@ void DirectionalLightSource::set_no_shadow_caster() {
   shadow_caster_ = nullptr;
 }
 
-void DirectionalLightSource::set_shadow_caster(size_t shadow_map_size, size_t shadow_cascades_count) {
+void DirectionalLightSource::SetShadowCaster(size_t shadow_map_size, size_t shadow_cascades_count) {
   if (shadow_caster_ != nullptr) {
     RemoveComponent(shadow_caster_);
   }

@@ -12,8 +12,8 @@ class PointLightSource : public LightSource {
 public:
   PointLightSource(GameObject* parent, const glm::vec3& color, const glm::vec3& attenuation);
 
-  glm::vec3 attenuation() const { return attenuation_; }
-  void set_attenuation(const glm::vec3& attenuation) { attenuation_ = attenuation; }
+  glm::vec3 GetAttenuation() const { return attenuation_; }
+  void SetAttenuation(const glm::vec3& attenuation) { attenuation_ = attenuation; }
 
 private:
   // .x: quadratic, .y: linear, .z: constant

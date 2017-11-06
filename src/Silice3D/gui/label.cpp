@@ -22,68 +22,68 @@ Label::Label(GameObject* parent, const std::string& text,
     , scale_(scale)
     , color_(color)
     , text_(gltCreateText()) {
-  set_text(text);
+  SetText(text);
 }
 
 Label::~Label() {
   gltDeleteText(text_);
 }
 
-glm::vec2 Label::normalized_position() const {
+glm::vec2 Label::GetNormalizedPosition() const {
   return normalized_pos_;
 }
 
-void Label::set_normalized_position(glm::vec2 pos) {
+void Label::SetNormalizedPosition(const glm::vec2& pos) {
   normalized_pos_ = pos;
   display_pos_ = glm::ivec2(GetScene()->GetEngine()->GetWindowSize() * pos);
 }
 
-glm::ivec2 Label::display_position() const {
+glm::ivec2 Label::GetDisplayPosition() const {
   return display_pos_;
 }
 
-void Label::set_display_position(glm::ivec2 pos) {
+void Label::SetDisplayPosition(const glm::ivec2& pos) {
   display_pos_ = pos;
   normalized_pos_ = glm::vec2(GetScene()->GetEngine()->GetWindowSize()) / glm::vec2(pos);
 }
 
-std::string Label::text() const {
+std::string Label::GetText() const {
   return gltGetText(text_);
 }
 
-void Label::set_text(const std::string& text) {
+void Label::SetText(const std::string& text) {
   gltSetText(text_, text.c_str());
 }
 
-glm::vec4 Label::color() const {
+glm::vec4 Label::GetColor() const {
   return color_;
 }
 
-void Label::set_color(const glm::vec4& color) {
+void Label::SetColor(const glm::vec4& color) {
   color_ = color;
 }
 
-float Label::scale() const {
+float Label::GetScale() const {
   return scale_;
 }
 
-void Label::set_scale(float scale) {
+void Label::SetScale(float scale) {
   scale_ = scale;
 }
 
-HorizontalAlignment Label::horizontal_alignment() const {
+HorizontalAlignment Label::GetHorizontalAlignment() const {
   return horizontal_alignment_;
 }
 
-void Label::set_horizontal_alignment(const HorizontalAlignment& align) {
+void Label::SetHorizontalAlignment(const HorizontalAlignment& align) {
   horizontal_alignment_ = align;
 }
 
-VerticalAlignment Label::vertical_alignment() const {
+VerticalAlignment Label::GetVerticalAlignment() const {
   return vertical_alignment_;
 }
 
-void Label::set_vertical_alignment(const VerticalAlignment& align) {
+void Label::SetVerticalAlignment(const VerticalAlignment& align) {
   vertical_alignment_ = align;
 }
 

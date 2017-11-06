@@ -14,15 +14,15 @@ class ShadowCaster : public GameObject {
  public:
   ShadowCaster(GameObject* parent, size_t shadow_map_size, size_t cascades_count);
 
-  gl::Texture2DArray& shadow_texture();
-  const gl::Texture2DArray& shadow_texture() const;
+  gl::Texture2DArray& GetShadowTexture();
+  const gl::Texture2DArray& GetShadowTexture() const;
 
   void FillShadowMap(Scene* scene);
 
   glm::mat4 GetProjectionMatrix(unsigned cascade_idx) const;
   glm::mat4 GetCameraMatrix(unsigned cascade_idx) const;
 
-  size_t cascades_count() const;
+  size_t GetCascadesCount() const;
 
  private:
   gl::Texture2DArray depth_tex_;

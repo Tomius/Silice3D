@@ -12,8 +12,8 @@ class LightSource : public GameObject {
 public:
   LightSource (GameObject* parent, const glm::vec3& color);
 
-  glm::vec3 color() const { return color_; }
-  void set_color(const glm::vec3& color) { color_ = color; }
+  glm::vec3 GetColor() const { return color_; }
+  void SetColor(const glm::vec3& color) { color_ = color; }
 
 private:
   glm::vec3 color_ = {0.0, 0.0, 0.0};

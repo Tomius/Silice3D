@@ -60,11 +60,11 @@ glm::mat4 ShadowCaster::GetCameraMatrix(unsigned cascade_idx) const {
     glm::vec3(0, 1, 0));
 }
 
-gl::Texture2DArray& ShadowCaster::shadow_texture() {
+gl::Texture2DArray& ShadowCaster::GetShadowTexture() {
   return depth_tex_;
 }
 
-const gl::Texture2DArray& ShadowCaster::shadow_texture() const {
+const gl::Texture2DArray& ShadowCaster::GetShadowTexture() const {
   return depth_tex_;
 }
 
@@ -116,7 +116,7 @@ void ShadowCaster::FillShadowMap(Scene* scene) {
   }
 }
 
-size_t ShadowCaster::cascades_count() const {
+size_t ShadowCaster::GetCascadesCount() const {
   return fbos_.size();
 }
 

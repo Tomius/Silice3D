@@ -18,8 +18,8 @@ class DebugShape : public GameObject {
  public:
   DebugShape(GameObject* parent, const glm::vec3& color = glm::vec3{0.0});
 
-  glm::vec3 color() { return color_; }
-  void set_color(const glm::vec3& color) { color_ = color; }
+  glm::vec3 GetColor() { return color_; }
+  void SetColor(const glm::vec3& color) { color_ = color; }
 
  private:
   Shape_t shape_;

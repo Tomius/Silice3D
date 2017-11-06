@@ -15,9 +15,10 @@ public:
   DirectionalLightSource(GameObject* parent, const glm::vec3& color);
   DirectionalLightSource(GameObject* parent, const glm::vec3& color, size_t shadow_map_size, size_t shadow_cascades_count);
 
-  ShadowCaster* shadow_caster() const { return shadow_caster_; }
-  void set_no_shadow_caster();
-  void set_shadow_caster(size_t shadow_map_size, size_t shadow_cascades_count);
+  ShadowCaster* GetShadowCaster() const { return shadow_caster_; }
+
+  void SetNoShadowCaster();
+  void SetShadowCaster(size_t shadow_map_size, size_t shadow_cascades_count);
 
 private:
   ShadowCaster* shadow_caster_ = nullptr;

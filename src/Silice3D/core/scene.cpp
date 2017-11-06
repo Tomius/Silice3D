@@ -79,17 +79,17 @@ Scene::Scene(GameEngine* engine)
 
       std::string uniform_name = "uDirectionalLights[" + std::to_string(current_light_index++) + "]";
       gl::Uniform<glm::vec3>(prog, uniform_name + ".direction") = light->GetTransform().GetPos();
-      gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->color();
-      ShadowCaster* shadow_caster = light->shadow_caster();
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->GetColor();
+      ShadowCaster* shadow_caster = light->GetShadowCaster();
       if (shadow_caster == nullptr) {
         gl::Uniform<int>(prog, uniform_name + ".cascades_count") = 0;
       } else {
-        gl::Uniform<int>(prog, uniform_name + ".cascades_count") = shadow_caster->cascades_count();
-        GLuint64 bindless_handle = shadow_caster->shadow_texture().bindless_handle();
+        gl::Uniform<int>(prog, uniform_name + ".cascades_count") = shadow_caster->GetCascadesCount();
+        GLuint64 bindless_handle = shadow_caster->GetShadowTexture().bindless_handle();
         static_assert(sizeof(GLuint64) == sizeof(glm::uvec2), "Expected 32 bit ints");
         gl::Uniform<glm::uvec2>(prog, uniform_name + ".shadowMapId") = *reinterpret_cast<glm::uvec2*>(&bindless_handle);
 
-        for (int i = 0; i < shadow_caster->cascades_count(); ++i) {
+        for (int i = 0; i < shadow_caster->GetCascadesCount(); ++i) {
           std::string shadow_cp_uniform_name = uniform_name + ".shadowCP[" + std::to_string(i) + "]";
           gl::Uniform<glm::mat4>(prog, shadow_cp_uniform_name) = shadow_caster->GetProjectionMatrix(i) * shadow_caster->GetCameraMatrix(i);
         }
@@ -104,7 +104,7 @@ Scene::Scene(GameEngine* engine)
 
       std::string uniform_name = "uPointLights[" + std::to_string(current_light_index++) + "]";
       gl::Uniform<glm::vec3>(prog, uniform_name + ".position") = light->GetTransform().GetPos();
-      gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->color();
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->GetColor();
     }
 
     gl::Uniform<int>(prog, "uDirectionalLightCount") = std::min(directional_light_sources_.size(), kMaxDirLightCount);
@@ -177,7 +177,7 @@ void Scene::UpdateAll() {
 void Scene::RenderAll() {
   if (camera_) {
     for (DirectionalLightSource* light_source : directional_light_sources_) {
-      ShadowCaster* shadow_caster = light_source->shadow_caster();
+      ShadowCaster* shadow_caster = light_source->GetShadowCaster();
       if (shadow_caster != nullptr) {
         shadow_caster->FillShadowMap(this);
       }

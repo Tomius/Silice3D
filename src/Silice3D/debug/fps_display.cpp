@@ -10,21 +10,21 @@ namespace Silice3D {
 FpsDisplay::FpsDisplay(GameObject* parent)
     : GameObject(parent) {
   fps_label_ = AddComponent<Label> ("FPS:      ", glm::vec2{0.99, 0});
-  fps_label_->set_horizontal_alignment(HorizontalAlignment::kRight);
-  fps_label_->set_vertical_alignment(VerticalAlignment::kTop);
-  fps_label_->set_scale(1.5);
+  fps_label_->SetHorizontalAlignment(HorizontalAlignment::kRight);
+  fps_label_->SetVerticalAlignment(VerticalAlignment::kTop);
+  fps_label_->SetScale(1.5);
 
   object_count_label_ = AddComponent<Label> ("Object count:      ", glm::vec2{0.99, 0.04});
-  object_count_label_->set_horizontal_alignment(HorizontalAlignment::kRight);
-  object_count_label_->set_vertical_alignment(VerticalAlignment::kTop);
+  object_count_label_->SetHorizontalAlignment(HorizontalAlignment::kRight);
+  object_count_label_->SetVerticalAlignment(VerticalAlignment::kTop);
 
   triangle_count_label_ = AddComponent<Label> ("Triangle count:      ", glm::vec2{0.99, 0.055});
-  triangle_count_label_->set_horizontal_alignment(HorizontalAlignment::kRight);
-  triangle_count_label_->set_vertical_alignment(VerticalAlignment::kTop);
+  triangle_count_label_->SetHorizontalAlignment(HorizontalAlignment::kRight);
+  triangle_count_label_->SetVerticalAlignment(VerticalAlignment::kTop);
 
   triangle_per_sec_label_ = AddComponent<Label> ("Triangle per sec:      ", glm::vec2{0.99, 0.07});
-  triangle_per_sec_label_->set_horizontal_alignment(HorizontalAlignment::kRight);
-  triangle_per_sec_label_->set_vertical_alignment(VerticalAlignment::kTop);
+  triangle_per_sec_label_->SetHorizontalAlignment(HorizontalAlignment::kRight);
+  triangle_per_sec_label_->SetVerticalAlignment(VerticalAlignment::kTop);
 }
 
 void FpsDisplay::Update() {
@@ -39,27 +39,27 @@ void FpsDisplay::Update() {
       {
         std::stringstream ss;
         ss << "FPS: " << std::fixed << std::setw(6) << std::setprecision(2) << fps;
-        fps_label_->set_text(ss.str());
+        fps_label_->SetText(ss.str());
       }
 
       size_t object_count = GetScene()->GetChildrenCount(true);
       {
         std::stringstream ss;
         ss << "Object count: " << std::fixed << std::setw(6) << std::setprecision(2) << object_count;
-        object_count_label_->set_text(ss.str());
+        object_count_label_->SetText(ss.str());
       }
 
       size_t triangle_count = GetScene()->GetTriangleCount();
       {
         std::stringstream ss;
         ss << "Triangle count: " << std::fixed << std::setw(6) << std::setprecision(2) << triangle_count / 1024.0 << "K";
-        triangle_count_label_->set_text(ss.str());
+        triangle_count_label_->SetText(ss.str());
       }
 
       {
         std::stringstream ss;
         ss << "Triangle per sec: " << std::fixed << std::setw(6) << std::setprecision(2) << triangle_count*fps / 1024 / 1024 << "M";
-        triangle_per_sec_label_->set_text(ss.str());
+        triangle_per_sec_label_->SetText(ss.str());
       }
 
 
@@ -79,10 +79,10 @@ void FpsDisplay::RemovedFromScene() {
 
 void FpsDisplay::ScreenResized(size_t /*width*/, size_t height) {
   float scale = 0.25 + (height / 1080.0) * 0.75;
-  fps_label_->set_scale(1.5 * scale);
-  object_count_label_->set_scale(scale);
-  triangle_count_label_->set_scale(scale);
-  triangle_per_sec_label_->set_scale(scale);
+  fps_label_->SetScale(1.5 * scale);
+  object_count_label_->SetScale(scale);
+  triangle_count_label_->SetScale(scale);
+  triangle_per_sec_label_->SetScale(scale);
 }
 
 }
