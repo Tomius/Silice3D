@@ -86,15 +86,6 @@ void GameObject::Render2DAll() {
   }
 }
 
-void GameObject::ScreenResizedCleanAll() {
-  if (!enabled_) { return; }
-
-  for (auto& component : components_) {
-    component->ScreenResizedCleanAll();
-  }
-  ScreenResizedClean();
-}
-
 void GameObject::ScreenResizedAll(size_t width, size_t height) {
   if (!enabled_) { return; }
 

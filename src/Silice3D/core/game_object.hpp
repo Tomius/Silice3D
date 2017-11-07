@@ -67,7 +67,6 @@ class GameObject {
   virtual void UpdatePhysics() {}
   virtual void AddedToScene() {}
   virtual void RemovedFromScene() {}
-  virtual void ScreenResizedClean() {}
   virtual void ScreenResized(size_t /*width*/, size_t /*height*/) {}
   virtual void KeyAction(int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/) {}
   virtual void CharTyped(unsigned /*codepoint*/) {}
@@ -82,7 +81,6 @@ class GameObject {
   virtual void UpdatePhysicsAll();
   virtual void AddedToSceneAll();
   virtual void RemovedFromSceneAll();
-  virtual void ScreenResizedCleanAll();
   virtual void ScreenResizedAll(size_t width, size_t height);
   virtual void KeyActionAll(int key, int scancode, int action, int mods);
   virtual void CharTypedAll(unsigned codepoint);
