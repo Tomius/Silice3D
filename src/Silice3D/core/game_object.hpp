@@ -24,44 +24,63 @@ class ICamera;
 
 class GameObject {
  public:
+  // Creates a GameObject with the specified parent and initial transformation
   template<typename Transform_t = Transform>
   explicit GameObject(GameObject* parent,
                       const Transform_t& initial_transform = Transform_t{});
+
+  // Destructs the GameObject
   virtual ~GameObject() = default;
 
+  // Calls the constructor of a T type GameObject with Args... arguments,
+  // and sets the created object as a component of this one
   template<typename T, typename... Args>
   T* AddComponent(Args&&... contructor_args);
 
+  // Add a GameObject as a component of this one, and assumes ownership of it.
   virtual GameObject* AddComponent(std::unique_ptr<GameObject>&& component);
 
   // Detaches a componenent from its parent, and adopts it.
   // Returns true on success.
   virtual bool StealComponent(GameObject* component_to_steal);
 
+  // Detaches a component, that has been previously added to this one
   virtual void RemoveComponent(GameObject* component_to_remove);
 
+  // Calls the processor function with all of the children component of this
+  // GameObject. If recursive is true, includes the children's of children too.
   void EnumerateChildren(bool recursive, const std::function<void(GameObject*)>& processor);
 
+  // Calls the processor function with all of the children component of this
+  // GameObject. If recursive is true, includes the children's of children too.
   void EnumerateConstChildren(bool recursive, const std::function<void(const GameObject*)>& processor) const;
 
+  // Returns the number of components this GameObjects has. If the recursive
+  // paramter is true, returns the size of the hierarciycal tree below this
+  // GameObject.
   size_t GetChildrenCount(bool recursive) const;
 
-  Transform& GetTransform() { return *transform_.get(); }
-  const Transform& GetTransform() const { return *transform_.get(); }
+  // Returns the transformation of this GameObject.
+  Transform& GetTransform();
+  const Transform& GetTransform() const;
 
-  GameObject* GetParent() { return parent_; }
-  const GameObject* GetParent() const { return parent_; }
-  void SetParent(GameObject* parent);
+  // Returns the parent GameObject, who owns this one. If this GameObject is a
+  // Scene, the parent may be nullptr. To change this ownership, use StealComponent.
+  GameObject* GetParent();
+  const GameObject* GetParent() const;
 
-  Scene* GetScene() { return scene_; }
-  const Scene* GetScene() const { return scene_; }
-  void SetScene(Scene* scene) { scene_ = scene; }
+  // Returns the Scene this GameObject is attached to.
+  Scene* GetScene();
+  const Scene* GetScene() const;
 
-  bool IsEnabled() const { return enabled_; }
-  void SetIsEnabled(bool value) { enabled_ = value; }
+  // Callback functions are not called for disabled GameObjects.
+  // Below are the setters and getters for this state
+  bool IsEnabled() const;
+  void SetIsEnabled(bool value);
 
+  // Callback functions for the current GameObject
   virtual void Render() {}
-  virtual void ShadowRender(const ICamera& /*shadow_camera*/) {}
+  virtual void RenderDepthOnly(const ICamera& /*camera*/) {}
   virtual void Render2D() {}
   virtual void Update() {}
   virtual void UpdatePhysics() {}
@@ -74,19 +93,20 @@ class GameObject {
   virtual void MouseButtonPressed(int /*button*/, int /*action*/, int /*mods*/) {}
   virtual void MouseMoved(double /*xpos*/, double /*ypos*/) {}
 
-  virtual void RenderAll();
-  virtual void ShadowRenderAll(const ICamera& shadow_camera);
-  virtual void Render2DAll();
-  virtual void UpdateAll();
-  virtual void UpdatePhysicsAll();
-  virtual void AddedToSceneAll();
-  virtual void RemovedFromSceneAll();
-  virtual void ScreenResizedAll(size_t width, size_t height);
-  virtual void KeyActionAll(int key, int scancode, int action, int mods);
-  virtual void CharTypedAll(unsigned codepoint);
-  virtual void MouseScrolledAll(double xoffset, double yoffset);
-  virtual void MouseButtonPressedAll(int button, int action, int mods);
-  virtual void MouseMovedAll(double xpos, double ypos);
+  // Callback functions for the entire tree of componenets owned by this GameObject
+  virtual void RenderRecursive();
+  virtual void RenderDepthOnlyRecursive(const ICamera& camera);
+  virtual void Render2DRecursive();
+  virtual void UpdateRecursive();
+  virtual void UpdatePhysicsRecursive();
+  virtual void AddedToSceneRecursive();
+  virtual void RemovedFromSceneRecursive();
+  virtual void ScreenResizedRecursive(size_t /*width*/, size_t /*height*/);
+  virtual void KeyActionRecursive(int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/);
+  virtual void CharTypedRecursive(unsigned /*codepoint*/);
+  virtual void MouseScrolledRecursive(double /*xoffset*/, double /*yoffset*/);
+  virtual void MouseButtonPressedRecursive(int /*button*/, int /*action*/, int /*mods*/);
+  virtual void MouseMovedRecursive(double /*xpos*/, double /*ypos*/);
 
  protected:
   Scene* scene_;
@@ -99,9 +119,13 @@ class GameObject {
 
   void InternalUpdate();
 
- private:
+ private: // Implementation functions
   void AddNewComponents();
   void RemoveComponents();
+
+ private: // Function callable only by Scene
+  friend class Scene;
+  void SetScene(Scene* scene) { scene_ = scene; }
 };
 
 }  // namespace Silice3D

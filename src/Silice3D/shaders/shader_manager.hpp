@@ -10,9 +10,14 @@ namespace Silice3D {
 
 class ShaderManager {
  public:
-  ShaderFile* publish(const std::string& filename, const gl::ShaderSource& src);
-  ShaderFile* get(const std::string& filename,
-                  const ShaderFile* included_from = nullptr);
+  // Publishes a shader to be accessed in the future, by GetShader
+  ShaderFile* PublishShader(const std::string& shader_name,
+                            const gl::ShaderSource& src);
+
+  // Retrieves the shader that was published with the given name,
+  // or if there was no such shader, tries to load it from file.
+  ShaderFile* GetShader(const std::string& shader_name,
+                        const ShaderFile* included_from = nullptr);
  private:
   std::map<std::string, std::unique_ptr<ShaderFile>> shaders_;
 

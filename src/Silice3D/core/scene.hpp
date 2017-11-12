@@ -88,11 +88,9 @@ class Scene : public GameObject {
   bool physics_thread_should_quit_;
   std::thread physics_thread_;
 
-  virtual void UpdateAll() override;
-
-  virtual void RenderAll() override;
-
-  virtual void Render2DAll() override;
+  virtual void UpdateRecursive() override;
+  virtual void RenderRecursive() override;
+  virtual void Render2DRecursive() override;
 
   virtual void UpdatePhysicsInBackgroundThread();
 };

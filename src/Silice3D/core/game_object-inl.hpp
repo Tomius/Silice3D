@@ -33,6 +33,18 @@ T* GameObject::AddComponent(Args&&... args) {
   }
 }
 
+inline Transform& GameObject::GetTransform() { return *transform_.get(); }
+inline const Transform& GameObject::GetTransform() const { return *transform_.get(); }
+
+inline GameObject* GameObject::GetParent() { return parent_; }
+inline const GameObject* GameObject::GetParent() const { return parent_; }
+
+inline Scene* GameObject::GetScene() { return scene_; }
+inline const Scene* GameObject::GetScene() const { return scene_; }
+
+inline bool GameObject::IsEnabled() const { return enabled_; }
+inline void GameObject::SetIsEnabled(bool value) { enabled_ = value; }
+
 }  // namespace Silice3D
 
 #endif

@@ -4,13 +4,13 @@
 
 namespace Silice3D {
 
-ShaderFile* ShaderManager::publish(const std::string& filename,
-                                   const gl::ShaderSource& src) {
+ShaderFile* ShaderManager::PublishShader(const std::string& filename,
+                                         const gl::ShaderSource& src) {
   return LoadShader(*this, filename, src);
 }
 
-ShaderFile* ShaderManager::get(const std::string& filename,
-                               const ShaderFile* included_from) {
+ShaderFile* ShaderManager::GetShader(const std::string& filename,
+                                     const ShaderFile* included_from) {
   std::string filename_with_correct_extension;
   ShaderFile::GetShaderType(filename, included_from, &filename_with_correct_extension);
 

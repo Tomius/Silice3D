@@ -109,7 +109,7 @@ void ShadowCaster::FillShadowMap(Scene* scene) {
     gl::Viewport(0, 0, size_, size_);
 
     ShadowCasterCamera shadowCamera(this, GetTransform(), GetProjectionMatrix(i), GetCameraMatrix(i), z_far_);
-    scene->ShadowRenderAll(shadowCamera);
+    scene->RenderDepthOnlyRecursive(shadowCamera);
 
     gl::Unbind(fbos_[i]);
     gl::Viewport(0, 0, w_, h_);

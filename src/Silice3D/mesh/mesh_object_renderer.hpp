@@ -27,9 +27,9 @@ public:
   virtual void ClearRenderBatch() override;
   virtual void RenderBatch(Scene* scene) override;
 
-  void AddInstanceToShadowRenderBatch(const GameObject* game_object);
-  virtual void ClearShadowRenderBatch() override;
-  virtual void ShadowRenderBatch(Scene* scene, const ICamera& shadow_camera) override;
+  void AddInstanceToRenderDepthOnlyBatch(const GameObject* game_object);
+  virtual void ClearRenderDepthOnlyBatch() override;
+  virtual void RenderDepthOnlyBatch(Scene* scene, const ICamera& camera) override;
 
   BoundingBox GetBoundingBox(const glm::mat4& transform) const;
 
@@ -70,7 +70,7 @@ private:
   std::unique_ptr<btCollisionShape> bt_shape_;
 
   std::vector<glm::mat4> instance_transforms_;
-  std::vector<glm::mat4> shadow_instance_transforms_;
+  std::vector<glm::mat4> depth_only_instance_transforms_;
 
   bool cast_shadows_ = true;
   bool recieve_shadows_ = true;

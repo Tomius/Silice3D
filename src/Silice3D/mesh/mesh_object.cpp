@@ -33,7 +33,7 @@ void MeshObject::Update() {
     renderer_->AddInstanceToRenderBatch(this);
   }
 
-  renderer_->AddInstanceToShadowRenderBatch(this);
+  renderer_->AddInstanceToRenderDepthOnlyBatch(this);
 }
 
 }   // namespace Silice3D

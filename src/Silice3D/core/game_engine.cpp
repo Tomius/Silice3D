@@ -179,14 +179,14 @@ void GameEngine::KeyCallback(GLFWwindow* window, int key, int scancode,
   }
   GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
   if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
-    game_engine->scene_->KeyActionAll(key, scancode, action, mods);
+    game_engine->scene_->KeyActionRecursive(key, scancode, action, mods);
   }
 }
 
 void GameEngine::CharCallback(GLFWwindow* window, unsigned codepoint) {
   GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
   if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
-    game_engine->scene_->CharTypedAll(codepoint);
+    game_engine->scene_->CharTypedRecursive(codepoint);
   }
 }
 
@@ -201,7 +201,7 @@ void GameEngine::ScreenResizeCallback(GLFWwindow* window, int width, int height)
     } else {
       game_engine->minimized_ = false;
       if (game_engine->scene_) {
-        game_engine->scene_->ScreenResizedAll(width, height);
+        game_engine->scene_->ScreenResizedRecursive(width, height);
       }
     }
   }
@@ -212,7 +212,7 @@ void GameEngine::MouseScrolledCallback(GLFWwindow* window,
                                        double yoffset) {
   GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
   if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
-    game_engine->scene_->MouseScrolledAll(xoffset, yoffset);
+    game_engine->scene_->MouseScrolledRecursive(xoffset, yoffset);
   }
 }
 
@@ -220,14 +220,14 @@ void GameEngine::MouseButtonPressed(GLFWwindow* window, int button,
                                     int action, int mods) {
     GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
     if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
-      game_engine->scene_->MouseButtonPressedAll(button, action, mods);
+      game_engine->scene_->MouseButtonPressedRecursive(button, action, mods);
     }
   }
 
 void GameEngine::MouseMoved(GLFWwindow* window, double xpos, double ypos) {
   GameEngine* game_engine = reinterpret_cast<GameEngine*>(glfwGetWindowUserPointer(window));
   if (game_engine && game_engine->scene_ && !game_engine->new_scene_) {
-    game_engine->scene_->MouseMovedAll(xpos, ypos);
+    game_engine->scene_->MouseMovedRecursive(xpos, ypos);
   }
 }
 

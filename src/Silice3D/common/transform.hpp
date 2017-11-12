@@ -38,8 +38,7 @@ class Transformation {
   // ------ Rotation ------
   virtual quat GetRot() const;
   virtual const quat& GetLocalRot() const;
-  virtual vec3 GetLocalRotationAndScale() const;
-  virtual vec3 GetRotationAndScale() const;
+
   virtual vec3 GetForward() const;
   virtual vec3 GetUp() const;
   virtual vec3 GetRight() const;
@@ -68,6 +67,7 @@ class Transformation {
   // Sets the rotation, so that 'local_space_vec' in local space will be
   // equivalent to 'world_space_vec' in world space.
   virtual void SetRot(const vec3& local_space_vec, const vec3& world_space_vec);
+
   virtual void SetForward(const vec3& new_fwd);
   virtual void SetUp(const vec3& new_up);
   virtual void SetRight(const vec3& new_right);

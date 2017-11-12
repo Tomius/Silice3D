@@ -68,7 +68,7 @@ void ShaderFile::FindIncludes(std::string &src, ShaderManager& shader_manager) {
     std::string included_filename =
         src.substr(start_comma+1, end_comma-start_comma-1);
 
-    ShaderFile *included_shader = shader_manager.get(included_filename, this);
+    ShaderFile *included_shader = shader_manager.GetShader(included_filename, this);
     includes_.push_back(included_shader);
 
     // Replace the include directive with the included statements

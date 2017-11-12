@@ -12,7 +12,7 @@ void MeshObjectBatchRenderer::Update() {
   MeshRendererCache* cache = GetScene()->GetMeshCache();
   for (auto& pair : *cache) {
     pair.second->ClearRenderBatch();
-    pair.second->ClearShadowRenderBatch();
+    pair.second->ClearRenderDepthOnlyBatch();
   }
 }
 
@@ -23,10 +23,10 @@ void MeshObjectBatchRenderer::Render() {
   }
 }
 
-void MeshObjectBatchRenderer::ShadowRender(const ICamera& shadow_camera) {
+void MeshObjectBatchRenderer::RenderDepthOnly(const ICamera& camera) {
   MeshRendererCache* cache = GetScene()->GetMeshCache();
   for (auto& pair : *cache) {
-    pair.second->ShadowRenderBatch(GetScene(), shadow_camera);
+    pair.second->RenderDepthOnlyBatch(GetScene(), camera);
   }
 }
 

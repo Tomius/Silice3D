@@ -67,7 +67,7 @@ Scene::Scene(GameEngine* engine)
     bt_world_->setGravity(btVector3(0, -9.81, 0));
   }
 
-  GetShaderManager()->get("lighting.frag")->SetUpdateFunc([this](const gl::Program& prog) {
+  GetShaderManager()->GetShader("lighting.frag")->SetUpdateFunc([this](const gl::Program& prog) {
     static constexpr const size_t kMaxDirLightCount = 16;
     static constexpr const size_t kMaxPointLightCount = 128;
 
@@ -121,7 +121,7 @@ Scene::~Scene() {
 
   // Signal object's that they will be removed from the scene
   dynamic_cast<btFastDestructableDynamicsWorld*>(bt_world_.get())->aboutToDestruct();
-  RemovedFromSceneAll();
+  RemovedFromSceneRecursive();
 }
 
 GLFWwindow* Scene::GetWindow() const {
@@ -134,12 +134,12 @@ ShaderManager* Scene::GetShaderManager() const {
 
 void Scene::Turn() {
   physics_finished_.WaitOne();
-  UpdatePhysicsAll();
+  UpdatePhysicsRecursive();
   physics_can_run_.Set();
 
-  UpdateAll();
-  RenderAll();
-  Render2DAll();
+  UpdateRecursive();
+  RenderRecursive();
+  Render2DRecursive();
 }
 
 void Scene::RegisterLightSource(PointLightSource* light) {
@@ -166,15 +166,15 @@ size_t Scene::GetTriangleCount() {
   return sum_triangle_count;
 }
 
-void Scene::UpdateAll() {
+void Scene::UpdateRecursive() {
   game_time_.Tick();
   environment_time_.Tick();
   camera_time_.Tick();
 
-  GameObject::UpdateAll();
+  GameObject::UpdateRecursive();
 }
 
-void Scene::RenderAll() {
+void Scene::RenderRecursive() {
   if (camera_) {
     for (DirectionalLightSource* light_source : directional_light_sources_) {
       ShadowCaster* shadow_caster = light_source->GetShadowCaster();
@@ -185,21 +185,21 @@ void Scene::RenderAll() {
 
     gl::DepthFunc(gl::kLess);
     gl::DrawBuffer(gl::kNone);  // don't write into the color buffer
-    GameObject::ShadowRenderAll(*camera_);
-    // GameObject::RenderAll();
+    GameObject::RenderDepthOnlyRecursive(*camera_);
+    // GameObject::RenderRecursive();
     gl::DepthFunc(gl::kLequal);
     gl::DrawBuffer(gl::kBack);
-    GameObject::RenderAll();
+    GameObject::RenderRecursive();
   }
 }
 
-void Scene::Render2DAll() {
+void Scene::Render2DRecursive() {
   gl::TemporarySet capabilities{{{gl::kBlend, true},
                                  {gl::kCullFace, false},
                                  {gl::kDepthTest, false}}};
   gl::BlendFunc(gl::kSrcAlpha, gl::kOneMinusSrcAlpha);
 
-  GameObject::Render2DAll();
+  GameObject::Render2DRecursive();
 }
 
 void Scene::UpdatePhysicsInBackgroundThread() {

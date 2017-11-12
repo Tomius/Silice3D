@@ -14,7 +14,7 @@ class MeshObjectBatchRenderer : public GameObject {
  private:
   virtual void Update() override;
   virtual void Render() override;
-  virtual void ShadowRender(const ICamera& shadow_camera) override;
+  virtual void RenderDepthOnly(const ICamera& camera) override;
 };
 
 }   // namespace Silice3D

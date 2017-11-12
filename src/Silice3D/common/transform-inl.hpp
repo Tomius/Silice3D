@@ -144,20 +144,6 @@ void Transformation<T>::SetRot(const vec3& local_space_vec, const vec3& world_sp
 }
 
 template<typename T>
-glm::tvec3<T> Transformation<T>::GetLocalRotationAndScale() const {
-  return scale_ * rot_;
-}
-
-template<typename T>
-glm::tvec3<T> Transformation<T>::GetRotationAndScale() const {
-  if (parent_) {
-    return parent_->GetRotationAndScale() * scale_ * rot_;
-  } else {
-    return scale_ * rot_;
-  }
-}
-
-template<typename T>
 glm::tvec3<T> Transformation<T>::GetForward() const {
   return glm::normalize(GetRot() * vec3(0, 0, -1));
 }

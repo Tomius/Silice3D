@@ -52,128 +52,121 @@ size_t GameObject::GetChildrenCount(bool recursive) const {
   return count;
 }
 
-void GameObject::SetParent(GameObject* parent) {
-  parent_ = parent;
-  if (parent) {
-    transform_->SetParent(&parent_->GetTransform());
-  }
-}
-
-void GameObject::RenderAll() {
+void GameObject::RenderRecursive() {
   if (!enabled_) { return; }
 
   Render();
   for (auto& component : components_) {
-    component->RenderAll();
+    component->RenderRecursive();
   }
 }
 
-void GameObject::ShadowRenderAll(const ICamera& shadow_camera) {
+void GameObject::RenderDepthOnlyRecursive(const ICamera& camera) {
   if (!enabled_) { return; }
 
-  ShadowRender(shadow_camera);
+  RenderDepthOnly(camera);
   for (auto& component : components_) {
-    component->ShadowRenderAll(shadow_camera);
+    component->RenderDepthOnlyRecursive(camera);
   }
 }
 
-void GameObject::Render2DAll() {
+void GameObject::Render2DRecursive() {
   if (!enabled_) { return; }
 
   Render2D();
   for (auto& component : components_) {
-    component->Render2DAll();
+    component->Render2DRecursive();
   }
 }
 
-void GameObject::ScreenResizedAll(size_t width, size_t height) {
+void GameObject::ScreenResizedRecursive(size_t width, size_t height) {
   if (!enabled_) { return; }
 
   ScreenResized(width, height);
   for (auto& component : components_) {
-    component->ScreenResizedAll(width, height);
+    component->ScreenResizedRecursive(width, height);
   }
 }
 
-void GameObject::UpdateAll() {
+void GameObject::UpdateRecursive() {
   if (!enabled_) { return; }
 
   InternalUpdate();
   Update();
   for (auto& component : components_) {
-    component->UpdateAll();
+    component->UpdateRecursive();
   }
 }
 
-void GameObject::UpdatePhysicsAll() {
+void GameObject::UpdatePhysicsRecursive() {
   if (!enabled_) { return; }
 
   UpdatePhysics();
   for (auto& component : components_) {
-    component->UpdatePhysicsAll();
+    component->UpdatePhysicsRecursive();
   }
 }
 
-void GameObject::AddedToSceneAll() {
+void GameObject::AddedToSceneRecursive() {
   if (!enabled_) { return; }
 
   AddedToScene();
   for (auto& component : components_) {
-    component->AddedToSceneAll();
+    component->AddedToSceneRecursive();
   }
 }
 
-void GameObject::RemovedFromSceneAll() {
+void GameObject::RemovedFromSceneRecursive() {
   if (!enabled_) { return; }
 
   RemovedFromScene();
   for (auto& component : components_) {
-    component->RemovedFromSceneAll();
+    component->RemovedFromSceneRecursive();
   }
 }
 
-void GameObject::KeyActionAll(int key, int scancode, int action, int mods) {
+void GameObject::KeyActionRecursive(int key, int scancode, int action, int mods) {
   if (!enabled_) { return; }
 
   KeyAction(key, scancode, action, mods);
   for (auto& component : components_) {
-    component->KeyActionAll(key, scancode, action, mods);
+    component->KeyActionRecursive(key, scancode, action, mods);
   }
 }
 
-void GameObject::CharTypedAll(unsigned codepoint) {
+void GameObject::CharTypedRecursive(unsigned codepoint) {
   if (!enabled_) { return; }
 
   CharTyped(codepoint);
   for (auto& component : components_) {
-    component->CharTypedAll(codepoint);
+    component->CharTypedRecursive(codepoint);
   }
 }
 
-void GameObject::MouseScrolledAll(double xoffset, double yoffset) {
+void GameObject::MouseScrolledRecursive(double xoffset, double yoffset) {
   if (!enabled_) { return; }
 
   MouseScrolled(xoffset, yoffset);
   for (auto& component : components_) {
-    component->MouseScrolledAll(xoffset, yoffset);
+    component->MouseScrolledRecursive(xoffset, yoffset);
   }
 }
 
-void GameObject::MouseButtonPressedAll(int button, int action, int mods) {
+void GameObject::MouseButtonPressedRecursive(int button, int action, int mods) {
   if (!enabled_) { return; }
 
   MouseButtonPressed(button, action, mods);
   for (auto& component : components_) {
-    component->MouseButtonPressedAll(button, action, mods);
+    component->MouseButtonPressedRecursive(button, action, mods);
   }
 }
 
-void GameObject::MouseMovedAll(double xpos, double ypos) {
+void GameObject::MouseMovedRecursive(double xpos, double ypos) {
   if (!enabled_) { return; }
 
   MouseMoved(xpos, ypos);
   for (auto& component : components_) {
-    component->MouseMovedAll(xpos, ypos);
+    component->MouseMovedRecursive(xpos, ypos);
   }
 }
 
@@ -188,7 +181,7 @@ void GameObject::AddNewComponents() {
     int width, height;
     glfwGetWindowSize(GetScene()->GetWindow(), &width, &height);
     for (const auto& component : components_just_added_) {
-      component->ScreenResizedAll(width, height);
+      component->ScreenResizedRecursive(width, height);
     }
 
     // move them to their new place
@@ -203,7 +196,7 @@ void GameObject::AddNewComponents() {
 void GameObject::RemoveComponents() {
   if (!components_to_remove_.empty()) {
     for (GameObject* go : components_to_remove_) {
-      go->RemovedFromSceneAll();
+      go->RemovedFromSceneRecursive();
     }
 
     components_.erase(std::remove_if(components_.begin(), components_.end(),

@@ -17,8 +17,8 @@ public:
   virtual void ClearRenderBatch() = 0;
   virtual void RenderBatch(Scene* scene) = 0;
 
-  virtual void ClearShadowRenderBatch() = 0;
-  virtual void ShadowRenderBatch(Scene* scene, const ICamera& shadow_camera) = 0;
+  virtual void ClearRenderDepthOnlyBatch() = 0;
+  virtual void RenderDepthOnlyBatch(Scene* scene, const ICamera& camera) = 0;
 
   virtual size_t GetTriangleCount() const = 0;
 

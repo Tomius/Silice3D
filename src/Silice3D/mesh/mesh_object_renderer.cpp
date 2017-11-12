@@ -20,12 +20,12 @@ MeshObjectRenderer::MeshObjectRenderer (const std::string& mesh_path,
 
 MeshObjectRenderer::ProgramData::ProgramData(ShaderManager* shader_manager,
                                              const std::string& vertex_shader)
-    : basic_prog_(shader_manager->get(vertex_shader),
-                  shader_manager->get("mesh.frag"))
-    , shadow_recieve_prog_(shader_manager->get(vertex_shader),
-                           shader_manager->get("mesh_shadow.frag"))
-    , shadow_cast_prog_(shader_manager->get(vertex_shader),
-                        shader_manager->get("shadow.frag"))
+    : basic_prog_(shader_manager->GetShader(vertex_shader),
+                  shader_manager->GetShader("mesh.frag"))
+    , shadow_recieve_prog_(shader_manager->GetShader(vertex_shader),
+                           shader_manager->GetShader("mesh_shadow.frag"))
+    , shadow_cast_prog_(shader_manager->GetShader(vertex_shader),
+                        shader_manager->GetShader("shadow.frag"))
 
     , bp_uProjectionMatrix_(basic_prog_, "uProjectionMatrix")
     , bp_uCameraMatrix_(basic_prog_, "uCameraMatrix")
@@ -89,26 +89,26 @@ void MeshObjectRenderer::RenderBatch(Scene* scene) {
   gl::UnuseProgram();
 }
 
-void MeshObjectRenderer::AddInstanceToShadowRenderBatch(const GameObject* game_object) {
-  shadow_instance_transforms_.push_back(game_object->GetTransform().GetMatrix());
+void MeshObjectRenderer::AddInstanceToRenderDepthOnlyBatch(const GameObject* game_object) {
+  depth_only_instance_transforms_.push_back(game_object->GetTransform().GetMatrix());
 }
 
-void MeshObjectRenderer::ClearShadowRenderBatch() {
-  shadow_instance_transforms_.clear();
+void MeshObjectRenderer::ClearRenderDepthOnlyBatch() {
+  depth_only_instance_transforms_.clear();
 }
 
-void MeshObjectRenderer::ShadowRenderBatch(Scene* scene, const ICamera& shadow_camera) {
+void MeshObjectRenderer::RenderDepthOnlyBatch(Scene* scene, const ICamera& camera) {
   if (cast_shadows_) {
     auto prog_user = gl::MakeTemporaryBind(prog_data_.shadow_cast_prog_);
     prog_data_.shadow_cast_prog_.Update();
 
-    prog_data_.scp_uProjectionMatrix_ = shadow_camera.GetProjectionMatrix();
-    prog_data_.scp_uCameraMatrix_ = shadow_camera.GetCameraMatrix();
+    prog_data_.scp_uProjectionMatrix_ = camera.GetProjectionMatrix();
+    prog_data_.scp_uCameraMatrix_ = camera.GetCameraMatrix();
 
     std::vector<glm::mat4> visibile_object_transforms;
-    for (const glm::mat4& transform : shadow_instance_transforms_) {
+    for (const glm::mat4& transform : depth_only_instance_transforms_) {
       BoundingBox bbox = GetBoundingBox(transform);
-      bool is_visible = bbox.CollidesWithFrustum(shadow_camera.GetFrustum());
+      bool is_visible = bbox.CollidesWithFrustum(camera.GetFrustum());
       if (is_visible) {
         visibile_object_transforms.push_back(transform);
       }
