@@ -69,7 +69,7 @@ BulletRigidBody::Restrains::Restrains()
   , z_rot_lock{0}
 {}
 
-void BulletRigidBody::set_restrains(Restrains value) {
+void BulletRigidBody::SetRestrains(Restrains value) {
   restrains_ = value;
   bt_rigid_body_->setLinearFactor(btVector3(
     1-value.x_pos_lock, 1-value.y_pos_lock, 1-value.z_pos_lock

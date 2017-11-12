@@ -55,8 +55,8 @@ class BulletRigidBody : public GameObject, public btMotionState {
                   const glm::vec3& pos, const glm::fquat& rot,
                   CollisionType collision_type);
 
-  btRigidBody* bt_rigid_body() { return bt_rigid_body_.get(); }
-  const btRigidBody* bt_rigid_body() const { return bt_rigid_body_.get(); }
+  btRigidBody* GetBtRigidBody() { return bt_rigid_body_.get(); }
+  const btRigidBody* GetBtRigidBody() const { return bt_rigid_body_.get(); }
 
   struct Restrains {
     unsigned int x_pos_lock : 1;
@@ -70,8 +70,8 @@ class BulletRigidBody : public GameObject, public btMotionState {
     Restrains();
   };
 
-  Restrains restrains() const { return restrains_; }
-  void set_restrains(Restrains value);
+  Restrains GetRestrains() const { return restrains_; }
+  void SetRestrains(Restrains value);
 
  private:
   std::unique_ptr<btCollisionShape> shape_;
