@@ -105,6 +105,7 @@ Scene::Scene(GameEngine* engine)
       std::string uniform_name = "uPointLights[" + std::to_string(current_light_index++) + "]";
       gl::Uniform<glm::vec3>(prog, uniform_name + ".position") = light->GetTransform().GetPos();
       gl::Uniform<glm::vec3>(prog, uniform_name + ".color") = light->GetColor();
+      gl::Uniform<glm::vec3>(prog, uniform_name + ".attenuation") = light->GetAttenuation();
     }
 
     gl::Uniform<int>(prog, "uDirectionalLightCount") = std::min(directional_light_sources_.size(), kMaxDirLightCount);
