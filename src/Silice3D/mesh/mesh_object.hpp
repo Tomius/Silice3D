@@ -11,7 +11,7 @@ class MeshObject : public GameObject {
  public:
   MeshObject(GameObject* parent, const std::string& mesh_path,
              const Transform& initial_transform = Transform{},
-             const std::string& vertex_shader = "mesh.vert");
+             const std::string& vertex_shader = "Silice3D/mesh.vert");
   virtual ~MeshObject();
 
   btCollisionShape* GetCollisionShape();

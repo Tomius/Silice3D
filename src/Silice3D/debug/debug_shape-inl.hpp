@@ -11,8 +11,8 @@ template<typename Shape_t>
 DebugShape<Shape_t>::DebugShape(GameObject* parent, const glm::vec3& color)
       : GameObject(parent)
       , shape_{{Shape_t::kPosition, Shape_t::kNormal}}
-      , prog_{GetScene()->GetShaderManager()->get("debug_shape.vert"),
-              GetScene()->GetShaderManager()->get("debug_shape.frag")}
+      , prog_{GetScene()->GetShaderManager()->get("Silice3D/debug_shape.vert"),
+              GetScene()->GetShaderManager()->get("Silice3D/debug_shape.frag")}
       , uProjectionMatrix_{prog_, "uProjectionMatrix"}
       , uCameraMatrix_{prog_, "uCameraMatrix"}
       , uModelMatrix_{prog_, "uModelMatrix"}

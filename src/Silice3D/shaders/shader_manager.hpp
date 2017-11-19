@@ -10,6 +10,8 @@ namespace Silice3D {
 
 class ShaderManager {
  public:
+  ShaderManager();
+
   // Publishes a shader to be accessed in the future, by GetShader
   ShaderFile* PublishShader(const std::string& shader_name,
                             const gl::ShaderSource& src);

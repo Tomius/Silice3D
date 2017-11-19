@@ -7,8 +7,8 @@ namespace Silice3D {
 
 DebugTexture::DebugTexture(ShaderManager* shader_manager)
     : rect_({gl::RectangleShape::kPosition, gl::RectangleShape::kTexCoord})
-    , prog_(shader_manager->GetShader("debug_texture.vert"),
-            shader_manager->GetShader("debug_texture.frag")) {
+    , prog_(shader_manager->GetShader("Silice3D/debug_texture.vert"),
+            shader_manager->GetShader("Silice3D/debug_texture.frag")) {
 
   gl::Use(prog_);
   gl::UniformSampler(prog_, "uTex") = kDiffuseTextureSlot;

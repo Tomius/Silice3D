@@ -67,7 +67,7 @@ Scene::Scene(GameEngine* engine)
     bt_world_->setGravity(btVector3(0, -9.81, 0));
   }
 
-  GetShaderManager()->GetShader("lighting.frag")->SetUpdateFunc([this](const gl::Program& prog) {
+  GetShaderManager()->GetShader("Silice3D/lighting.frag")->SetUpdateFunc([this](const gl::Program& prog) {
     static constexpr const size_t kMaxDirLightCount = 16;
     static constexpr const size_t kMaxPointLightCount = 128;
 

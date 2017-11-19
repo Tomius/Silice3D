@@ -30,7 +30,7 @@ class GameEngine {
   bool minimized_ = false;
   std::unique_ptr<Scene> scene_;
   std::unique_ptr<Scene> new_scene_;
-  std::unique_ptr<ShaderManager> shader_manager_ = make_unique<ShaderManager>();
+  std::unique_ptr<ShaderManager> shader_manager_;
   GLFWwindow *window_;
 
   // GLFW Callbacks

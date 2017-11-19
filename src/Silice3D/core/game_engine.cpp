@@ -95,10 +95,14 @@ GameEngine::GameEngine(const std::string& application_name, WindowMode windowMod
 
   MeshRenderer::InitializeMeshDataStorage();
 
-  gl::Enable(gl::kDepthTest);
+  // Only initialize after the OpenGL context has been created
+  shader_manager_ = make_unique<ShaderManager>();
 
+  // OpenGL initialization
+  gl::Enable(gl::kDepthTest);
   glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
 
+  // GLFW callbacks
   glfwSetWindowUserPointer(window_, this);
   glfwSetKeyCallback(window_, KeyCallback);
   glfwSetCharCallback(window_, CharCallback);

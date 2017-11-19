@@ -21,11 +21,11 @@ MeshObjectRenderer::MeshObjectRenderer (const std::string& mesh_path,
 MeshObjectRenderer::ProgramData::ProgramData(ShaderManager* shader_manager,
                                              const std::string& vertex_shader)
     : basic_prog_(shader_manager->GetShader(vertex_shader),
-                  shader_manager->GetShader("mesh.frag"))
+                  shader_manager->GetShader("Silice3D/mesh.frag"))
     , shadow_recieve_prog_(shader_manager->GetShader(vertex_shader),
-                           shader_manager->GetShader("mesh_shadow.frag"))
+                           shader_manager->GetShader("Silice3D/mesh_shadow.frag"))
     , shadow_cast_prog_(shader_manager->GetShader(vertex_shader),
-                        shader_manager->GetShader("shadow.frag"))
+                        shader_manager->GetShader("Silice3D/shadow.frag"))
 
     , bp_uProjectionMatrix_(basic_prog_, "uProjectionMatrix")
     , bp_uCameraMatrix_(basic_prog_, "uCameraMatrix")
