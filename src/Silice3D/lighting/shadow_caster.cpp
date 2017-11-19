@@ -130,7 +130,7 @@ void ShadowCaster::Update() {
 
   float last_depth = z_near_;
   for (int i = 0; i < fbos_.size(); ++i) {
-    float max_depth = z_near_ * pow(z_far_/z_near_, (i+1.0f) / (fbos_.size()));
+    float max_depth = z_near_ * pow(z_far_/z_near_, (i+2.0f) / (fbos_.size() + 1));
     target_bounding_spheres_[i] = glm::vec4{cam_pos + (last_depth+max_depth)/2.0f*cam_dir, max_depth-last_depth};
     last_depth = 0.8*max_depth;
   }
