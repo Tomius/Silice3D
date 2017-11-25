@@ -14,7 +14,6 @@
 #include <Silice3D/shaders/builtin/shadow.frag>
 #include <Silice3D/shaders/builtin/shadow.vert>
 
-
 namespace Silice3D {
 
 ShaderManager::ShaderManager() {

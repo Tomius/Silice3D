@@ -2,7 +2,7 @@
 
 const char* lighting_frag_shader_string = R"""(
 
-#version 330 core
+#version 400 core
 #extension GL_ARB_bindless_texture : require
 
 #include "Silice3D/bicubic_sampling.glsl"
@@ -44,9 +44,9 @@ float GetSpecularPower(vec3 position, vec3 normal, vec3 light_dir, float shinine
 }
 
 vec4 GetShadowCoord(vec3 position, int lightNum, int selected_cascade) {
-  vec4 shadow_coord = uDirectionalLights[lightNum].shadowCP[selected_cascade] * vec4(position, 1.0);
+  dvec4 shadow_coord = dmat4(uDirectionalLights[lightNum].shadowCP[selected_cascade]) * dvec4(position, 1.0);
   shadow_coord.xyz /= shadow_coord.w;
-  shadow_coord.z -= 0.00007 * pow(2.1, selected_cascade);
+  shadow_coord.z -= 7e-6 * pow(2.1, selected_cascade);
   shadow_coord.xy = (shadow_coord.xy + 1) * 0.5;
   return vec4(shadow_coord.xy, selected_cascade, shadow_coord.z);
 }

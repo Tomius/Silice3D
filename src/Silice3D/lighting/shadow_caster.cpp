@@ -17,7 +17,7 @@ ShadowCaster::ShadowCaster(GameObject* parent, size_t shadow_map_size, size_t ca
     , target_bounding_spheres_(cascades_count) {
   assert(dynamic_cast<DirectionalLightSource*>(parent) != nullptr);
   gl::Bind(depth_tex_);
-  depth_tex_.upload(static_cast<gl::enums::PixelDataInternalFormat>(GL_DEPTH_COMPONENT16),
+  depth_tex_.upload(static_cast<gl::enums::PixelDataInternalFormat>(GL_DEPTH_COMPONENT32),
                     size_, size_, cascades_count, gl::kDepthComponent, gl::kFloat, nullptr);
   depth_tex_.minFilter(gl::kLinear);
   depth_tex_.magFilter(gl::kLinear);

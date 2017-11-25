@@ -10,7 +10,7 @@ layout(location = 4) in mat4 aModelMatrix;
 uniform mat4 uProjectionMatrix, uCameraMatrix;
 
 void main() {
-  gl_Position = uProjectionMatrix * uCameraMatrix * aModelMatrix * aPosition;
+  gl_Position = uProjectionMatrix * (uCameraMatrix * (aModelMatrix * aPosition));
 }
 
 )""";
