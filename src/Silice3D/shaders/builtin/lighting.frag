@@ -91,8 +91,8 @@ vec3 Silice3D_CalculateLighting(vec3 position,
         for (int j = 0; j < cascades_count; ++j) {
           vec4 shadow_coord = uDirectionalLights[i].shadowCP[j] * vec4(position, 1.0);
           shadow_coord.xyz /= shadow_coord.w;
-          float max_coord = max(max(abs(shadow_coord.x), abs(shadow_coord.y)), shadow_coord.z);
-          if (i == cascades_count - 1 || (max_coord < 1.0 && 0.0 < shadow_coord.z)) {
+          float max_coord = max(abs(shadow_coord.x), abs(shadow_coord.y));
+          if (i == cascades_count - 1 || max_coord < 1.0) {
             selected_cascade = j;
             morph_alpha = smoothstep(0.8, 1.0, max_coord);
             break;
